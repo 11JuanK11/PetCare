@@ -1,4 +1,4 @@
-package project.jssi_education.exception;
+package pet.care.petcare.exception;
 
 public class ResourceNotFoundException extends RuntimeException{
     public ResourceNotFoundException(String message) {
