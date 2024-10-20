@@ -25,6 +25,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(http -> {
                     http.requestMatchers("/public/**").permitAll();
                     http.requestMatchers("/v1/home").authenticated();
+                    http.requestMatchers("/client/**").permitAll();
                     http.requestMatchers("/v1/admin").hasAuthority("ADMIN").anyRequest().authenticated();
                 })
                 .formLogin(Customizer.withDefaults())
