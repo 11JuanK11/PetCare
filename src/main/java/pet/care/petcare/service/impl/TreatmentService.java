@@ -22,6 +22,34 @@ public class TreatmentService implements ITreatmentService {
         return treatmentRepository.save(treatment);
     }
 
+    @Override
+    public List<Treatment> readAll() {
+        return treatmentRepository.findAll();
+    }
+
+    @Override
+    public Treatment update(Long id, Treatment treatment) throws ResourceNotFoundException, ValidationException {
+        Treatment existingTreatment = treatmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Treatment with ID " + id + " not found"));
+
+        validateTreatment(treatment);
+
+        existingTreatment.setName(treatment.getName());
+        existingTreatment.setPrice(treatment.getPrice());
+        existingTreatment.setDiagnostic(treatment.getDiagnostic());
+
+        return treatmentRepository.save(existingTreatment);
+    }
+
+    @Override
+    public void deleteById(Long id) throws ResourceNotFoundException {
+        if (!treatmentRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Treatment with ID " + id + " not found");
+        }
+
+        treatmentRepository.deleteById(id);
+    }
+
     private void validateTreatment(Treatment treatment) throws ValidationException {
         if (treatment.getName() == null || treatment.getName().trim().isEmpty()) {
             throw new ValidationException("Treatment name cannot be null or empty");
