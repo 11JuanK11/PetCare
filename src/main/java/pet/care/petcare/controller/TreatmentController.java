@@ -37,7 +37,6 @@ public class TreatmentController {
         }
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Treatment treatment) {
         try {
@@ -61,4 +60,17 @@ public class TreatmentController {
             return new ResponseEntity<>("An error occurred while deleting the treatment.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> readById(@PathVariable Long id) {
+        try {
+            Treatment treatment = treatmentService.readById(id);
+            return new ResponseEntity<>(treatment, HttpStatus.OK);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An error occurred while fetching the treatment.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
