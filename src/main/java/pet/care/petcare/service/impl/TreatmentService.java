@@ -68,4 +68,10 @@ public class TreatmentService implements ITreatmentService {
         }
 
     }
+
+    public Treatment readById(Long id) {
+        return treatmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Treatment not found with id " + id));
+    }
+
 }

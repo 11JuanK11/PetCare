@@ -3,6 +3,7 @@
     --color-green: #DFFFD8;
     --color-light-blue: #B4E4FF;
     --color-blue: #95BDFF;
+    --color-light-yellow: #FFF9D8;
 }
 
 body {
@@ -90,6 +91,10 @@ main {
     background-color: var(--color-light-blue);
 }
 
+.card-yellow {
+    background-color: var(--color-light-yellow);
+}
+
 .btn-card {
     background-color: white;
     color: #333;
@@ -105,4 +110,14 @@ main {
     .sidebar {
         top: 5rem;
     }
+}
+
+.btn-update {
+    background-color: #95BDFF;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #F7C8E0;
+    color: black;
 }
