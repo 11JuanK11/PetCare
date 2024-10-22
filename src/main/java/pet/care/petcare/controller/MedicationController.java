@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pet.care.petcare.entity.Medication;
+import pet.care.petcare.exception.ValidationException;
 import pet.care.petcare.service.IMedicationService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +23,13 @@ public class MedicationController {
         try {
             Medication newMedication = medicationService.registerMedication(medication);
             return ResponseEntity.ok("Medication successfully registered: " + newMedication.getName());
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "An unexpected error occurred."));
         }
     }
+
 
     @GetMapping("/")
     public ResponseEntity<List<Medication>> getAllMedications() {
