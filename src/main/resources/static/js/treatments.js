@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         addTreatment();
     });
+
 });
 
 function loadDiagnostics() {
