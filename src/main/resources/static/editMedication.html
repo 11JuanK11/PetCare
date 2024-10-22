@@ -17,7 +17,7 @@
             <img src="/img/logo.png" alt="PetCare Logo" class="me-2">
             PetCare
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarContent">
@@ -36,7 +36,7 @@
     </div>
 </nav>
 
-<div class="container-fluid">
+<div class="container-fluid mt-5 pt-4">
     <div class="row">
         <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" id="sidebarMenu">
             <div class="position-sticky pt-3">
@@ -52,8 +52,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="medications.html">
+                        <a class="nav-link" href="medications.html">
                             <i class="bi bi-box-seam"></i> Inventory Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="editMedication.html">
+                            <i class="bi bi-pencil-square"></i> Edit Medication
                         </a>
                     </li>
                     <li class="nav-item">
@@ -91,12 +96,12 @@
 
                     <div class="mb-3">
                         <label for="medicationPrice" class="form-label">Medication Price:</label>
-                        <input type="number" class="form-control" id="medicationPrice" name="medicationPrice" required />
+                        <input type="number" class="form-control" id="medicationPrice" name="medicationPrice" required min="1" />
                     </div>
 
                     <div class="mb-3">
                         <label for="medicationStock" class="form-label">Stock:</label>
-                        <input type="number" class="form-control" id="medicationStock" name="medicationStock" required />
+                        <input type="number" class="form-control" id="medicationStock" name="medicationStock" required min="1" />
                     </div>
 
                     <button type="submit" class="btn btn-primary">Update Medication</button>
