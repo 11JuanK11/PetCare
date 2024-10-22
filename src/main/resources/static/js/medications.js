@@ -18,8 +18,10 @@ function loadMedications() {
                     <td>${medication.unitPrice}</td>
                     <td>${medication.stock}</td>
                     <td>
-                        <button class="btn btn-warning" onclick="editMedication(${medication.id})">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteMedication(${medication.id})">Delete</button>
+                        <button class="btn btn-warning" style="background-color: #95BDFF; border: none;"
+                         onclick="editMedication(${medication.id})">Edit</button>
+                        <button class="btn btn-danger" style="background-color: #F7C8E0; border: none;"
+                         onclick="deleteMedication(${medication.id})">Delete</button>
                     </td>
                 `;
                 medicationList.appendChild(row);
@@ -61,14 +63,17 @@ function addMedication() {
             document.getElementById('medicationForm').reset();
             Swal.fire('Success', 'Medication added successfully', 'success');
         } else {
-            return response.json().then(error => { throw error; });
+            return response.json().then(error => {
+                throw new Error(error.message || 'Could not add medication.');
+            });
         }
     })
     .catch(error => {
         console.error('Error adding medication:', error);
-        Swal.fire('Error', 'Could not add medication.', 'error');
+        Swal.fire('Error', error.message || 'Could not add medication.', 'error');
     });
 }
+
 
 
 function deleteMedication(id) {
