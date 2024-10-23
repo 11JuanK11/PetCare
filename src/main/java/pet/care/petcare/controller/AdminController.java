@@ -7,21 +7,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pet.care.petcare.entity.Client;
+import pet.care.petcare.entity.AdminEntity;
 import pet.care.petcare.exception.ResourceNotFoundException;
-import pet.care.petcare.service.impl.ClientServiceImpl;
+import pet.care.petcare.service.UserService;
+
 
 @RestController
-@RequestMapping("/rest/client")
-public class ClientController {
+@RequestMapping("/rest/admin")
+public class AdminController {
     @Autowired
-    private ClientServiceImpl clientService;
+    private UserService<AdminEntity> adminService;
 
     @PostMapping("/")
-    public ResponseEntity<?> insert(@RequestBody Client client) {
+    public ResponseEntity<?> insert(@RequestBody AdminEntity admin) {
         try {
-            Client newClient = clientService.insert(client);
-            return new ResponseEntity<>(newClient, HttpStatus.CREATED);
+            AdminEntity newAdmin = adminService.insert(admin);
+            return new ResponseEntity<>(newAdmin, HttpStatus.CREATED);
         } catch (ResourceNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception ex) {
