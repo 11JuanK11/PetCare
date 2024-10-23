@@ -9,6 +9,7 @@ import pet.care.petcare.repository.IClientRepository;
 import pet.care.petcare.service.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientServiceImpl extends UserService<Client> {
@@ -41,7 +42,34 @@ public class ClientServiceImpl extends UserService<Client> {
 
     @Override
     public Client update(Client entity) throws RuntimeException {
-        return null;
+        Optional<Client> entityFound = clientRepository.findById(entity.getUserId());
+
+        if (entityFound.isEmpty()) {
+            throw new ResourceNotFoundException("Client not found.");
+        }else {
+            Client client = entityFound.get();
+
+            if (entity.getUserId() != null) {
+                client.setUserId(entity.getUserId());
+            }
+            if(entity.getName() != null){
+                client.setName(entity.getName());
+            }
+            if (entity.getLastname() != null){
+                client.setLastname(entity.getLastname());
+            }
+            if (entity.getPhoneNumber() != null){
+                client.setPhoneNumber(entity.getPhoneNumber());
+            }
+            if (entity.getUsername() != null){
+                client.setUsername(entity.getUsername());
+            }
+            if (entity.getPassword() != null){
+                client.setPassword(this.cryptPasswordEncoder.encode(entity.getPassword()));
+            }
+            client.setRole("CLIENT");
+            return clientRepository.save(client);
+        }
     }
 
     @Override
