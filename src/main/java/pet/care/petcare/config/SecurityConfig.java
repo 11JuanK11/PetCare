@@ -34,10 +34,25 @@ public class SecurityConfig {
                     http.requestMatchers("/public/**").permitAll();
                     http.requestMatchers("/rest/**").permitAll();
                     http.requestMatchers("/css/**", "/js/**", "/images/**").permitAll();
+                    http.requestMatchers("/client-panel/**").hasAuthority("CLIENT");
+                    http.requestMatchers("/staff-panel/**").hasAuthority("CLINIC_STAFF");
                     http.requestMatchers("/admin-panel/**").hasAuthority("ADMIN").anyRequest().authenticated();
                 })
-                .addFilterBefore(loginSessionInvalidationFilter, SecurityContextHolderFilter.class)
-                .formLogin(Customizer.withDefaults())
+                .formLogin(httpSecurityFormLoginConfigurer -> {
+                    httpSecurityFormLoginConfigurer.loginPage("/public/login")
+                            .successHandler((request, response, authentication) -> {
+                                if (authentication.getAuthorities().stream().anyMatch(grantedAuthority ->
+                                        grantedAuthority.getAuthority().equals("ADMIN"))) {
+                                    response.sendRedirect("/admin-panel");
+                                } else if (authentication.getAuthorities().stream().anyMatch(grantedAuthority ->
+                                        grantedAuthority.getAuthority().equals("CLIENT"))) {
+                                    response.sendRedirect("/client-panel");
+                                } else if (authentication.getAuthorities().stream().anyMatch(grantedAuthority ->
+                                        grantedAuthority.getAuthority().equals("CLINIC_STAFF"))) {
+                                    response.sendRedirect("/staff-panel");
+                                }
+                            });
+                })
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
