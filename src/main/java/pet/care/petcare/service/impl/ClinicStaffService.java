@@ -22,7 +22,7 @@ public class ClinicStaffService extends UserService<ClinicStaff>{
             throw new ResourceNotFoundException("User information is missing");
         }
         checkExistence(entity.getUsername());
-        entity.setRole("CLINIC STAFF");
+        entity.setRole("CLINIC_STAFF");
         entity.setPassword(this.cryptPasswordEncoder.encode(entity.getPassword()));
         return clinicStaffRepository.save(entity);
     }
@@ -66,7 +66,7 @@ public class ClinicStaffService extends UserService<ClinicStaff>{
             if (entity.getPassword() != null){
                 clinicStaff.setPassword(this.cryptPasswordEncoder.encode(entity.getPassword()));
             }
-            clinicStaff.setRole("CLINIC STAFF");
+            clinicStaff.setRole("CLINIC_STAFF");
             return clinicStaffRepository.save(clinicStaff);
         }
     }

@@ -33,7 +33,7 @@ function validateForm() {
 }
 
 function loadDiagnostics() {
-    fetch('/diagnostics/')
+    fetch('/rest/diagnostics/')
         .then(response => response.json())
         .then(diagnostics => {
             const diagnosticSelect = document.getElementById('diagnosticId');
@@ -48,7 +48,7 @@ function loadDiagnostics() {
 }
 
 function loadTreatmentData(id) {
-    fetch(`/treatments/${id}`)
+    fetch(`/rest/treatments/${id}`)
         .then(response => response.json())
         .then(treatment => {
             document.getElementById('treatmentName').value = treatment.name;
@@ -71,7 +71,7 @@ function updateTreatment(id) {
         diagnostic: { id: diagnosticId }
     };
 
-    fetch(`/treatments/${id}`, {
+    fetch(`/rest/treatments/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -87,7 +87,7 @@ function updateTreatment(id) {
                 confirmButtonText: 'OK'
             }).then(() => {
                 localStorage.removeItem('treatmentIdToEdit');
-                window.location.href = 'treatments.html';
+                window.location.href = 'http://localhost:8080/admin-panel/treatments';
             });
         } else {
             return response.json().then(error => { throw error; });

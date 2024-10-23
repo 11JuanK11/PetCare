@@ -13,7 +13,7 @@ import pet.care.petcare.service.impl.TreatmentService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/treatments")
+@RequestMapping("/rest/treatments")
 public class TreatmentController {
     @Autowired
     private TreatmentService treatmentService;

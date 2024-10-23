@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadMedications() {
-    fetch('/medications/')
+    fetch('/rest/medications/')
         .then(response => response.json())
         .then(medications => {
             const medicationList = document.getElementById('medicationList');
@@ -50,7 +50,7 @@ function addMedication() {
         stock: stock
     };
 
-    fetch('/medications/', {
+    fetch('/rest/medications/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ function deleteMedication(id) {
         cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch(`/medications/${id}`, {
+            fetch(`/rest/medications/${id}`, {
                 method: 'DELETE'
             })
             .then(response => {
@@ -109,5 +109,5 @@ function deleteMedication(id) {
 
 function editMedication(id) {
     localStorage.setItem('medicationIdToEdit', id);
-    window.location.href = 'editMedication.html';
+    window.location.href = 'http://localhost:8080/admin-panel/medications/edit';
 }

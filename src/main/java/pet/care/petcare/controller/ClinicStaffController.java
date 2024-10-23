@@ -6,17 +6,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pet.care.petcare.entity.ClinicStaff;
 import pet.care.petcare.exception.ValidationException;
-import pet.care.petcare.service.impl.ClinicStaffService;
+import pet.care.petcare.service.UserService;
 
 import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping("/clinic-staff")
+@RequestMapping("/rest/clinic-staff")
 public class ClinicStaffController {
 
     @Autowired
-    private ClinicStaffService clinicStaffService;
+    private UserService<ClinicStaff> clinicStaffService;
 
     @PostMapping("/")
     public ResponseEntity<?> registerClinicStaff(@Valid @RequestBody ClinicStaff clinicStaff) {
