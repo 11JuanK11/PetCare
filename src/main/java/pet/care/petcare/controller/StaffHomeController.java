@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/admin-panel")
-public class ClientHomeController {
+@RequestMapping("/staff-panel")
+public class StaffHomeController {
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("hasAuthority('CLINIC_STAFF')")
     public String home(){
-        return "indexAdmin";
+        return "indexStaff";
     }
 
 }

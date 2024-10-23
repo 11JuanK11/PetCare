@@ -6,39 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/admin-panel")
-public class AdminHomeController {
+@RequestMapping("/client-panel")
+public class ClientHomeController {
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('CLIENT')")
     public String home(){
-        return "indexAdmin";
+        return "indexClient";
     }
-
-    @GetMapping("/medications")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String medicationsManagement(){
-        return "medications";
-    }
-
-    @GetMapping("/medications/edit")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String editMedicationsManagement(){
-        return "editMedication";
-    }
-
-    @GetMapping("/treatments")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String treatmentsManagement(){
-        return "treatments";
-    }
-
-    @GetMapping("/treatments/edit")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String editTreatmentsManagement(){
-        return "editTreatment";
-    }
-
-
 
 }
