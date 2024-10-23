@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/medications")
+@RequestMapping("/rest/medications")
 public class MedicationController {
     @Autowired
     private IMedicationService medicationService;

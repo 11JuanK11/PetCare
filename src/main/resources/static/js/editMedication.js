@@ -34,7 +34,7 @@ function validateForm() {
 
 
 function loadMedication(id) {
-    fetch(`/medications/${id}`)
+    fetch(`/rest/medications/${id}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -61,7 +61,7 @@ function updateMedication(id) {
         stock: stock
     };
 
-    fetch(`/medications/${id}`, {
+    fetch(`/rest/medications/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -77,7 +77,7 @@ function updateMedication(id) {
                 confirmButtonText: 'OK'
             }).then(() => {
                 localStorage.removeItem('medicationIdToEdit');
-                window.location.href = 'medications.html';
+                window.location.href = 'http://localhost:8080/admin-panel/medications';
             });
         } else {
             return response.json().then(error => { throw error; });

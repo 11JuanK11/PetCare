@@ -11,7 +11,7 @@ import pet.care.petcare.service.impl.DiagnosticService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/diagnostics")
+@RequestMapping("/rest/diagnostics")
 public class DiagnosticController {
     @Autowired
     private DiagnosticService diagnosticService;

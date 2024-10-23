@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadDiagnostics() {
-    fetch('/diagnostics/')
+    fetch('/rest/diagnostics/')
         .then(response => response.json())
         .then(diagnostics => {
             const diagnosticSelect = document.getElementById('diagnosticId');
@@ -28,7 +28,7 @@ function loadDiagnostics() {
 
 
 function loadTreatments() {
-    fetch('/treatments/')
+    fetch('/rest/treatments/')
         .then(response => response.json())
         .then(treatments => {
             const treatmentList = document.getElementById('treatmentList');
@@ -55,7 +55,7 @@ function loadTreatments() {
 
 function editTreatment(id) {
     localStorage.setItem('treatmentIdToEdit', id);
-    window.location.href = 'editTreatment.html';
+    window.location.href = 'http://localhost:8080/admin-panel/treatments/edit';
 }
 
 function addTreatment() {
@@ -69,7 +69,7 @@ function addTreatment() {
         diagnostic: { id: diagnosticId }
     };
 
-    fetch('/treatments/', {
+    fetch('/rest/treatments/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -99,7 +99,7 @@ function deleteTreatment(id) {
         cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch(`/treatments/${id}`, {
+            fetch(`/rest/treatments/${id}`, {
                 method: 'DELETE'
             })
             .then(response => {
