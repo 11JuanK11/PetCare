@@ -1,4 +1,4 @@
-package pet.care.petcare.controller.RestController;
+package pet.care.petcare.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,7 @@ import pet.care.petcare.exception.ResourceNotFoundException;
 import pet.care.petcare.service.impl.ClientServiceImpl;
 
 @RestController
-@RequestMapping("/client")
+@RequestMapping("/rest/client")
 public class ClientController {
     @Autowired
     private ClientServiceImpl clientService;
@@ -20,8 +20,8 @@ public class ClientController {
     @PostMapping("/")
     public ResponseEntity<?> insert(@RequestBody Client client) {
         try {
-            clientService.insert(client);
-            return new ResponseEntity<>("", HttpStatus.CREATED);
+            Client newClient = clientService.insert(client);
+            return new ResponseEntity<>(newClient, HttpStatus.CREATED);
         } catch (ResourceNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception ex) {
