@@ -18,11 +18,15 @@ public class PublicController {
         if (session != null) {
             session.invalidate();
         }
-        return "login";
+        return "Login";
     }
 
     @GetMapping("/register")
-    public String admin(){
+    public String admin(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
         return "Register";
     }
 }
