@@ -54,7 +54,7 @@ document.getElementById('clientForm').addEventListener('submit', function(event)
     })
     .then(data => {
         console.log('Success:', data);
-        window.location.href = "http://localhost:8080/login"; // Redirige a la página de inicio de sesión
+        window.location.href = "http://localhost:8080/public/login";
     })
     .catch((error) => {
         console.error('Error submitting the form:', error);
