@@ -40,7 +40,7 @@ public class ClientServiceImpl extends UserService<Client> {
     }
 
     @Override
-    public Client update(Long id) throws RuntimeException {
+    public Client update(Client entity) throws RuntimeException {
         return null;
     }
 
