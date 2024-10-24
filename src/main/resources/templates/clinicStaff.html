@@ -108,7 +108,7 @@
                 <h2 class="mb-4">Veterinary</h2>
                 <label>Required Fields <span style="color: red;">*</span></label>
                 <p></p>
-                <form id="medicationForm" class="mb-3">
+                <form id="clinicStaffForm" class="mb-3" onsubmit="return validatePasswordMatch()">
                     <div class="row g-3">
                         <div class="col-12 col-md-4">
                             <label for="userId">Id Number <span style="color: red;">*</span></label>
@@ -116,7 +116,7 @@
                         </div>
                         <div class="col-12 col-md-4">
                             <label for="Name">Name <span style="color: red;">*</span></label>
-                            <input type="text" class="form-control" id="Name" required>
+                            <input type="text" class="form-control" id="name" required>
                         </div>
                         <div class="col-12 col-md-4">
                             <label for="userLastName">Last Name <span style="color: red;">*</span></label>
@@ -133,7 +133,7 @@
                         <div class="col-12 col-md-4">
                             <label for="userPassword">Password <span style="color: red;">*</span></label>
                             <div class="input-group">
-                                <input type="password" class="form-control" id="userPassword" required>
+                                <input type="password" class="form-control" id="userPassword" oninput="validatePassword()" required>
                                 <span class="input-group-text">
                                     <i class="bi bi-eye" id="togglePassword" style="cursor: pointer;"></i>
                                 </span>
@@ -155,6 +155,8 @@
                             <button type="submit" class="btn btn-primary">Add Veterinary</button>
                         </div>
                     </div>
+                    <div id="passwordError" style="color: red; display: none;">The password must be at least 8 characters long, contain a number, a special character, and a letter.</div>
+                    <div id="confirmPasswordError" style="color: red; display: none;">Passwords do not match.</div>
                 </form>
 
                 <div class="table-responsive">

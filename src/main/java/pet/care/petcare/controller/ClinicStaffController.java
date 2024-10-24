@@ -22,7 +22,7 @@ public class ClinicStaffController {
     public ResponseEntity<?> registerClinicStaff(@Valid @RequestBody ClinicStaff clinicStaff) {
         try {
             ClinicStaff newClinicStaff = clinicStaffService.insert(clinicStaff);
-            return ResponseEntity.ok("Clinic Staff successfully registered: " + newClinicStaff.getName());
+            return ResponseEntity.ok(newClinicStaff);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
         } catch (Exception e) {
@@ -32,8 +32,8 @@ public class ClinicStaffController {
 
     @GetMapping("/")
     public ResponseEntity<List<ClinicStaff>> getAllClinicStaff() {
-        List<ClinicStaff> medications = clinicStaffService.findAll();
-        return ResponseEntity.ok(medications);
+        List<ClinicStaff> clinicStaffs = clinicStaffService.findAll();
+        return ResponseEntity.ok(clinicStaffs);
     }
 
     @GetMapping("/{id}")
