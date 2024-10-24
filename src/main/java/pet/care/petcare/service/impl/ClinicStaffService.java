@@ -47,6 +47,7 @@ public class ClinicStaffService extends UserService<ClinicStaff>{
         if (entityFound.isEmpty()) {
             throw new ResourceNotFoundException("Clinic staff not found.");
         }else {
+            checkExistence(entity.getUsername(), entity.getUserId());
             ClinicStaff clinicStaff = entityFound.get();
 
             if (entity.getUserId() != null) {
