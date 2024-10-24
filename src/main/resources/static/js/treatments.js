@@ -80,11 +80,24 @@ function addTreatment() {
         if (response.ok) {
             loadTreatments();
             document.getElementById('treatmentForm').reset();
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'The treatment has been successfully added.',
+                confirmButtonText: 'OK'
+            });
         } else {
             return response.json().then(error => { throw error; });
         }
     })
-    .catch(error => console.error('Error adding treatment:', error));
+    .catch(error => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'There was an issue adding the treatment.',
+        });
+        console.error('Error adding treatment:', error);
+    });
 }
 
 function deleteTreatment(id) {

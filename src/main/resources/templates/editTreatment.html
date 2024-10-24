@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link rel="stylesheet" href="/css/indexAdmin.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
     <div class="container-fluid">
@@ -85,25 +87,23 @@
                 <h2 class="mb-4">Edit Treatment</h2>
                 <form id="treatmentForm" class="needs-validation" novalidate>
                     <div class="mb-3">
-                        <label for="treatmentName" class="form-label">Treatment Name:</label>
+                        <label for="treatmentName" class="form-label required-label">Treatment Name:</label>
                         <input type="text" class="form-control" id="treatmentName" name="treatmentName" required />
                     </div>
 
                     <div class="mb-3">
-                        <label for="treatmentPrice" class="form-label">Treatment Price:</label>
+                        <label for="treatmentPrice" class="form-label required-label">Treatment Price:</label>
                         <input type="number" class="form-control" id="treatmentPrice" name="treatmentPrice" required />
                     </div>
 
                     <div class="mb-3">
-                        <label for="diagnosticId" class="form-label">Select Diagnostic:</label>
+                        <label for="diagnosticId" class="form-label required-label">Select Diagnostic:</label>
                         <select class="form-control" id="diagnosticId" required>
                             <option value="">Select Diagnostic</option>
-
                         </select>
                     </div>
 
-
-                    <button type="submit" class="btn btn-primary">Update Treatment</button>
+                    <button type="submit" class="btn btn-custom">Update Treatment</button>
                 </form>
             </div>
         </main>
@@ -113,4 +113,5 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/editTreatment.js"></script>
 </body>
+
 </html>

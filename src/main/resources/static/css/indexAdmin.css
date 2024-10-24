@@ -121,3 +121,19 @@ main {
     background-color: #F7C8E0;
     color: black;
 }
+
+.btn-custom {
+    background-color: #95BDFF;
+    border-color: #95BDFF;
+    color: white;
+}
+
+.btn-custom:hover {
+    background-color: #7AA9FF;
+    border-color: #7AA9FF;
+}
+
+.required-label::after {
+    content: " *";
+    color: red;
+}
