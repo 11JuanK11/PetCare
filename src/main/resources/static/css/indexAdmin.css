@@ -4,6 +4,7 @@
     --color-light-blue: #B4E4FF;
     --color-blue: #95BDFF;
     --color-light-yellow: #FFF9D8;
+    --color-light-purple: #B1AFFF;
 }
 
 body {
@@ -93,6 +94,10 @@ main {
 
 .card-yellow {
     background-color: var(--color-light-yellow);
+}
+
+.card-purple {
+    background-color: var(--color-light-purple);
 }
 
 .btn-card {
