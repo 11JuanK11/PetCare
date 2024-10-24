@@ -10,28 +10,37 @@ function loadMedications() {
             const medicationList = document.getElementById('medicationList');
             medicationList.innerHTML = '';
 
-            medications.forEach(medication => {
+            if (medications.length === 0) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${medication.id}</td>
-                    <td>${medication.name}</td>
-                    <td>${medication.unitPrice}</td>
-                    <td>${medication.stock}</td>
-                    <td>
-                        <button class="btn btn-warning" style="background-color: #95BDFF; border: none;"
-                         onclick="editMedication(${medication.id})">Edit</button>
-                        <button class="btn btn-danger" style="background-color: #F7C8E0; border: none;"
-                         onclick="deleteMedication(${medication.id})">Delete</button>
-                    </td>
+                    <td colspan="5" class="text-center">No medications registered</td>
                 `;
                 medicationList.appendChild(row);
-            });
+            } else {
+                medications.forEach(medication => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${medication.id}</td>
+                        <td>${medication.name}</td>
+                        <td>${medication.unitPrice}</td>
+                        <td>${medication.stock}</td>
+                        <td>
+                            <button class="btn btn-warning" style="background-color: #95BDFF; border: none;"
+                             onclick="editMedication(${medication.id})">Edit</button>
+                            <button class="btn btn-danger" style="background-color: #F7C8E0; border: none;"
+                             onclick="deleteMedication(${medication.id})">Delete</button>
+                        </td>
+                    `;
+                    medicationList.appendChild(row);
+                });
+            }
         })
         .catch(error => {
             console.error('Error loading medications:', error);
             Swal.fire('Error', 'Could not load medications.', 'error');
         });
 }
+
 
 
 document.getElementById('medicationForm').addEventListener('submit', (e) => {

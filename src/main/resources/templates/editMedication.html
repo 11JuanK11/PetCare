@@ -88,19 +88,21 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="content mt-4 p-4">
                 <h2 class="mb-4">Edit Medication</h2>
+                <label>Required Fields <span style="color: red;">*</span></label>
+                <p></p>
                 <form id="medicationForm" class="needs-validation" novalidate>
                     <div class="mb-3">
-                        <label for="medicationName" class="form-label">Medication Name:</label>
+                        <label for="medicationName" class="form-label">Medication Name:<span style="color: red;">*</span></label>
                         <input type="text" class="form-control" id="medicationName" name="medicationName" required />
                     </div>
 
                     <div class="mb-3">
-                        <label for="medicationPrice" class="form-label">Medication Price:</label>
+                        <label for="medicationPrice" class="form-label">Medication Price: <span style="color: red;">*</span></label>
                         <input type="number" class="form-control" id="medicationPrice" name="medicationPrice" required min="1" />
                     </div>
 
                     <div class="mb-3">
-                        <label for="medicationStock" class="form-label">Stock:</label>
+                        <label for="medicationStock" class="form-label">Stock: <span style="color: red;">*</span></label>
                         <input type="number" class="form-control" id="medicationStock" name="medicationStock" required min="1" />
                     </div>
 
