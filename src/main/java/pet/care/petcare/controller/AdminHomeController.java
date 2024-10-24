@@ -39,6 +39,10 @@ public class AdminHomeController {
         return "editTreatment";
     }
 
-
+    @GetMapping("/clinic-staff")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String veterinaryManagement(){
+        return "clinicStaff";
+    }
 
 }
