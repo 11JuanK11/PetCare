@@ -7,8 +7,8 @@
     <link rel="icon" href="/img/favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/indexAdmin.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="/css/indexAdmin.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
@@ -94,19 +94,22 @@
                 <h2 class="mb-4">Treatments</h2>
                 <form id="treatmentForm" class="mb-3">
                     <div class="row g-3">
-                        <div class="col-12 col-md-4">
-                            <input type="text" class="form-control" id="treatmentName" placeholder="Treatment Name" required>
+                        <div class="col-12">
+                            <label for="treatmentName" class="required-label">Treatment Name</label>
+                            <input type="text" class="form-control" id="treatmentName" required>
                         </div>
-                        <div class="col-12 col-md-4">
-                            <input type="number" class="form-control" id="treatmentPrice" placeholder="Price" required>
+                        <div class="col-12">
+                            <label for="treatmentPrice" class="required-label">Price</label>
+                            <input type="number" class="form-control" id="treatmentPrice" required>
                         </div>
-                        <div class="col-12 col-md-3">
+                        <div class="col-12">
+                            <label for="diagnosticId" class="required-label">Select Diagnostic</label>
                             <select class="form-control" id="diagnosticId" required>
                                 <option value="">Select Diagnostic</option>
                             </select>
                         </div>
-                        <div class="col-12 col-md-1 d-grid">
-                            <button type="submit" class="btn btn-primary">Add</button>
+                        <div class="col-auto d-grid">
+                            <button type="submit" class="btn btn-custom">Add treatment</button>
                         </div>
                     </div>
                 </form>
