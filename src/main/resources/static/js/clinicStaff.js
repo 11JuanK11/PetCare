@@ -174,6 +174,6 @@
     }
 
     function editClinicStaff(id) {
-        localStorage.setItem('veterinaryIdToEdit', id);
+        localStorage.setItem('clinicStaffIdToEdit', id);
         window.location.href = 'http://localhost:8080/admin-panel/clinic-staff/edit';
     }
