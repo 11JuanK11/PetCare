@@ -1,14 +1,15 @@
 package pet.care.petcare.service.impl;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import pet.care.petcare.entity.AdminEntity;
 import pet.care.petcare.exception.ResourceNotFoundException;
 import pet.care.petcare.repository.IAdminRepository;
 import pet.care.petcare.service.UserService;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AdminService extends UserService<AdminEntity> {
@@ -20,7 +21,7 @@ public class AdminService extends UserService<AdminEntity> {
         if (entity == null) {
             throw new ResourceNotFoundException("User information is missing");
         }
-        checkExistence(entity.getUsername());
+        checkExistence(entity.getUsername(), entity.getUserId());
         entity.setRole("ADMIN");
         entity.setPassword(this.cryptPasswordEncoder.encode(entity.getPassword()));
         return adminRepository.save(entity);
