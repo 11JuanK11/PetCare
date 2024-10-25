@@ -105,7 +105,7 @@ document.getElementById('clientForm').addEventListener('submit', async function(
         console.log('Success:', data);
         Swal.fire('Success', 'Created user.', 'success');
         
-        await sleep(2000); // Pausa de 2 segundos antes de redirigir
+        await sleep(2000);
         window.location.href = "http://localhost:8080/public/login";
         
     } catch (error) {
