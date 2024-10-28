@@ -18,11 +18,16 @@ function loadMedications() {
                 medicationList.appendChild(row);
             } else {
                 medications.forEach(medication => {
+                    const formattedPrice = 'COP ' + new Intl.NumberFormat('es-CO', { minimumFractionDigits: 0 }).format(medication.unitPrice);
+
                     const row = document.createElement('tr');
+                    if (medication.stock === 0) {
+                        row.classList.add('table-danger');
+                    }
                     row.innerHTML = `
                         <td>${medication.id}</td>
                         <td>${medication.name}</td>
-                        <td>${medication.unitPrice}</td>
+                        <td>${formattedPrice}</td>
                         <td>${medication.stock}</td>
                         <td>
                             <button class="btn btn-warning" style="background-color: #95BDFF; border: none;"
@@ -40,6 +45,7 @@ function loadMedications() {
             Swal.fire('Error', 'Could not load medications.', 'error');
         });
 }
+
 
 
 
