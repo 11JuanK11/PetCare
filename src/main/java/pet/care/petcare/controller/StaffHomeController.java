@@ -14,5 +14,4 @@ public class StaffHomeController {
     public String home(){
         return "indexStaff";
     }
-
 }
