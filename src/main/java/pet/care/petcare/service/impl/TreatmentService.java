@@ -36,7 +36,6 @@ public class TreatmentService implements ITreatmentService {
 
         existingTreatment.setName(treatment.getName());
         existingTreatment.setPrice(treatment.getPrice());
-        existingTreatment.setDiagnostic(treatment.getDiagnostic());
 
         return treatmentRepository.save(existingTreatment);
     }
@@ -61,10 +60,6 @@ public class TreatmentService implements ITreatmentService {
 
         if (treatment.getPrice() <= 0) {
             throw new ValidationException("Treatment price must be a positive value");
-        }
-
-        if (treatment.getDiagnostic() == null || treatment.getDiagnostic().getId() == null) {
-            throw new ValidationException("A valid diagnostic must be associated with the treatment");
         }
 
     }

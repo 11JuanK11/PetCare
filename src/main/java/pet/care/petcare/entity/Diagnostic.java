@@ -18,7 +18,4 @@ public class Diagnostic implements Serializable {
     private String description;
     private String code;
 
-    @OneToMany(mappedBy = "diagnostic", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Treatment> treatments;
 }

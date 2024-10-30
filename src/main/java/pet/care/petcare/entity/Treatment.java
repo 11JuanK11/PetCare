@@ -21,8 +21,4 @@ public class Treatment implements Serializable {
     @NotNull(message = "Treatment price cannot be null")
     private Integer price;
 
-    @ManyToOne
-    @JoinColumn(name = "diagnostic_id", nullable = false)
-    @NotNull(message = "A valid diagnostic must be associated with the treatment")
-    private Diagnostic diagnostic;
 }

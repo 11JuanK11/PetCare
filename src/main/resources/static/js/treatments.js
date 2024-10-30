@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadTreatments();
-    loadDiagnostics();
 
     document.getElementById('treatmentForm').addEventListener('submit', (e) => {
         e.preventDefault();
@@ -8,23 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
-
-function loadDiagnostics() {
-    fetch('/rest/diagnostics/')
-        .then(response => response.json())
-        .then(diagnostics => {
-            const diagnosticSelect = document.getElementById('diagnosticId');
-            diagnosticSelect.innerHTML = '<option value="">Select Diagnostic</option>';
-            diagnostics.forEach(diagnostic => {
-                const option = document.createElement('option');
-                option.value = diagnostic.id;
-                option.textContent = diagnostic.description;
-                diagnosticSelect.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Error loading diagnostics:', error));
-}
-
 
 
 function loadTreatments() {
@@ -61,12 +43,10 @@ function editTreatment(id) {
 function addTreatment() {
     const name = document.getElementById('treatmentName').value;
     const price = document.getElementById('treatmentPrice').value;
-    const diagnosticId = document.getElementById('diagnosticId').value;
 
     const treatment = {
         name: name,
-        price: price,
-        diagnostic: { id: diagnosticId }
+        price: price
     };
 
     fetch('/rest/treatments/', {
