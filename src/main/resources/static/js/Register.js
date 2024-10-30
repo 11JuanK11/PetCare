@@ -34,6 +34,7 @@ function validatePasswordMatch() {
     const confirmPasswordError = document.getElementById("confirmPasswordError");
 
     if (password !== confirmPassword) {
+        confirmPasswordError.classList.add("text-danger-element");
         confirmPasswordError.style.display = "block";
         return false;
     }
@@ -50,12 +51,13 @@ function validatePassword() {
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     if (!passwordRegex.test(password)) {
+        passwordError.classList.add("text-danger-element");
         passwordError.style.display = "block";
-        passwordError.textContent = "Password must be at least 8 characters, with letters, numbers, and special characters.";
         return false;
     }
 
     if (username === password) {
+        passwordError.classList.add("text-danger-element");
         passwordError.style.display = "block";
         passwordError.textContent = "Username cannot be the same as the password.";
         return false;
@@ -65,23 +67,46 @@ function validatePassword() {
     return true;
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+function validateField(value, errorElementId, errorMessage) {
+    const errorElement = document.getElementById(errorElementId);
+    if (!value) {
+        errorElement.textContent = errorMessage;
+        errorElement.classList.add("text-danger-element");
+        errorElement.style.display = "block";
+        return false;
+    } else {
+        errorElement.style.display = "none";
+        return true;
+    }
 }
 
 document.getElementById('clientForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
-    if (!validatePasswordMatch() || !validatePassword()) {
+    const userId = document.getElementById('floatingIdNumber').value.trim();
+    const name = document.getElementById('floatingName').value.trim();
+    const lastname = document.getElementById('floatingLastname').value.trim();
+    const phoneNumber = document.getElementById('floatingPhoneNumber').value.trim();
+    const username = document.getElementById('floatingUsername').value.trim();
+
+    let isValid = true;
+    isValid &= validateField(userId, "userIdError", "Id Number is required");
+    isValid &= validateField(name, "nameError", "Name is required");
+    isValid &= validateField(lastname, "lastnameError", "Lastname is required");
+    isValid &= validateField(phoneNumber, "phoneNumberError", "Phone Number is required");
+    isValid &= validateField(username, "usernameError", "Username is required");
+    isValid &= validatePassword() && validatePasswordMatch();
+
+    if (!isValid) {
         return;
     }
 
     const formData = {
-        userId: document.getElementById('floatingIdNumber').value,
-        name: document.getElementById('floatingName').value,
-        lastname: document.getElementById('floatingLastname').value,
-        phoneNumber: document.getElementById('floatingPhoneNumber').value,
-        username: document.getElementById('floatingUsername').value,
+        userId,
+        name,
+        lastname,
+        phoneNumber,
+        username,
         password: document.getElementById('floatingPassword').value
     };
 
@@ -116,3 +141,7 @@ document.getElementById('clientForm').addEventListener('submit', async function(
         }
     }
 });
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

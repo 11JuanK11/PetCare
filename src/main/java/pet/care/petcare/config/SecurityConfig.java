@@ -1,16 +1,16 @@
 package pet.care.petcare.config;
 
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -25,9 +25,10 @@ public class SecurityConfig {
         return  httpSecurity
                 .csrf(csrf -> csrf.disable() ) //
                 .authorizeHttpRequests(http -> {
+                    http.requestMatchers("/").permitAll();
                     http.requestMatchers("/public/**").permitAll();
                     http.requestMatchers("/rest/**").permitAll();
-                    http.requestMatchers("/css/**", "/js/**", "/images/**").permitAll();
+                    http.requestMatchers("/css/**", "/js/**", "/img/**").permitAll();
                     http.requestMatchers("/client-panel/**").hasAuthority("CLIENT");
                     http.requestMatchers("/staff-panel/**").hasAuthority("CLINIC_STAFF");
                     http.requestMatchers("/admin-panel/**").hasAuthority("ADMIN").anyRequest().authenticated();
@@ -49,7 +50,7 @@ public class SecurityConfig {
                 })
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .clearAuthentication(true)
