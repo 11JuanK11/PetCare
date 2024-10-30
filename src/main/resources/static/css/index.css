@@ -1,0 +1,113 @@
+:root {
+    --color-pink: #F7C8E0;
+    --color-green: #DFFFD8;
+    --color-light-blue: #B4E4FF;
+    --color-blue: #95BDFF;
+    --color-light-purple: #B1AFFF;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-top: 56px;
+}
+
+.navbar {
+    background-color: var(--color-blue);
+}
+
+.navbar-brand {
+    color: black !important;
+    font-weight: bold;
+}
+
+
+.nav-link {
+    color: black !important;
+}
+
+.nav-link:hover {
+    color: white !important;
+}
+
+.btn-outline-light:hover {
+    color: var(--color-blue);
+}
+
+.hero {
+    background-color: var(--color-light-blue);
+    padding: 5rem 0;
+}
+
+.service-card {
+    border-radius: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.icon-bg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+footer {
+    background-color: var(--color-blue);
+    color: black;
+}
+
+.social-icon {
+    color: black;
+    font-size: 1.5rem;
+    margin: 0 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+    color: white;
+}
+
+.btn-outline-dark {
+    color: black;
+    border-color: black;
+}
+
+.btn-outline-dark:hover {
+    color: white;
+    background-color: black;
+}
+
+.whatsapp-float {
+    position: fixed;
+    bottom: 8%;
+    right: 2%;
+    background-color: #25D366;
+    color: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+}
+
+.whatsapp-float:hover {
+    background-color: #20b457;
+}
+
+
+@media (max-width: 991px) {
+    .navbar-nav {
+        display: none !important;
+    }
+}
