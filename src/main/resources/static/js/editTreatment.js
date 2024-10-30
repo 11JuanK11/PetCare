@@ -4,8 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadTreatmentData(treatmentId);
     }
 
-    loadDiagnostics();
-
     document.getElementById('treatmentForm').addEventListener('submit', (e) => {
         e.preventDefault();
         if (validateForm()) {
@@ -17,9 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function validateForm() {
     const treatmentName = document.getElementById('treatmentName').value.trim();
     const treatmentPrice = document.getElementById('treatmentPrice').value.trim();
-    const diagnosticId = document.getElementById('diagnosticId').value;
 
-    if (!treatmentName || !treatmentPrice || !diagnosticId) {
+    if (!treatmentName || !treatmentPrice) {
         Swal.fire({
             title: 'Warning!',
             text: 'All fields are required!',
@@ -32,20 +29,6 @@ function validateForm() {
     return true;
 }
 
-function loadDiagnostics() {
-    fetch('/rest/diagnostics/')
-        .then(response => response.json())
-        .then(diagnostics => {
-            const diagnosticSelect = document.getElementById('diagnosticId');
-            diagnostics.forEach(diagnostic => {
-                const option = document.createElement('option');
-                option.value = diagnostic.id;
-                option.textContent = diagnostic.description;
-                diagnosticSelect.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Error loading diagnostics:', error));
-}
 
 function loadTreatmentData(id) {
     fetch(`/rest/treatments/${id}`)
@@ -54,8 +37,6 @@ function loadTreatmentData(id) {
             document.getElementById('treatmentName').value = treatment.name;
             document.getElementById('treatmentPrice').value = treatment.price;
 
-            const diagnosticSelect = document.getElementById('diagnosticId');
-            diagnosticSelect.value = treatment.diagnostic.id;
         })
         .catch(error => console.error('Error loading treatment data:', error));
 }
@@ -63,12 +44,10 @@ function loadTreatmentData(id) {
 function updateTreatment(id) {
     const name = document.getElementById('treatmentName').value;
     const price = document.getElementById('treatmentPrice').value;
-    const diagnosticId = document.getElementById('diagnosticId').value;
 
     const treatment = {
         name: name,
-        price: price,
-        diagnostic: { id: diagnosticId }
+        price: price
     };
 
     fetch(`/rest/treatments/${id}`, {
