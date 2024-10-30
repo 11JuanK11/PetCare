@@ -1,20 +1,29 @@
 package pet.care.petcare.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+
 @Controller
-@RequestMapping("/public")
+@RequestMapping("")
 @RequiredArgsConstructor
 public class PublicController implements ErrorController {
 
-    @GetMapping("/login")
+    @GetMapping("/")
+    public String initialPage(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return "index";
+    }
+
+    @GetMapping("/public/login")
     public String home(HttpServletRequest request){
         HttpSession session = request.getSession(false);
         if (session != null) {
@@ -23,7 +32,7 @@ public class PublicController implements ErrorController {
         return "Login";
     }
 
-    @GetMapping("/register")
+    @GetMapping("/public/register")
     public String register(HttpServletRequest request){
         HttpSession session = request.getSession(false);
         if (session != null) {
@@ -32,7 +41,7 @@ public class PublicController implements ErrorController {
         return "Register";
     }
 
-    @GetMapping("/error")
+    @GetMapping("/public/error")
     public String errorPage(){
 
         return "error";
