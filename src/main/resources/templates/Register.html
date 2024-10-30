@@ -8,15 +8,6 @@
     <link href="/css/Register.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Register Page</title>
-    <style>
-        .form-container {
-            background-color: #95BDFF;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Añade una sombra ligera */
-        }
-    </style>
 </head>
 <body>
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
@@ -24,50 +15,55 @@
         <div class="form-container">
             <div class="text-center mb-4">
                 <h2>Register Form</h2>
+                <label>Required Fields <span style="color: #0363fe;">*</span></label>
             </div>
 
-            <form id="clientForm" onsubmit="return validatePasswordMatch()">
+            <form id="clientForm" onsubmit="return validateForm()">
                 <div class="form-floating mb-3">
-                    <input type="number" class="form-control" id="floatingIdNumber" name="userId" required>
-                    <label for="floatingIdNumber">Id Number</label>
+                    <input type="number" class="form-control" id="floatingIdNumber" name="userId">
+                    <label for="floatingIdNumber">Id Number <span style="color: #0363fe;">*</span></label>
+                    <small id="userIdError" class="text-danger-element" style="display: none;">Id Number is required</small>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingName" name="name" required>
-                    <label for="floatingName">Name</label>
+                    <input type="text" class="form-control" id="floatingName" name="name">
+                    <label for="floatingName">Name <span style="color: #0363fe;">*</span></label>
+                    <small id="nameError" class="text-danger-element" style="display: none;">Name is required</small>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingLastname" name="lastname" required>
-                    <label for="floatingLastname">Lastname</label>
+                    <input type="text" class="form-control" id="floatingLastname" name="lastname">
+                    <label for="floatingLastname">Lastname <span style="color: #0363fe;">*</span></label>
+                    <small id="lastnameError" class="text-danger-element" style="display: none;">Lastname is required</small>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPhoneNumber" name="phoneNumber" required>
-                    <label for="floatingPhoneNumber">Phone Number</label>
+                    <input type="number" class="form-control" id="floatingPhoneNumber" name="phoneNumber">
+                    <label for="floatingPhoneNumber">Phone Number <span style="color: #0363fe;">*</span></label>
+                    <small id="phoneNumberError" class="text-danger-element" style="display: none;">Phone Number is required</small>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingUsername" name="username" required>
-                    <label for="floatingUsername">Username</label>
+                    <input type="text" class="form-control" id="floatingUsername" name="username">
+                    <label for="floatingUsername">Username <span style="color: #0363fe;">*</span></label>
+                    <small id="usernameError" class="text-danger-element" style="display: none;">Username is required</small>
                 </div>
-                <div class="form-floating mb-3 position-relative">
-                    <input type="password" class="form-control" id="floatingPassword" name="password" oninput="validatePassword()" required>
-                    <label for="floatingPassword">Password</label>
+                <div class="form-floating position-relative">
+                    <input type="password" class="form-control" id="floatingPassword" name="password" oninput="validatePassword()">
+                    <label for="floatingPassword">Password <span style="color: #0363fe;">*</span></label>
                     <span class="eye-icon" onclick="togglePasswordVisibility()">
                         <i class="fas fa-eye" id="togglePasswordIcon"></i>
                     </span>
                 </div>
+                <small id="passwordError" class="text-danger-element" style="display: none;">The password must be at least 8 characters long, contain a number, a '@', and a letter.</small>
 
-                <div class="form-floating mb-3 position-relative">
-                    <input type="password" class="form-control" id="floatingConfirmPassword" name="confirmPassword" required>
-                    <label for="floatingConfirmPassword">Confirm Password</label>
+
+                <div class="form-floating mb-3 mt-3 position-relative">
+                    <input type="password" class="form-control" id="floatingConfirmPassword" name="confirmPassword">
+                    <label for="floatingConfirmPassword">Confirm Password <span style="color: #0363fe;">*</span></label>
+                    <small id="confirmPasswordError" class="text-danger-element" style="display: none;">Passwords do not match</small>
                     <span class="eye-icon" onclick="toggleConfirmPasswordVisibility()">
                         <i class="fas fa-eye" id="toggleConfirmPasswordIcon"></i>
                     </span>
                 </div>
-
-                <div id="passwordError" style="color: red; display: none;">The password must be at least 8 characters long, contain a number, a special character, and a letter.</div>
-                <div id="confirmPasswordError" style="color: red; display: none;">Passwords do not match.</div>
-
                 <button type="submit" class="btn btn-primary mt-3 w-100">Submit</button>
-            </form>
+            </form>            
         </div>
     </div>
 </div>
