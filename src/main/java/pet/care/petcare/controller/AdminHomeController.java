@@ -50,4 +50,10 @@ public class AdminHomeController {
     public String editVeterinaryManagement(){
         return "editClinicStaff";
     }
+
+    @GetMapping("/schedule")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String scheduleManagement(){
+        return "schedule";
+    }
 }
