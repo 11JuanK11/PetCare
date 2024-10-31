@@ -16,4 +16,13 @@ public class Dose implements Serializable {
 
     private String description;
     private int amount;
+
+    @ManyToOne
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
+
+    @ManyToOne
+    @JoinColumn(name = "medication_id", nullable = false)
+    private Medication medication;
+
 }
