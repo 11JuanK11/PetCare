@@ -32,7 +32,7 @@ public class RecipeController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Recipe>> getAllClinicStaff() {
+    public ResponseEntity<List<Recipe>> getAllRecipe() {
         List<Recipe> recipes = recipeService.getAllRecipe();
         return ResponseEntity.ok(recipes);
     }
@@ -48,9 +48,9 @@ public class RecipeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateClinicStaff(@PathVariable Long id, @Valid @RequestBody Recipe updatedMedication) {
+    public ResponseEntity<?> updateRecipe(@PathVariable Long id, @Valid @RequestBody Recipe updatedRecipe) {
         try {
-            Recipe updateRecipe = recipeService.updateRecipe(id,updatedMedication);
+            Recipe recipe = recipeService.updateRecipe(id,updatedRecipe);
             return ResponseEntity.ok("Recipe successfully updated.");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -58,7 +58,7 @@ public class RecipeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteClinicStaff(@PathVariable Long id) {
+    public ResponseEntity<?> deleteRecipe(@PathVariable Long id) {
         try {
             recipeService.deleteRecipe(id);
             return ResponseEntity.ok("Recipe successfully deleted");

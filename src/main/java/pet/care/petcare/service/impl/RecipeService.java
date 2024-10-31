@@ -20,7 +20,7 @@ public class RecipeService implements IRecipeService {
     @Override
     public Recipe registerRecipe(Recipe recipe) throws ValidationException {
         if (recipe == null) {
-            throw new ResourceNotFoundException("User information is missing");
+            throw new ResourceNotFoundException("Dose information is missing");
         }
         return recipeRepository.save(recipe);
     }
@@ -36,21 +36,21 @@ public class RecipeService implements IRecipeService {
     }
 
     @Override
-    public Recipe updateRecipe(Long id, Recipe updatedMedication) throws ResourceNotFoundException {
+    public Recipe updateRecipe(Long id, Recipe updatedRecipe) throws ResourceNotFoundException {
         Optional<Recipe> existingRecipe = recipeRepository.findById(id);
         if (existingRecipe.isPresent()) {
             Recipe recipe = existingRecipe.get();
-            recipe.setId(updatedMedication.getId());
+            recipe.setId(updatedRecipe.getId());
             return recipeRepository.save(recipe);
         } else {
-            throw new ResourceNotFoundException("Medication not found");
+            throw new ResourceNotFoundException("Recipe not found");
         }
     }
 
     @Override
     public void deleteRecipe(Long id) throws ResourceNotFoundException {
         if (!recipeRepository.existsById(id)){
-            throw new ResourceNotFoundException("Clinic staff not found");
+            throw new ResourceNotFoundException("Recipe not found");
         }
         recipeRepository.deleteById(id);
     }

@@ -1,10 +1,12 @@
 package pet.care.petcare.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Data
@@ -25,4 +27,9 @@ public class Medication implements Serializable {
     @NotNull(message = "The stock is required")
     @Column(nullable = false)
     private Long stock;
+
+    @OneToMany(mappedBy = "medication", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Dose> doses;
+
 }
