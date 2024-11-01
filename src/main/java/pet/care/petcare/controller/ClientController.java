@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pet.care.petcare.entity.Client;
 import pet.care.petcare.entity.Pet;
 import pet.care.petcare.exception.ResourceNotFoundException;
-import pet.care.petcare.service.ClientService;
+import pet.care.petcare.service.IClientService;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/rest/client")
 public class ClientController {
     @Autowired
-    private ClientService clientService;
+    private IClientService clientService;
 
     @PostMapping("/")
     public ResponseEntity<?> insert(@RequestBody Client client) {
