@@ -1,4 +1,4 @@
-package pet.care.petcare.controller;
+package pet.care.petcare.controller.views_controllers;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

@@ -1,4 +1,4 @@
-package pet.care.petcare.controller;
+package pet.care.petcare.controller.views_controllers;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -6,13 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/client-panel")
-public class ClientHomeController {
+@RequestMapping("/staff-panel")
+public class StaffHomeController {
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("hasAuthority('CLINIC_STAFF')")
     public String home(){
-        return "indexClient";
+        return "indexStaff";
     }
-
 }
