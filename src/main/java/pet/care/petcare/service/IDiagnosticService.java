@@ -7,6 +7,6 @@ import pet.care.petcare.exception.ResourceNotFoundException;
 import java.util.List;
 
 public interface IDiagnosticService {
-    public Diagnostic create(Diagnostic diagnostic) throws ResourceNotFoundException;
+    public Diagnostic create(Long medicalHistoryId, Diagnostic diagnostic) throws ResourceNotFoundException;
     public List<Diagnostic> readAll();
 }

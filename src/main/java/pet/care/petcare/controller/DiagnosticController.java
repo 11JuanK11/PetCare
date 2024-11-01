@@ -16,10 +16,10 @@ public class DiagnosticController {
     @Autowired
     private DiagnosticService diagnosticService;
 
-    @PostMapping("/")
-    public ResponseEntity<?> insert(@RequestBody Diagnostic diagnostic) {
+    @PostMapping("/{medicalHistoryId}")
+    public ResponseEntity<?> insert(@PathVariable Long medicalHistoryId, @RequestBody Diagnostic diagnostic) {
         try {
-            Diagnostic diagnosticSave = diagnosticService.create(diagnostic);
+            Diagnostic diagnosticSave = diagnosticService.create(medicalHistoryId, diagnostic);
             return new ResponseEntity<>(diagnosticSave, HttpStatus.CREATED);
         } catch (ResourceNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
