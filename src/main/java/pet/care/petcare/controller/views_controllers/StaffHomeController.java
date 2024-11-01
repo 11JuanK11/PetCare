@@ -14,4 +14,22 @@ public class StaffHomeController {
     public String home(){
         return "indexStaff";
     }
+
+    @GetMapping("/pets")
+    @PreAuthorize("hasAuthority('CLINIC_STAFF')")
+    public String pet(){
+        return "pet";
+    }
+
+    @GetMapping("/diagnostics")
+    @PreAuthorize("hasAuthority('CLINIC_STAFF')")
+    public String diagnostic(){
+        return "diagnostic";
+    }
+
+    @GetMapping("/medicalHistoryStaff")
+    @PreAuthorize("hasAuthority('CLINIC_STAFF')")
+    public String medicalHistoryStaff(){
+        return "medicalHistoryStaff";
+    }
 }
