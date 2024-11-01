@@ -47,9 +47,9 @@ public class ClinicStaffController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateClinicStaff(@PathVariable Long id, @Valid @RequestBody ClinicStaff updatedMedication) {
+    public ResponseEntity<?> updateClinicStaff(@PathVariable Long id, @Valid @RequestBody ClinicStaff updatedClinicStaff) {
         try {
-            ClinicStaff clinicStaff = clinicStaffService.update(updatedMedication);
+            ClinicStaff clinicStaff = clinicStaffService.update(updatedClinicStaff);
             return ResponseEntity.ok("Clinic staff successfully updated: " + clinicStaff.getName());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
