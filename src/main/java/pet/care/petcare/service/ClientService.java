@@ -1,4 +1,12 @@
 package pet.care.petcare.service;
 
-public class ClientService {
+import pet.care.petcare.entity.Client;
+import pet.care.petcare.entity.Pet;
+
+import java.util.List;
+
+public abstract class ClientService extends UserService<Client>{
+    public List<Pet> getPetsByClient(Client client){
+        return client.getPets();
+    }
 }
