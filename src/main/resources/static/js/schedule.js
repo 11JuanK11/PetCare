@@ -165,54 +165,51 @@ function resetSchedule() {
     veterinarians.forEach(addVetToPanel);
 }
 
-
-
-// Función para actualizar el horario
 function updateSchedule() {
     const dateInput = document.getElementById("monday-picker");
     const today = new Date();
 
-    // Calcular el próximo lunes a partir de hoy
     let nextMonday = new Date(today);
     const dayOfWeek = today.getDay();
-    // Ajustar para encontrar el lunes siguiente
-    nextMonday.setDate(today.getDate() + (8 - dayOfWeek) % 7);
 
-    // Establecer el mínimo de la fecha como el próximo lunes
+    if (dayOfWeek === 0) {
+        nextMonday.setDate(today.getDate() + 1);
+    } else if (dayOfWeek === 1) {
+        nextMonday = today;
+    } else {
+        nextMonday.setDate(today.getDate() + (7 - dayOfWeek));
+    }
+
     dateInput.min = nextMonday.toISOString().split('T')[0];
 
-    // Validar que la fecha seleccionada no sea una fecha pasada
     dateInput.oninput = function () {
         const inputDate = new Date(this.value);
 
-        // Verificar si la fecha seleccionada es válida y no es pasada
         if (isNaN(inputDate.getTime()) || inputDate < nextMonday) {
             Swal.fire({
                 icon: 'error',
                 title: 'Invalid Date',
                 text: 'You cannot select a past date! Please select a valid Monday.'
             });
-            this.setCustomValidity("You cannot select a past date."); // Mensaje de validación
+            this.setCustomValidity("You cannot select a past date.");
             this.reportValidity();
-            this.value = ''; // Limpiar el campo si se selecciona una fecha pasada
-        } else if (inputDate.getDay() !== 0) { // Verificar si el día no es lunes
+            this.value = '';
+        } else if (inputDate.getDay() !== 0) {
             Swal.fire({
                 icon: 'error',
                 title: 'Invalid Day',
                 text: 'Please select a Monday.'
             });
-            this.setCustomValidity("Please select a Monday."); // Mensaje de validación
+            this.setCustomValidity("Please select a Monday.");
             this.reportValidity();
-            this.value = ''; // Limpiar el campo si no es un lunes
+            this.value = '';
         } else {
-            this.setCustomValidity(""); // Restablecer validez
+            this.setCustomValidity("");
         }
     };
 
     console.log(`Schedule will start on: ${nextMonday}`);
 }
-
-
 
 function getDateForSlot(slotId) {
     const dateInput = document.getElementById("monday-picker");
