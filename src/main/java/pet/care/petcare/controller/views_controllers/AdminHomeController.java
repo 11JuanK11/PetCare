@@ -51,9 +51,15 @@ public class AdminHomeController {
         return "editClinicStaff";
     }
 
-    @GetMapping("/schedule")
+    @GetMapping("/createSchedule")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String scheduleManagement(){
-        return "schedule";
+    public String scheduleManagement2(){
+        return "createSchedule";
+    }
+
+    @GetMapping("/indexSchedule")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String scheduleManagement1(){
+        return "indexSchedule";
     }
 }
