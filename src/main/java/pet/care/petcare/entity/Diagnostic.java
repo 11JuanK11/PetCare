@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -28,5 +29,9 @@ public class Diagnostic implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id", referencedColumnName = "id")
     private Recipe recipe;
+
+    @NotNull(message = "Date is required")
+    @Column(nullable = false)
+    private LocalDate date;
 
 }

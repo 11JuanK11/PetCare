@@ -12,6 +12,7 @@ import pet.care.petcare.repository.IMedicalHistoryRepository;
 import pet.care.petcare.repository.IRecipeRepository;
 import pet.care.petcare.service.IDiagnosticService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -34,6 +35,9 @@ public class DiagnosticService implements IDiagnosticService {
 
         diagnostic.setMedicalHistory(medicalHistory);
 
+        if (diagnostic.getDate() == null) {
+            diagnostic.setDate(LocalDate.now());
+        }
 
         if (diagnostic.getRecipe() != null) {
             Recipe recipe = recipeRepository.findById(diagnostic.getRecipe().getId())

@@ -24,9 +24,11 @@ public class DiagnosticController {
         } catch (ResourceNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception ex) {
-            return new ResponseEntity<>("An error occurred while creating the diagnostic.", HttpStatus.INTERNAL_SERVER_ERROR);
+            ex.printStackTrace();
+            return new ResponseEntity<>("An error occurred while creating the diagnostic: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/")
     public ResponseEntity<List<Diagnostic>> getAllDiagnostics() {
