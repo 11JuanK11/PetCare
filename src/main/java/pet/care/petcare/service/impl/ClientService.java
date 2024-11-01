@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import pet.care.petcare.entity.Client;
 import pet.care.petcare.exception.ResourceNotFoundException;
 import pet.care.petcare.repository.IClientRepository;
-import pet.care.petcare.service.UserService;
+import pet.care.petcare.service.IClientService;
 
 @Service
-public class ClientServiceImpl extends UserService<Client> {
+public class ClientService extends IClientService {
     @Autowired
     private IClientRepository clientRepository;
 
