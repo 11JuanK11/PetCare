@@ -25,12 +25,13 @@ function populateTable(pets) {
             <td>${pet.race}</td>
             <td>${pet.weight}</td>
             <td>
-                <a href="/veterinarian-panel/pets/${pet.id}/medical-history" class="btn btn-info btn-sm">View Medical History</a>
+                <a href="/staff-panel/medicalHistoryStaff/${pet.id}" class="btn btn-sm" style="background-color: #95BDFF; border: none;">View Medical History</a>
             </td>
         `;
         tableBody.appendChild(row);
     });
 }
+
 
 
 function showMessage(message) {
