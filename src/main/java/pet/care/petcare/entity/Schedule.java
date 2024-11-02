@@ -1,5 +1,6 @@
 package pet.care.petcare.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +25,12 @@ public class Schedule implements Serializable {
     @JoinColumn(name = "clinicStaff_id", nullable = false)
     private ClinicStaff clinicStaff;
 
-    private LocalDate date;  // Día específico del horario
+    @ManyToOne
+    @JoinColumn(name = "weekly_schedule_id")
+    @JsonIgnore
+    private WeeklySchedule weeklySchedule;
+
+    private LocalDate date;
     private LocalTime startTime = LocalTime.of(8, 0);
     private LocalTime endTime = LocalTime.of(21, 0);
 

@@ -99,6 +99,7 @@ async function generateSchedule() {
 
     if (schedule && Object.keys(schedule).length > 0) {
         const requests = [];
+        const schedules = [];
 
         for (const [slotId, vetId] of Object.entries(schedule)) {
             const date = getDateForSlot(slotId);
@@ -116,15 +117,43 @@ async function generateSchedule() {
         try {
             const responses = await Promise.all(requests);
 
-            const results = await Promise.all(responses.map(async (response) => {
+            await Promise.all(responses.map(async (response) => {
                 if (!response.ok) {
                     const errorText = await response.text();
                     throw new Error(`Error: ${response.status} - ${errorText}`);
                 }
-                return response.json();
+                const scheduleResult = await response.json();
+                schedules.push(scheduleResult);
             }));
 
-            console.log("Schedules generated:", results);
+            const weeklySchedule = { schedules: schedules };
+
+            const weeklyScheduleResponse = await fetch(`http://localhost:8080/rest/weeklyschedule/create`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(weeklySchedule)
+            });
+
+            if (!weeklyScheduleResponse.ok) {
+                const errorText = await weeklyScheduleResponse.text();
+                throw new Error(`Error creating WeeklySchedule: ${weeklyScheduleResponse.status} - ${errorText}`);
+            }
+
+            const weeklyScheduleResult = await weeklyScheduleResponse.json();
+            console.log("WeeklySchedule created:", weeklyScheduleResult);
+
+            for (const schedule of schedules) {
+                const updateResponse = await fetch(`http://localhost:8080/rest/schedule/update/${schedule.id}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ weeklyScheduleId: weeklyScheduleResult.id })
+                });
+
+                if (!updateResponse.ok) {
+                    const errorText = await updateResponse.text();
+                    console.error(`Error updating schedule ${schedule.id}: ${errorText}`);
+                }
+            }
 
             Swal.fire({
                 icon: 'success',

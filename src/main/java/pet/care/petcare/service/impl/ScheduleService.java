@@ -5,12 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pet.care.petcare.entity.ClinicStaff;
 import pet.care.petcare.entity.Schedule;
+import pet.care.petcare.entity.WeeklySchedule;
 import pet.care.petcare.exception.ResourceNotFoundException;
 import pet.care.petcare.repository.IClinicStaffRepository;
 import pet.care.petcare.repository.IScheduleRepository;
+import pet.care.petcare.repository.IWeeklyScheduleRepository;
 import pet.care.petcare.service.IScheduleService;
 
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,6 +24,9 @@ public class ScheduleService implements IScheduleService {
 
     @Autowired
     private IClinicStaffRepository clinicStaffRepository;
+
+    @Autowired
+    private IWeeklyScheduleRepository weeklyScheduleRepository;
 
     @Transactional
     @Override
@@ -59,4 +65,22 @@ public class ScheduleService implements IScheduleService {
         return scheduleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id: " + id));
     }
+
+    @Transactional
+    @Override
+    public Schedule updateSchedule(Long scheduleId, Map<String, Object> updates) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id: " + scheduleId));
+
+        if (updates.containsKey("weeklyScheduleId")) {
+            // Suponiendo que el weeklyScheduleId es un Long
+            Long weeklyScheduleId = ((Number) updates.get("weeklyScheduleId")).longValue();
+            WeeklySchedule weeklySchedule = weeklyScheduleRepository.findById(weeklyScheduleId)
+                    .orElseThrow(() -> new ResourceNotFoundException("WeeklySchedule not found with id: " + weeklyScheduleId));
+            schedule.setWeeklySchedule(weeklySchedule); // Establecer el weeklySchedule en el schedule
+        }
+
+        return scheduleRepository.save(schedule); // Guardar los cambios
+    }
+
 }
