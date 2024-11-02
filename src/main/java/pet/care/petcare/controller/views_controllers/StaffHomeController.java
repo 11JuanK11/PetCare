@@ -18,7 +18,7 @@ public class StaffHomeController {
     @GetMapping("/pets")
     @PreAuthorize("hasAuthority('CLINIC_STAFF')")
     public String pet(){
-        return "pet";
+        return "petVeterinary";
     }
 
     @GetMapping("/diagnostics")
