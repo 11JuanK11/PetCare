@@ -46,6 +46,12 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
         return weeklyScheduleRepository.save(savedWeeklySchedule);
     }
 
+    public WeeklySchedule readById(Long id) throws ResourceNotFoundException {
+        return weeklyScheduleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("WeeklySchedule not found with id: " + id));
+    }
+
+
 
     @Override
     public List<WeeklySchedule> readAll() {
