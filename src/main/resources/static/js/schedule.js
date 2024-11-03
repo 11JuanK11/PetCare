@@ -199,14 +199,16 @@ function updateSchedule() {
     const today = new Date();
 
     let nextMonday = new Date(today);
-    const dayOfWeek = today.getDay();
+    nextMonday.setUTCHours(0, 0, 0, 0);
+
+    const dayOfWeek = today.getUTCDay();
 
     if (dayOfWeek === 0) {
-        nextMonday.setDate(today.getDate() + 1);
+        nextMonday.setUTCDate(today.getUTCDate() + 1);
     } else if (dayOfWeek === 1) {
         nextMonday = today;
     } else {
-        nextMonday.setDate(today.getDate() + (7 - dayOfWeek));
+        nextMonday.setUTCDate(today.getUTCDate() + (8 - dayOfWeek));
     }
 
     dateInput.min = nextMonday.toISOString().split('T')[0];
@@ -223,7 +225,7 @@ function updateSchedule() {
             this.setCustomValidity("You cannot select a past date.");
             this.reportValidity();
             this.value = '';
-        } else if (inputDate.getDay() !== 0) {
+        } else if (inputDate.getUTCDay() !== 1) {
             Swal.fire({
                 icon: 'error',
                 title: 'Invalid Day',
@@ -239,6 +241,7 @@ function updateSchedule() {
 
     console.log(`Schedule will start on: ${nextMonday}`);
 }
+
 
 function getDateForSlot(slotId) {
     const dateInput = document.getElementById("monday-picker");

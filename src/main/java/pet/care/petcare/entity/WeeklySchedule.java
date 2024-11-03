@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class WeeklySchedule implements Serializable {
 
     @OneToMany(mappedBy = "weeklySchedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> schedules = new ArrayList<>();
+
+    private LocalDate startDate;
 
     public void addSchedule(Schedule schedule) {
         schedule.setWeeklySchedule(this);

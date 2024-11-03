@@ -41,16 +41,15 @@ public class ScheduleService implements IScheduleService {
         }
 
         // Verificar si hay algún horario en la fecha dada
-        Optional<Schedule> existingSchedule2 = scheduleRepository.findByDate(date);
-
-        if (existingSchedule2.isPresent()) {
+        boolean exists = checkIfScheduleExists(date);
+        if (exists) {
             throw new IllegalArgumentException("There is already a schedule assigned for this date");
         }
 
         Schedule schedule = new Schedule();
         schedule.setClinicStaff(clinicStaff);
         schedule.setDate(date);
-        schedule.setAvailable(false); // Marcar como no disponible al crear el horario
+        schedule.setAvailable(true); // Marcar como no disponible al crear el horario
         return scheduleRepository.save(schedule);
     }
 
@@ -77,10 +76,17 @@ public class ScheduleService implements IScheduleService {
             Long weeklyScheduleId = ((Number) updates.get("weeklyScheduleId")).longValue();
             WeeklySchedule weeklySchedule = weeklyScheduleRepository.findById(weeklyScheduleId)
                     .orElseThrow(() -> new ResourceNotFoundException("WeeklySchedule not found with id: " + weeklyScheduleId));
-            schedule.setWeeklySchedule(weeklySchedule); // Establecer el weeklySchedule en el schedule
+            schedule.setWeeklySchedule(weeklySchedule);
         }
 
-        return scheduleRepository.save(schedule); // Guardar los cambios
+        return scheduleRepository.save(schedule);
     }
+
+    public boolean checkIfScheduleExists(LocalDate startDate) {
+        Optional<Schedule> existingSchedule = scheduleRepository.findByDate(startDate);
+        return existingSchedule.isPresent();
+    }
+
+
 
 }
