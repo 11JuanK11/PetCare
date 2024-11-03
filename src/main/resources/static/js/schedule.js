@@ -99,6 +99,7 @@ async function generateSchedule() {
 
     if (schedule && Object.keys(schedule).length > 0) {
         const requests = [];
+        const schedules = [];
 
         for (const [slotId, vetId] of Object.entries(schedule)) {
             const date = getDateForSlot(slotId);
@@ -116,15 +117,43 @@ async function generateSchedule() {
         try {
             const responses = await Promise.all(requests);
 
-            const results = await Promise.all(responses.map(async (response) => {
+            await Promise.all(responses.map(async (response) => {
                 if (!response.ok) {
                     const errorText = await response.text();
                     throw new Error(`Error: ${response.status} - ${errorText}`);
                 }
-                return response.json();
+                const scheduleResult = await response.json();
+                schedules.push(scheduleResult);
             }));
 
-            console.log("Schedules generated:", results);
+            const weeklySchedule = { schedules: schedules };
+
+            const weeklyScheduleResponse = await fetch(`http://localhost:8080/rest/weeklyschedule/create`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(weeklySchedule)
+            });
+
+            if (!weeklyScheduleResponse.ok) {
+                const errorText = await weeklyScheduleResponse.text();
+                throw new Error(`Error creating WeeklySchedule: ${weeklyScheduleResponse.status} - ${errorText}`);
+            }
+
+            const weeklyScheduleResult = await weeklyScheduleResponse.json();
+            console.log("WeeklySchedule created:", weeklyScheduleResult);
+
+            for (const schedule of schedules) {
+                const updateResponse = await fetch(`http://localhost:8080/rest/schedule/update/${schedule.id}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ weeklyScheduleId: weeklyScheduleResult.id })
+                });
+
+                if (!updateResponse.ok) {
+                    const errorText = await updateResponse.text();
+                    console.error(`Error updating schedule ${schedule.id}: ${errorText}`);
+                }
+            }
 
             Swal.fire({
                 icon: 'success',
@@ -170,14 +199,16 @@ function updateSchedule() {
     const today = new Date();
 
     let nextMonday = new Date(today);
-    const dayOfWeek = today.getDay();
+    nextMonday.setUTCHours(0, 0, 0, 0);
+
+    const dayOfWeek = today.getUTCDay();
 
     if (dayOfWeek === 0) {
-        nextMonday.setDate(today.getDate() + 1);
+        nextMonday.setUTCDate(today.getUTCDate() + 1);
     } else if (dayOfWeek === 1) {
         nextMonday = today;
     } else {
-        nextMonday.setDate(today.getDate() + (7 - dayOfWeek));
+        nextMonday.setUTCDate(today.getUTCDate() + (8 - dayOfWeek));
     }
 
     dateInput.min = nextMonday.toISOString().split('T')[0];
@@ -194,7 +225,7 @@ function updateSchedule() {
             this.setCustomValidity("You cannot select a past date.");
             this.reportValidity();
             this.value = '';
-        } else if (inputDate.getDay() !== 0) {
+        } else if (inputDate.getUTCDay() !== 1) {
             Swal.fire({
                 icon: 'error',
                 title: 'Invalid Day',
@@ -210,6 +241,7 @@ function updateSchedule() {
 
     console.log(`Schedule will start on: ${nextMonday}`);
 }
+
 
 function getDateForSlot(slotId) {
     const dateInput = document.getElementById("monday-picker");

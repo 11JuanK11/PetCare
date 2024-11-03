@@ -11,6 +11,7 @@ import pet.care.petcare.exception.ValidationException;
 import pet.care.petcare.service.impl.ScheduleService;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/rest/schedule")
@@ -58,4 +59,28 @@ public class ScheduleController {
             return new ResponseEntity<>("An error occurred while fetching the schedule.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<?> updateSchedule(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        try {
+            Schedule updatedSchedule = scheduleService.updateSchedule(id, updates);
+            return new ResponseEntity<>(updatedSchedule, HttpStatus.OK);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An error occurred while updating the schedule.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<?> checkExistingSchedule(@RequestParam @Valid LocalDate startDate) {
+        try {
+            boolean exists = scheduleService.checkIfScheduleExists(startDate);
+            return new ResponseEntity<>(Map.of("exists", exists), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An error occurred while checking the schedule.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
