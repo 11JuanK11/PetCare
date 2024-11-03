@@ -72,4 +72,15 @@ public class ScheduleController {
         }
     }
 
+    @GetMapping("/check")
+    public ResponseEntity<?> checkExistingSchedule(@RequestParam @Valid LocalDate startDate) {
+        try {
+            boolean exists = scheduleService.checkIfScheduleExists(startDate);
+            return new ResponseEntity<>(Map.of("exists", exists), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("An error occurred while checking the schedule.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
