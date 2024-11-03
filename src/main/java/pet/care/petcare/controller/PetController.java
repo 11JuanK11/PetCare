@@ -1,15 +1,24 @@
 package pet.care.petcare.controller;
 
-import jakarta.validation.Valid;
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import pet.care.petcare.entity.Pet;
 import pet.care.petcare.exception.ValidationException;
 import pet.care.petcare.service.IPetService;
-
-import java.util.Collections;
-import java.util.List;
 
 @RestController
 @RequestMapping("/rest/pets")
@@ -18,10 +27,10 @@ public class PetController {
     private IPetService petService;
 
     @PostMapping("/")
-    public ResponseEntity<?> registerPet(@Valid @RequestBody Pet pet) {
+    public ResponseEntity<?> registerPet(@RequestPart("pet") Pet pet, @RequestPart("image") MultipartFile image) {
         try {
-            Pet newpet = petService.insert(pet);
-            return ResponseEntity.ok("Pet successfully registered: " + newpet.getName());
+            Pet newPet = petService.insert(pet, image);
+            return ResponseEntity.ok(newPet);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
         } catch (Exception e) {
@@ -52,11 +61,11 @@ public class PetController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updatePet(@RequestBody Pet updatedpet) {
+    @PutMapping("/")
+    public ResponseEntity<?> updatePet(@RequestPart("pet") Pet pet, @RequestPart("image") MultipartFile image) {
         try {
-            Pet pet = petService.update(updatedpet);
-            return ResponseEntity.ok("pet successfully updated: " + pet.getName());
+            Pet updatePet = petService.update(pet, image);
+            return ResponseEntity.ok(updatePet);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
