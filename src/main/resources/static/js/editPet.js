@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const petId = localStorage.getItem('petIdToEdit');
+    const userId = document.getElementById('userId').textContent.trim();
+
     console.log(petId);
+    console.log(userId);
     if (!petId || petId === 'null') {
         window.location.href = 'http://localhost:8080/client-panel/pets';
         return;
@@ -78,7 +81,6 @@ async function updatePet(petId) {
     });
     
 
-    // Si el usuario elige volver, no hace nada
     if (!result.isConfirmed) {
         return;
     }
