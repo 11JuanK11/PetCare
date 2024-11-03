@@ -33,7 +33,35 @@ public class WeeklyScheduleController {
 
 
     @GetMapping("/")
-    public ResponseEntity<List<pet.care.petcare.entity.WeeklySchedule>> getAllWeeklySchedules() {
-        return null;
+    public ResponseEntity<List<WeeklySchedule>> getAllWeeklySchedules() {
+        List<WeeklySchedule> schedules = weeklyScheduleService.readAll();
+        return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getWeeklyScheduleById(@PathVariable Long id) {
+        try {
+            WeeklySchedule weeklySchedule = weeklyScheduleService.readById(id);
+
+            Map<String, Object> response = Map.of(
+                    "id", weeklySchedule.getId(),
+                    "startDate", weeklySchedule.getStartDate(),
+                    "schedules", weeklySchedule.getSchedules().stream().map(schedule -> Map.of(
+                            "id", schedule.getId(),
+                            "date", schedule.getDate(),
+                            "startTime", schedule.getStartTime(),
+                            "endTime", schedule.getEndTime(),
+                            "available", schedule.isAvailable(),
+                            "clinicStaffId", schedule.getClinicStaffId(),
+                            "clinicStaffName", schedule.getClinicStaffName()
+                    )).toList()
+            );
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 }
