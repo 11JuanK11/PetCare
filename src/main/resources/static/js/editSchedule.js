@@ -182,12 +182,22 @@ async function deleteCurrentWeeklySchedule() {
 }
 
 async function saveScheduleChanges() {
-    await deleteCurrentWeeklySchedule(); // Step 1: Delete the existing schedule
+    const schedule = JSON.parse(localStorage.getItem("schedule"));
+    console.log("Saving changes for schedule:", schedule);
+
+    if (!schedule || Object.keys(schedule).length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Empty Schedule',
+            text: 'The schedule cannot be saved because it is empty. Please assign veterinarians to the schedule first.'
+        });
+        return;
+    }
+    await deleteCurrentWeeklySchedule();
 
     const startDateElement = document.getElementById('schedule-title').textContent;
     const startDateMatch = startDateElement.match(/\d{4}-\d{2}-\d{2}/);
 
-    // Verificar que la fecha se haya encontrado correctamente
     if (!startDateMatch) {
         console.error("Start date not found or invalid in the title.");
         return;
@@ -201,10 +211,8 @@ async function saveScheduleChanges() {
     }));
 
     try {
-        // Crear array para almacenar las promesas de las solicitudes
         const requests = [];
 
-        // Generar una solicitud por cada veterinario asignado en un día específico
         for (const schedule of newSchedules) {
             const request = fetch(`http://localhost:8080/rest/schedule/assign?clinicStaffId=${schedule.clinicStaffId}&date=${schedule.date}`, {
                 method: "POST"
@@ -212,10 +220,9 @@ async function saveScheduleChanges() {
             requests.push(request);
         }
 
-        // Esperar todas las solicitudes con Promise.all
         const responses = await Promise.all(requests);
 
-        const schedules = []; // Almacena los resultados de las solicitudes exitosas
+        const schedules = [];
 
         await Promise.all(responses.map(async (response) => {
             if (!response.ok) {
@@ -226,7 +233,6 @@ async function saveScheduleChanges() {
             schedules.push(scheduleResult);
         }));
 
-        // Sort schedules by date in ascending order
         schedules.sort((a, b) => new Date(a.date) - new Date(b.date));
 
         const weeklySchedule = { schedules: schedules };
@@ -245,7 +251,6 @@ async function saveScheduleChanges() {
         const weeklyScheduleResult = await weeklyScheduleResponse.json();
         console.log("WeeklySchedule created:", weeklyScheduleResult);
 
-        // Actualizar cada horario individual con el ID del nuevo schedule semanal
         for (const schedule of schedules) {
             const updateResponse = await fetch(`http://localhost:8080/rest/schedule/update/${schedule.id}`, {
                 method: "PATCH",
