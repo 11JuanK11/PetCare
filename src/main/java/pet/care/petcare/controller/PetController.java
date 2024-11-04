@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import pet.care.petcare.entity.MedicalHistory;
 import pet.care.petcare.entity.Pet;
 import pet.care.petcare.exception.ValidationException;
+import pet.care.petcare.service.IMedicalHistoryService;
 import pet.care.petcare.service.IPetService;
 
 @RestController
@@ -26,10 +28,14 @@ public class PetController {
     @Autowired
     private IPetService petService;
 
+    @Autowired
+    private IMedicalHistoryService medicalHistoryService;
+
     @PostMapping("/")
     public ResponseEntity<?> registerPet(@RequestPart("pet") Pet pet, @RequestPart("image") MultipartFile image) {
         try {
             Pet newPet = petService.insert(pet, image);
+            MedicalHistory medicalHistory = medicalHistoryService.create(newPet.getId(), new MedicalHistory());
             return ResponseEntity.ok(newPet);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
