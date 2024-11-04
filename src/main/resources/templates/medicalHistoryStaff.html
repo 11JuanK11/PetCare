@@ -21,6 +21,26 @@
             z-index: 1000;
             border-radius: 50%;
         }
+
+        /* Añadir estilo básico para el acordeón y el panel */
+        .accordion {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            transition: 0.4s;
+        }
+
+        .panel {
+            padding: 0 18px;
+            display: none;
+            background-color: white;
+            overflow: hidden;
+        }
     </style>
 </head>
 
@@ -100,80 +120,80 @@
     <i class="bi bi-plus-lg"></i>
 </button>
 
-<!-- Modal con configuración para cargar contenido desde un archivo externo y bloqueo al hacer clic fuera -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog">
-        <div class="modal-content" id="modalContent">
-            <!-- El contenido de modalContent.html se cargará aquí -->
-        </div>
+        <div class="modal-content" id="modalContent"></div>
     </div>
 </div>
 
 <script>
     function loadMedicalHistory(petId) {
-        fetch(`/rest/medical-histories/pet/${petId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Medical history for the pet was not found.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                displayMedicalHistory(data);
-            })
-            .catch(error => {
-                alert(error.message);
-            });
-    }
+     fetch(`/rest/medical-histories/pet/${petId}`)
+         .then(response => {
+             if (!response.ok) {
+                 throw new Error('Medical history for the pet was not found.');
+             }
+             return response.json();
+         })
+         .then(data => {
+             console.log("Medical history data:", data);
+             displayMedicalHistory(data);  
+         })
+         .catch(error => {
+             console.error(error.message);
+         });
+ }
 
-    function displayMedicalHistory(medicalHistory) {
-        const container = document.getElementById('medicalHistoryContainer');
-        container.innerHTML = '';
+ function displayMedicalHistory(medicalHistory) {
+     const container = document.getElementById('medicalHistoryContainer');
+     container.innerHTML = '';
 
 
-        const groupedHistories = {};
-        medicalHistory.forEach(entry => {
-            const date = new Date(entry.date).toLocaleDateString();
-            if (!groupedHistories[date]) {
-                groupedHistories[date] = [];
-            }
-            groupedHistories[date].push(entry);
-        });
+     if (!medicalHistory.diagnostics || !Array.isArray(medicalHistory.diagnostics)) {
+         container.innerHTML = `<p>No diagnostic records available for this pet.</p>`;
+         return;
+     }
 
-        for (const date in groupedHistories) {
-            const entries = groupedHistories[date];
-            const accordionHtml = `
-                <button class="accordion" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
-                    ${date}
-                </button>
-                <div class="panel">
-                    ${entries.map(entry => `<p>${entry.description}</p>`).join('')}
-                </div>
-            `;
-            container.innerHTML += accordionHtml;
-        }
-    }
+     const groupedHistories = {};
 
-    window.onload = function() {
-        const petIdElement = document.getElementById('petIdElement');
-        let petId = null;
 
-        if (petIdElement) {
-            petId = petIdElement.dataset.petId;
-        }
+     medicalHistory.diagnostics.forEach(entry => {
+         const date = new Date(entry.date).toLocaleDateString();
+         if (!groupedHistories[date]) {
+             groupedHistories[date] = [];
+         }
+         groupedHistories[date].push(entry);
+     });
 
-        if (petId) {
-            loadMedicalHistory(petId);
-        } else {
-            alert('No pet ID found.');
-        }
-    };
+
+     for (const date in groupedHistories) {
+         const entries = groupedHistories[date];
+         const accordionHtml = `
+             <button class="accordion" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+                 ${date}
+             </button>
+             <div class="panel">
+                 ${entries.map(entry => `<p>${entry.description}</p>`).join('')}
+             </div>
+         `;
+         container.innerHTML += accordionHtml;
+     }
+ }
+
+ window.onload = function() {
+     const petId = localStorage.getItem('selectedPetId');
+     if (petId) {
+         loadMedicalHistory(petId);
+     } else {
+         alert('No pet ID found.');
+     }
+ };
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Función para cargar contenido del modal desde un archivo HTML externo
     function loadModalContent() {
         fetch('http://localhost:8080/staff-panel/diagnostics')
             .then(response => response.text())

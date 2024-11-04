@@ -25,10 +25,38 @@ function populateTable(pets) {
             <td>${pet.race}</td>
             <td>${pet.weight}</td>
             <td>
-                <a href="/staff-panel/medicalHistoryStaff/${pet.id}" class="btn btn-sm" style="background-color: #95BDFF; border: none;">View Medical History</a>
+                <a href="http://localhost:8080/staff-panel/medicalHistoryStaff/${pet.id}" class="btn btn-sm" style="background-color: #95BDFF; border: none;">View Medical History</a>
             </td>
         `;
         tableBody.appendChild(row);
+
+    });
+}
+
+function populateTable(pets) {
+    const tableBody = document.getElementById('petTableBody');
+    tableBody.innerHTML = '';
+    pets.forEach(pet => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${pet.id}</td>
+            <td>${pet.name}</td>
+            <td>${pet.age}</td>
+            <td>${pet.race}</td>
+            <td>${pet.weight}</td>
+            <td>
+                <a href="http://localhost:8080/staff-panel/medicalHistoryStaff/${pet.id}" class="btn btn-sm" style="background-color: #95BDFF; border: none;" data-pet-id="${pet.id}">View Medical History</a>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+
+
+    document.querySelectorAll('a[data-pet-id]').forEach(link => {
+        link.addEventListener('click', function(event) {
+            const petId = this.getAttribute('data-pet-id');
+            localStorage.setItem('selectedPetId', petId);
+        });
     });
 }
 
