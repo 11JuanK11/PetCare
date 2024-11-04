@@ -10,6 +10,7 @@ function loadMedicalHistory(petId) {
                 console.log("Medical History:", medicalHistory);
                 const medicalHistoryId = medicalHistory.id;
                 loadDiagnostics(medicalHistoryId);
+                localStorage.setItem('idMedicalHistory', medicalHistory.id);
             })
             .catch(error => {
                 console.error(error.message);
