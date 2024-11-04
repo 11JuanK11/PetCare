@@ -68,4 +68,10 @@ public class AdminHomeController {
     public String scheduleManagement3(){
         return "viewWeeklySchedules";
     }
+
+    @GetMapping("/editSchedule")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String scheduleManagement4(){
+        return "editSchedule";
+    }
 }

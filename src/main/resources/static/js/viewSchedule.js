@@ -83,3 +83,9 @@ function getVeterinarianNames(schedules, day) {
         return `<span style="color: #cccccc;">No scheduled</span>`;
     }
 }
+
+function editWeeklySchedule(scheduleId) {
+    localStorage.setItem('selectedScheduleId', scheduleId);
+    window.location.href = '/admin-panel/editSchedule';
+}
+
