@@ -93,28 +93,60 @@ function removeVetFromSlot(slotId) {
     }
 }
 
+async function checkWeekAvailability(startDate) {
+
+    const startDateStr = startDate.toISOString().slice(0, 10);
+
+    const response = await fetch(`http://localhost:8080/rest/weeklyschedule/check-week?startDate=${startDateStr}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error checking week availability: ${errorText}`);
+    }
+
+    const weekOccupied = await response.json();
+    return weekOccupied.weekOccupied;
+}
+
 async function generateSchedule() {
     const schedule = JSON.parse(localStorage.getItem("schedule"));
     console.log("Generating schedule for the database:", schedule);
 
     if (schedule && Object.keys(schedule).length > 0) {
-        const requests = [];
-        const schedules = [];
+        const mondayDateStr = document.getElementById("monday-picker").value;
 
-        for (const [slotId, vetId] of Object.entries(schedule)) {
-            const date = getDateForSlot(slotId);
-
-            const request = fetch(`http://localhost:8080/rest/schedule/assign?clinicStaffId=${vetId}&date=${date}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
-
-            requests.push(request);
-        }
+        const mondayDate = new Date(mondayDateStr);
+        console.log(`Schedule will start on: ${mondayDate}`);
 
         try {
+            const weekOccupied = await checkWeekAvailability(mondayDate);
+
+            if (weekOccupied) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Week Already Occupied',
+                    text: 'The selected week already has a schedule. Please choose another week.'
+                });
+                return;
+            }
+
+            const requests = [];
+            const schedules = [];
+
+            for (const [slotId, vetId] of Object.entries(schedule)) {
+                const date = getDateForSlot(slotId);
+
+                const request = fetch(`http://localhost:8080/rest/schedule/assign?clinicStaffId=${vetId}&date=${date}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                requests.push(request);
+            }
+
             const responses = await Promise.all(requests);
 
             await Promise.all(responses.map(async (response) => {
@@ -126,7 +158,6 @@ async function generateSchedule() {
                 schedules.push(scheduleResult);
             }));
 
-            // Sort schedules by date in ascending order
             schedules.sort((a, b) => new Date(a.date) - new Date(b.date));
 
             const weeklySchedule = { schedules: schedules };
@@ -182,7 +213,6 @@ async function generateSchedule() {
         });
     }
 }
-
 
 function resetSchedule() {
     document.querySelectorAll(".schedule-cell").forEach(cell => {
