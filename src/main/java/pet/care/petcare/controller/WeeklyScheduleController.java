@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pet.care.petcare.entity.WeeklySchedule;
 import pet.care.petcare.exception.ResourceNotFoundException;
+import pet.care.petcare.service.impl.ScheduleService;
 import pet.care.petcare.service.impl.WeeklyScheduleService;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class WeeklyScheduleController {
 
     @Autowired
     private WeeklyScheduleService weeklyScheduleService;
+
+    @Autowired
+    private ScheduleService scheduleService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createWeeklySchedule(@RequestBody WeeklySchedule weeklySchedule) {
@@ -61,6 +65,27 @@ public class WeeklyScheduleController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (ResourceNotFoundException ex) {
             return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteWeeklySchedule(@PathVariable Long id) {
+        try {
+            WeeklySchedule weeklySchedule = weeklyScheduleService.readById(id);
+
+            // Eliminar todos los schedules asociados al WeeklySchedule
+            weeklySchedule.getSchedules().forEach(schedule -> {
+                scheduleService.deleteSchedule(schedule.getId());
+            });
+
+            // Eliminar el WeeklySchedule
+            weeklyScheduleService.deleteWeeklySchedule(id);
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ResourceNotFoundException ex) {
+            return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(Map.of("error", "An error occurred while deleting the weekly schedule."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
