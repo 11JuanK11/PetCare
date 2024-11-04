@@ -13,16 +13,6 @@
             background-color: #007bff;
             color: white;
         }
-
-        .floating-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            border-radius: 50%;
-        }
-
-        /* Añadir estilo básico para el acordeón y el panel */
         .accordion {
             background-color: #eee;
             color: #444;
@@ -34,7 +24,6 @@
             outline: none;
             transition: 0.4s;
         }
-
         .panel {
             padding: 0 18px;
             display: none;
@@ -116,92 +105,104 @@
     </div>
 </div>
 
-<button type="button" class="btn btn-primary floating-btn" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="loadModalContent()">
-    <i class="bi bi-plus-lg"></i>
-</button>
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content" id="modalContent"></div>
-    </div>
-</div>
-
 <script>
     function loadMedicalHistory(petId) {
-     fetch(`/rest/medical-histories/pet/${petId}`)
-         .then(response => {
-             if (!response.ok) {
-                 throw new Error('Medical history for the pet was not found.');
-             }
-             return response.json();
-         })
-         .then(data => {
-             console.log("Medical history data:", data);
-             displayMedicalHistory(data);  
-         })
-         .catch(error => {
-             console.error(error.message);
-         });
- }
+    fetch(`/rest/medical-histories/pet/${petId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Medical history for the pet was not found.');
+            }
+            return response.json();
+        })
+        .then(medicalHistory => {
+            console.log("Medical History:", medicalHistory);
+            const medicalHistoryId = medicalHistory.id;
+            loadDiagnostics(medicalHistoryId);
+        })
+        .catch(error => {
+            console.error(error.message);
+        });
+}
 
- function displayMedicalHistory(medicalHistory) {
-     const container = document.getElementById('medicalHistoryContainer');
-     container.innerHTML = '';
-
-
-     if (!medicalHistory.diagnostics || !Array.isArray(medicalHistory.diagnostics)) {
-         container.innerHTML = `<p>No diagnostic records available for this pet.</p>`;
-         return;
-     }
-
-     const groupedHistories = {};
-
-
-     medicalHistory.diagnostics.forEach(entry => {
-         const date = new Date(entry.date).toLocaleDateString();
-         if (!groupedHistories[date]) {
-             groupedHistories[date] = [];
-         }
-         groupedHistories[date].push(entry);
-     });
+function loadDiagnostics(medicalHistoryId) {
+    fetch(`/rest/diagnostics/history/${medicalHistoryId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No diagnostic records found for this medical history.');
+            }
+            return response.json();
+        })
+        .then(diagnostics => {
+            console.log("Diagnostics:", diagnostics);
+            displayDiagnostics(diagnostics);
+        })
+        .catch(error => {
+            console.error(error.message);
+        });
+}
 
 
-     for (const date in groupedHistories) {
-         const entries = groupedHistories[date];
-         const accordionHtml = `
-             <button class="accordion" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
-                 ${date}
-             </button>
-             <div class="panel">
-                 ${entries.map(entry => `<p>${entry.description}</p>`).join('')}
-             </div>
-         `;
-         container.innerHTML += accordionHtml;
-     }
- }
+ function displayDiagnostics(diagnostics) {
+    const container = document.getElementById('medicalHistoryContainer');
+    container.innerHTML = '';
 
- window.onload = function() {
-     const petId = localStorage.getItem('selectedPetId');
-     if (petId) {
-         loadMedicalHistory(petId);
-     } else {
-         alert('No pet ID found.');
-     }
- };
+    if (!diagnostics || diagnostics.length === 0) {
+        container.innerHTML = `<p>No diagnostic records available for this pet.</p>`;
+        return;
+    }
 
+
+    diagnostics.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    const groupedDiagnostics = {};
+    diagnostics.forEach(diagnostic => {
+
+        const date = new Date(diagnostic.date).toLocaleDateString('en-US', {
+            timeZone: 'UTC',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+
+        if (!groupedDiagnostics[date]) {
+            groupedDiagnostics[date] = [];
+        }
+        groupedDiagnostics[date].push(diagnostic);
+    });
+
+    for (const date in groupedDiagnostics) {
+        const dateDiagnostics = groupedDiagnostics[date];
+        const accordionHtml = `
+            <button class="accordion">${date}</button>
+            <div class="panel">
+                ${dateDiagnostics.map(diagnostic => `<p>${diagnostic.description}</p>`).join('')}
+            </div>
+        `;
+        container.innerHTML += accordionHtml;
+    }
+
+
+    const accordions = document.getElementsByClassName("accordion");
+    for (let i = 0; i < accordions.length; i++) {
+        accordions[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            const panel = this.nextElementSibling;
+            panel.style.display = panel.style.display === "block" ? "none" : "block";
+        });
+    }
+}
+
+
+    window.onload = function() {
+        const petId = localStorage.getItem('selectedPetId');
+        if (petId) {
+            loadMedicalHistory(petId);
+        } else {
+            alert('No pet ID found.');
+        }
+    };
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    function loadModalContent() {
-        fetch('http://localhost:8080/staff-panel/diagnostics')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('modalContent').innerHTML = data;
-            })
-            .catch(error => console.error('Error al cargar el contenido del modal:', error));
-    }
-</script>
 </body>
 </html>
