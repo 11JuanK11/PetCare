@@ -51,7 +51,10 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
                 .orElseThrow(() -> new ResourceNotFoundException("WeeklySchedule not found with id: " + id));
     }
 
-
+    public void deleteWeeklySchedule(Long id) {
+        WeeklySchedule weeklySchedule = readById(id);
+        weeklyScheduleRepository.delete(weeklySchedule);
+    }
 
     @Override
     public List<WeeklySchedule> readAll() {
