@@ -1,11 +1,24 @@
 <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Título del Modal</h5>
+    <h5 class="modal-title" id="exampleModalLabel">New Diagnostic</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div class="modal-body">
-    Este es el contenido del modal cargado desde un archivo HTML separado.
+    <label>Required Fields <span style="color: red;">*</span></label>
+    <p></p>
+    <form id="diagnosticForm" class="mb-3">
+        <div class="row g-3">
+            <div class="mb-3">
+                <label for="diagnosticDescription" class="form-label">Description <span style="color: red;">*</span></label>
+                <textarea class="form-control" id="diagnosticDescription" rows="3"></textarea>
+            </div>
+            <div class="mb-3" id="recipeList">
+                <!-- <label for="Name">Select medications for the recipe <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="name" required> -->
+            </div>
+        </div>
+    </form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-    <button type="button" class="btn btn-primary">Guardar cambios</button>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary">Add</button>
 </div>
