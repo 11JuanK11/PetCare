@@ -1,0 +1,58 @@
+  :root {
+            --color-pink: #F7C8E0;
+            --color-green: #DFFFD8;
+            --color-light-blue: #B4E4FF;
+            --color-blue: #95BDFF;
+            --color-light-purple: #B1AFFF;
+        }
+
+        .accordion {
+            background-color: var(--color-pink);
+            color: #333;
+            cursor: pointer;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .accordion::after {
+            content: '▼';
+            font-size: 1em;
+            position: absolute;
+            right: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion.active::after {
+            transform: rotate(180deg);
+        }
+
+        .accordion:hover {
+            background-color: var(--color-light-blue);
+        }
+
+        .accordion.active {
+            background-color: var(--color-blue);
+            color: white;
+        }
+
+        .panel {
+            padding: 15px;
+            display: none;
+            background-color: var(--color-green);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .panel p {
+            margin: 0;
+            color: #333;
+        }
