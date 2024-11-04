@@ -100,6 +100,50 @@
         console.log('Medications saved to localStorage:', selectedMedications);
     }
 
+function addDiagnostic() {
+        const diagnosticDate = document.getElementById('diagnosticDate').value;
+        const diagnosticDescription = document.getElementById('diagnosticDescription').value;
 
+        const recipe = {}
+        fetch('/rest/recipe/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(recipe)
+        })
+        .then(response => response.json())
+        .then(recipe => {
+            const idRecipe = recipe.id;
+            const idMedicalHistory = localStorage.getItem('idMedicalHistory');
+
+            const diagnostic = {
+                description: diagnosticDescription,
+                recipe: {
+                    id: idRecipe
+                },
+                date: diagnosticDate
+            };
+
+            fetch(`/rest/diagnostics/${idMedicalHistory}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(diagnostic)
+            })
+            .then(response => {
+                console.log('Successfully added diagnostic');
+            })
+            .catch(error => {
+                console.error('Error adding diagnostic:', error);
+                Swal.fire('Error', error.message || 'Could not add diagnostic.', 'error');
+            });
+        })
+        .catch(error => {
+            console.error('Error adding recipe:', error);
+            Swal.fire('Error', error.message || 'Could not add diagnostic.', 'error');
+        });
+    }
 
 
