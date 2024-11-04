@@ -26,7 +26,7 @@ function displayWeeklySchedules(weeklySchedules) {
         header.className = 'd-flex justify-content-between align-items-center mb-3';
         header.innerHTML = `
             <h5>Weekly Schedule for <span class="text-primary">${schedule.startDate}</span></h5>
-            <button class="btn btn-sm" style="background-color: #F7C8E0; color: white;" onclick="editWeeklySchedule(${schedule.id})">Edit Schedule</button>
+            <button class="btn btn-sm" style="background-color: #F7C8E0; color: white;" onclick="editWeeklySchedule(${schedule.id}, ${JSON.stringify(schedule.schedules.map(s => s.id))})">Edit Schedule</button>
         `;
         scheduleItem.appendChild(header);
 
@@ -61,6 +61,12 @@ function displayWeeklySchedules(weeklySchedules) {
     });
 }
 
+function editWeeklySchedule(scheduleId, scheduleIds) {
+    localStorage.setItem('selectedScheduleId', scheduleId);
+    localStorage.setItem('scheduleIds', JSON.stringify(scheduleIds));
+    window.location.href = '/admin-panel/editSchedule';
+}
+
 function getVeterinarianNames(schedules, day) {
     const dayMap = {
         'Monday': 0,
@@ -84,8 +90,4 @@ function getVeterinarianNames(schedules, day) {
     }
 }
 
-function editWeeklySchedule(scheduleId) {
-    localStorage.setItem('selectedScheduleId', scheduleId);
-    window.location.href = '/admin-panel/editSchedule';
-}
 
