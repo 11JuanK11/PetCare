@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Función para permitir el evento de arrastre
 function allowDrop(event) {
     event.preventDefault();
 }
@@ -48,6 +47,8 @@ function populateSchedule(data) {
     document.getElementById('schedule-title').textContent = `Edit Weekly Schedule for ${startDate}`;
 
     const schedules = data.schedules;
+    const existingSchedule = {};
+
     schedules.forEach(schedule => {
         const clinicStaffId = schedule.clinicStaffId;
         const clinicStaffName = schedule.clinicStaffName;
@@ -63,10 +64,14 @@ function populateSchedule(data) {
                 <button onclick="removeVetFromSlot('${dayId}', '${clinicStaffId}')" class="btn btn-danger btn-sm ms-2">x</button>`;
             cell.classList.add("slot-filled");
             cell.dataset.vetId = clinicStaffId;
+
+            existingSchedule[dayId] = clinicStaffId;
         } else {
             console.error(`No se encontró el elemento para el día: ${dayId}`);
         }
     });
+
+    localStorage.setItem("schedule", JSON.stringify(existingSchedule));
 }
 
 function removeVetFromSlot(dayId, clinicStaffId) {
@@ -179,7 +184,16 @@ async function deleteCurrentWeeklySchedule() {
 async function saveScheduleChanges() {
     await deleteCurrentWeeklySchedule(); // Step 1: Delete the existing schedule
 
-    const startDate = document.getElementById('schedule-title').textContent.match(/\d{4}-\d{2}-\d{2}/)[0];
+    const startDateElement = document.getElementById('schedule-title').textContent;
+    const startDateMatch = startDateElement.match(/\d{4}-\d{2}-\d{2}/);
+
+    // Verificar que la fecha se haya encontrado correctamente
+    if (!startDateMatch) {
+        console.error("Start date not found or invalid in the title.");
+        return;
+    }
+
+    const startDate = startDateMatch[0];
     const scheduleData = JSON.parse(localStorage.getItem("schedule")) || {};
     const newSchedules = Object.entries(scheduleData).map(([dayId, vetId]) => ({
         date: getDateFromDayId(dayId, startDate),
@@ -187,30 +201,78 @@ async function saveScheduleChanges() {
     }));
 
     try {
-        const response = await fetch(`/rest/weeklyschedule/create`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                startDate: startDate,
-                schedules: newSchedules
-            })
-        });
+        // Crear array para almacenar las promesas de las solicitudes
+        const requests = [];
 
-        if (!response.ok) {
-            throw new Error("Failed to create a new weekly schedule.");
+        // Generar una solicitud por cada veterinario asignado en un día específico
+        for (const schedule of newSchedules) {
+            const request = fetch(`http://localhost:8080/rest/schedule/assign?clinicStaffId=${schedule.clinicStaffId}&date=${schedule.date}`, {
+                method: "POST"
+            });
+            requests.push(request);
         }
 
-        const createdSchedule = await response.json();
-        console.log("New weekly schedule created:", createdSchedule);
+        // Esperar todas las solicitudes con Promise.all
+        const responses = await Promise.all(requests);
 
-        localStorage.setItem("selectedScheduleId", createdSchedule.id);
+        const schedules = []; // Almacena los resultados de las solicitudes exitosas
+
+        await Promise.all(responses.map(async (response) => {
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error: ${response.status} - ${errorText}`);
+            }
+            const scheduleResult = await response.json();
+            schedules.push(scheduleResult);
+        }));
+
+        // Sort schedules by date in ascending order
+        schedules.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        const weeklySchedule = { schedules: schedules };
+
+        const weeklyScheduleResponse = await fetch(`http://localhost:8080/rest/weeklyschedule/create`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(weeklySchedule)
+        });
+
+        if (!weeklyScheduleResponse.ok) {
+            const errorText = await weeklyScheduleResponse.text();
+            throw new Error(`Error creating WeeklySchedule: ${weeklyScheduleResponse.status} - ${errorText}`);
+        }
+
+        const weeklyScheduleResult = await weeklyScheduleResponse.json();
+        console.log("WeeklySchedule created:", weeklyScheduleResult);
+
+        // Actualizar cada horario individual con el ID del nuevo schedule semanal
+        for (const schedule of schedules) {
+            const updateResponse = await fetch(`http://localhost:8080/rest/schedule/update/${schedule.id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ weeklyScheduleId: weeklyScheduleResult.id })
+            });
+
+            if (!updateResponse.ok) {
+                const errorText = await updateResponse.text();
+                console.error(`Error updating schedule ${schedule.id}: ${errorText}`);
+            }
+        }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Schedule Generated',
+            text: 'The schedule has been successfully generated and saved.'
+        });
+
+        resetSchedule();
+        localStorage.removeItem("schedule");
 
     } catch (error) {
         console.error("Error saving new weekly schedule:", error);
     }
 }
+
 
 function getDateFromDayId(dayId, startDate) {
     const daysOffset = { mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5 };
@@ -218,4 +280,21 @@ function getDateFromDayId(dayId, startDate) {
     const baseDate = new Date(startDate);
     baseDate.setDate(baseDate.getDate() + offset);
     return baseDate.toISOString().split("T")[0];
+}
+
+function resetSchedule() {
+    document.querySelectorAll(".schedule-cell").forEach(cell => {
+        cell.classList.remove("slot-filled");
+        cell.innerHTML = "";
+        delete cell.dataset.vetId;
+    });
+
+
+    const vetList = document.getElementById("vet-list");
+    if (vetList) {
+        vetList.innerHTML = "";
+        veterinarians.forEach(addVetToPanel);
+    } else {
+        console.warn("Element with ID 'vet-list' not found.");
+    }
 }
