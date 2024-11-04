@@ -12,6 +12,7 @@ import pet.care.petcare.service.IWeeklyScheduleService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class WeeklyScheduleService implements IWeeklyScheduleService {
@@ -59,5 +60,10 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
     @Override
     public List<WeeklySchedule> readAll() {
         return weeklyScheduleRepository.findAll();
+    }
+
+    public boolean isWeekOccupied(LocalDate startDate) {
+        Optional<WeeklySchedule> existingSchedule = weeklyScheduleRepository.findByStartDate(startDate);
+        return existingSchedule.isPresent();
     }
 }
