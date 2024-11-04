@@ -1,4 +1,5 @@
 function loadMedicalHistory(petId) {
+        loadPetName(petId);
         fetch(`/rest/medical-histories/pet/${petId}`)
             .then(response => {
                 if (!response.ok) {
@@ -142,6 +143,24 @@ function loadMedicalHistory(petId) {
                 return `<p>No medication details available.</p>`;
             });
     }
+
+    function loadPetName(petId) {
+            fetch(`/rest/pets/${petId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Pet not found.');
+                    }
+                    return response.json();
+                })
+                .then(pet => {
+                    const title = document.getElementById('medicalHistoryTitle');
+                    title.textContent = `Medical History - ${pet.name} ${pet.lastname}`;
+                })
+                .catch(error => {
+                    console.error(error.message);
+                    alert(error.message);
+                });
+        }
 
     window.onload = function() {
         const petId = localStorage.getItem('selectedPetId');
