@@ -1,3 +1,7 @@
+window.onload = function() {
+    localStorage.clear();
+};
+
 const vetList = document.getElementById("vet-list");
 let veterinarians = [];
 
@@ -304,6 +308,11 @@ function formatDate(date) {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+}
+
+function clearLocalStorageAndRedirect() {
+    localStorage.clear();
+    window.location.href = 'http://localhost:8080/admin-panel/indexSchedule';
 }
 
 document.querySelectorAll(".schedule-cell").forEach(cell => {
