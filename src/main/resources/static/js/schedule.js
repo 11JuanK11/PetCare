@@ -126,6 +126,9 @@ async function generateSchedule() {
                 schedules.push(scheduleResult);
             }));
 
+            // Sort schedules by date in ascending order
+            schedules.sort((a, b) => new Date(a.date) - new Date(b.date));
+
             const weeklySchedule = { schedules: schedules };
 
             const weeklyScheduleResponse = await fetch(`http://localhost:8080/rest/weeklyschedule/create`, {
@@ -179,6 +182,7 @@ async function generateSchedule() {
         });
     }
 }
+
 
 function resetSchedule() {
     document.querySelectorAll(".schedule-cell").forEach(cell => {
