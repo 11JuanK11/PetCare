@@ -21,9 +21,8 @@ public class Schedule implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne//(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "clinicStaff_id", nullable = false)
-    //@JsonIgnore
     private ClinicStaff clinicStaff;
 
     @ManyToOne
