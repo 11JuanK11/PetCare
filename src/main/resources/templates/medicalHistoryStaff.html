@@ -145,6 +145,7 @@
             })
             .catch(error => {
                 console.error(error.message);
+                alert(error.message);  
             });
     }
 
@@ -162,6 +163,7 @@
             })
             .catch(error => {
                 console.error(error.message);
+                alert(error.message);
             });
     }
 
@@ -206,7 +208,6 @@
             `;
             container.innerHTML += accordionHtml;
 
-          
             dateDiagnostics.forEach(diagnostic => {
                 loadRecipeAndDoses(diagnostic);
             });
@@ -223,47 +224,49 @@
     }
 
     function loadRecipeAndDoses(diagnostic) {
-        fetch(`/rest/recipe/${diagnostic.recipeId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Recipe not found.');
-                }
-                return response.json();
-            })
-            .then(recipe => {
-                const dosesPromises = recipe.doses.map(doseId => loadDoseAndMedication(doseId));
-                return Promise.all(dosesPromises);
-            })
-            .then(medicationsHtml => {
-                const recipeContainer = document.getElementById(`recipe-${diagnostic.id}`);
-                recipeContainer.innerHTML = `<strong>Recipe:</strong><div>${medicationsHtml.join('')}</div>`;
-            })
-            .catch(error => {
-                console.error(error.message);
-                const recipeContainer = document.getElementById(`recipe-${diagnostic.id}`);
-                recipeContainer.innerHTML = `<p>No recipe details available.</p>`;
-            });
+        if (diagnostic.recipe.id) {
+            fetch(`/rest/dose/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error loading doses.');
+                    }
+                    return response.json();
+                })
+                .then(allDoses => {
+                    const recipeDoses = allDoses.filter(dose => dose.recipe.id === diagnostic.recipe.id);
+                    return Promise.all(recipeDoses.map(dose => loadDoseAndMedication(dose)));
+                })
+                .then(dosesHtml => {
+                    const recipeContainer = document.getElementById(`recipe-${diagnostic.id}`);
+                    recipeContainer.innerHTML = `<strong>Recipe:</strong><div>${dosesHtml.join('')}</div>`;
+                })
+                .catch(error => {
+                    console.error(error.message);
+                    const recipeContainer = document.getElementById(`recipe-${diagnostic.id}`);
+                    recipeContainer.innerHTML = `<p>No recipe details available.</p>`;
+                });
+        } else {
+            const recipeContainer = document.getElementById(`recipe-${diagnostic.id}`);
+            recipeContainer.innerHTML = `<p>No recipe associated with this diagnostic.</p>`;
+        }
     }
 
-    function loadDoseAndMedication(doseId) {
-        return fetch(`/rest/doses/${doseId}`)
+    function loadDoseAndMedication(dose) {
+        return fetch(`/rest/medications/${dose.medication.id}`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Dose not found.');
+                    throw new Error('Medication not found.');
                 }
                 return response.json();
             })
-            .then(dose => {
-                return fetch(`/rest/medications/${dose.medicationId}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Medication not found.');
-                        }
-                        return response.json();
-                    })
-                    .then(medication => {
-                        return `<p>${medication.name} - Dosage: ${dose.amount}</p>`;
-                    });
+            .then(medication => {
+                return `
+                    <div>
+                        <p><strong>Medication Name:</strong> ${medication.name}</p>
+                        <p><strong>Amount:</strong> ${dose.amount}</p>
+                        <p><strong>Description:</strong> ${dose.description}</p>
+                    </div>
+                `;
             })
             .catch(error => {
                 console.error(error.message);
@@ -280,6 +283,8 @@
         }
     };
 </script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
