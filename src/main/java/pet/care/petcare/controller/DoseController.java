@@ -20,10 +20,12 @@ public class DoseController {
     private IDoseService doseService;
 
     @PostMapping("/")
-    public ResponseEntity<?> registerDose(@Valid @RequestBody Dose dose) {
+    public ResponseEntity<?> registerDose(@Valid @RequestBody List<Dose> doses) {
         try {
-            Dose newDose = doseService.registerDose(dose);
-            return ResponseEntity.ok(newDose);
+            for (Dose dose : doses) {
+                Dose newDose = doseService.registerDose(dose);
+            }
+            return ResponseEntity.ok(Collections.singletonMap("message", "Successfully registered doses."));
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
         } catch (Exception e) {

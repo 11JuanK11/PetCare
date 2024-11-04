@@ -1,3 +1,5 @@
+    import { loadMedicalHistory,  } from './medicalHistoryStaff.js';
+
     document.addEventListener('DOMContentLoaded', () => {
             loadMedications();
         });
@@ -96,7 +98,7 @@
                 }
             });
         });
-    localStorage.setItem('selectedMedications', JSON.stringify(selectedMedications));
+        localStorage.setItem('selectedMedications', JSON.stringify(selectedMedications));
         console.log('Medications saved to localStorage:', selectedMedications);
     }
 
@@ -139,6 +141,9 @@ function addDiagnostic() {
                 console.error('Error adding diagnostic:', error);
                 Swal.fire('Error', error.message || 'Could not add diagnostic.', 'error');
             });
+
+            modifyStoredMedicationData(idRecipe);
+            sendMedicationData();
         })
         .catch(error => {
             console.error('Error adding recipe:', error);
@@ -146,4 +151,65 @@ function addDiagnostic() {
         });
     }
 
+
+    function modifyStoredMedicationData(id) {
+        const storedData = localStorage.getItem('selectedMedications');
+        if (storedData) {
+            let medications = JSON.parse(storedData);
+
+            medications = medications.map(medication => {
+                medication.recipe.id = id;
+                return medication;
+            });
+
+            localStorage.setItem('selectedMedications', JSON.stringify(medications));
+            console.log('Modified medications:', medications);
+        } else {
+            console.log('No medication data found to modify.');
+        }
+    }
+
+
+    function sendMedicationData() {
+        const storedData = localStorage.getItem('selectedMedications');
+
+        if (storedData) {
+            const medications = JSON.parse(storedData);
+
+            fetch('/rest/dose/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(medications)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.message || 'Could not add diagnostic.');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                Swal.fire('Success', 'Diagnostic added successfully', 'success');
+
+                const modalElement = document.getElementById('exampleModal');
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                    modal.hide();
+                } else {
+                    bootstrap.Modal.getOrCreateInstance(modalElement).hide();
+                }
+
+                console.log('Medications sent successfully:', data);
+            })
+            .catch(error => {
+                console.error('Error adding recipe:', error);
+                Swal.fire('Error', error.message || 'Could not add diagnostic.', 'error');
+            });
+        } else {
+            console.log('No medications to send.');
+        }
+    }
 
