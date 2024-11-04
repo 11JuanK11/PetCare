@@ -18,6 +18,7 @@
                     input.classList.add('form-check-input');
                     input.value = medication.name;
                     input.id = `medication_${medication.id}`;
+                    input.dataset.id = medication.id;
                     input.addEventListener('change', toggleAdditionalFields);
 
                     const label = document.createElement('label');
@@ -66,5 +67,39 @@
             extraFieldsDiv.style.display = 'none';
         }
     }
+
+    document.getElementById('newDiagnostic').addEventListener('click', (e) => {
+            e.preventDefault();
+            collectMedicationData();
+            addDiagnostic();
+    });
+
+
+    function collectMedicationData() {
+        const selectedMedications = [];
+
+        document.querySelectorAll('.form-check-input:checked').forEach(checkbox => {
+            const medicationId = checkbox.dataset.id;
+            const extraFieldsDiv = document.getElementById(`extraFields_${medicationId}`);
+
+            const amount = extraFieldsDiv.querySelector(`input[name="amount_${medicationId}"]`).value;
+            const description = extraFieldsDiv.querySelector(`input[name="description_${medicationId}"]`).value;
+
+            selectedMedications.push({
+                description: description,
+                amount: amount,
+                medication:{
+                    id: medicationId
+                },
+                recipe:{
+                    id: 0
+                }
+            });
+        });
+    localStorage.setItem('selectedMedications', JSON.stringify(selectedMedications));
+        console.log('Medications saved to localStorage:', selectedMedications);
+    }
+
+
 
 
