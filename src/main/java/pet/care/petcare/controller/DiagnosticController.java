@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pet.care.petcare.entity.Diagnostic;
 import pet.care.petcare.exception.ResourceNotFoundException;
+import pet.care.petcare.repository.IDiagnosticRepository;
 import pet.care.petcare.service.impl.DiagnosticService;
 
 import java.util.List;
@@ -15,6 +16,9 @@ import java.util.List;
 public class DiagnosticController {
     @Autowired
     private DiagnosticService diagnosticService;
+
+    @Autowired
+    private IDiagnosticRepository diagnosticRepository;
 
     @PostMapping("/{medicalHistoryId}")
     public ResponseEntity<?> insert(@PathVariable Long medicalHistoryId, @RequestBody Diagnostic diagnostic) {
@@ -35,5 +39,12 @@ public class DiagnosticController {
         List<Diagnostic> diagnostics = diagnosticService.readAll();
         return new ResponseEntity<>(diagnostics, HttpStatus.OK);
     }
+
+    @GetMapping("/history/{medicalHistoryId}")
+    public ResponseEntity<List<Diagnostic>> getDiagnosticsByMedicalHistoryId(@PathVariable Long medicalHistoryId) {
+        List<Diagnostic> diagnostics = diagnosticRepository.findByMedicalHistoryId(medicalHistoryId);
+        return new ResponseEntity<>(diagnostics, HttpStatus.OK);
+    }
+
 
 }
