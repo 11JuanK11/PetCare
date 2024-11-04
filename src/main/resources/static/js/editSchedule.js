@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+// Función para permitir el evento de arrastre
+function allowDrop(event) {
+    event.preventDefault();
+}
+
 async function loadVeterinarians(scheduleData = { schedules: [] }) {
     try {
         const response = await fetch("http://localhost:8080/rest/clinic-staff/");
@@ -144,4 +149,73 @@ function addVetToPanel(vet) {
 function getDayId(day) {
     const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     return days[day];
+}
+
+async function deleteCurrentWeeklySchedule() {
+    const selectedScheduleId = localStorage.getItem("selectedScheduleId");
+
+    if (!selectedScheduleId) {
+        console.error("No selected schedule ID found in localStorage.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/rest/weeklyschedule/${selectedScheduleId}`, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to delete the weekly schedule.");
+        }
+
+        console.log("Weekly schedule deleted successfully.");
+        localStorage.removeItem("selectedScheduleId"); // Clear localStorage ID after deletion
+
+    } catch (error) {
+        console.error("Error deleting weekly schedule:", error);
+    }
+}
+
+async function saveScheduleChanges() {
+    await deleteCurrentWeeklySchedule(); // Step 1: Delete the existing schedule
+
+    const startDate = document.getElementById('schedule-title').textContent.match(/\d{4}-\d{2}-\d{2}/)[0];
+    const scheduleData = JSON.parse(localStorage.getItem("schedule")) || {};
+    const newSchedules = Object.entries(scheduleData).map(([dayId, vetId]) => ({
+        date: getDateFromDayId(dayId, startDate),
+        clinicStaffId: vetId
+    }));
+
+    try {
+        const response = await fetch(`/rest/weeklyschedule/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                startDate: startDate,
+                schedules: newSchedules
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to create a new weekly schedule.");
+        }
+
+        const createdSchedule = await response.json();
+        console.log("New weekly schedule created:", createdSchedule);
+
+        localStorage.setItem("selectedScheduleId", createdSchedule.id);
+
+    } catch (error) {
+        console.error("Error saving new weekly schedule:", error);
+    }
+}
+
+function getDateFromDayId(dayId, startDate) {
+    const daysOffset = { mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5 };
+    const offset = daysOffset[dayId];
+    const baseDate = new Date(startDate);
+    baseDate.setDate(baseDate.getDate() + offset);
+    return baseDate.toISOString().split("T")[0];
 }
