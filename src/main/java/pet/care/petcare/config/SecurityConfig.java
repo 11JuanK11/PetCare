@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(http -> {
                     http.requestMatchers("/").permitAll();
                     http.requestMatchers("/public/**").permitAll();
+                    http.requestMatchers("/uploads/**").permitAll();
                     http.requestMatchers("/rest/**").permitAll();
                     http.requestMatchers("/css/**", "/js/**", "/img/**").permitAll();
                     http.requestMatchers("/client-panel/**").hasAuthority("CLIENT");

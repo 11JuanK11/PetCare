@@ -24,6 +24,10 @@ public class Pet {
     @Column(nullable = false)
     private String name;
 
+    @NotNull(message = "The lastname is required")
+    @Column(nullable = false)
+    private String lastname;
+
     @NotNull(message = "The age is required")
     @Column(nullable = false)
     private Long age;
@@ -35,6 +39,9 @@ public class Pet {
     @NotNull(message = "The weight is required")
     @Column(nullable = false)
     private Float weight;
+
+    @Column(nullable = false)
+    private String image;
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
