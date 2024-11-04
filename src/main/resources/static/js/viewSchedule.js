@@ -26,7 +26,7 @@ function displayWeeklySchedules(weeklySchedules) {
         header.className = 'd-flex justify-content-between align-items-center mb-3';
         header.innerHTML = `
             <h5>Weekly Schedule for <span class="text-primary">${schedule.startDate}</span></h5>
-            <button class="btn btn-sm btn-warning" onclick="editWeeklySchedule(${schedule.id})">Edit Schedule</button>
+            <button class="btn btn-sm" style="background-color: #F7C8E0; color: white;" onclick="editWeeklySchedule(${schedule.id})">Edit Schedule</button>
         `;
         scheduleItem.appendChild(header);
 
@@ -78,8 +78,7 @@ function getVeterinarianNames(schedules, day) {
 
     if (weekdaySchedules.length > 0) {
         return weekdaySchedules.map(schedule =>
-            `<strong>${schedule.clinicStaffName} (ID: ${schedule.clinicStaffId})</strong>`
-        ).join(', ');
+            `<strong>${schedule.clinicStaffName} ${schedule.clinicStaffLastName} (ID: ${schedule.clinicStaffId})</strong>`).join(', ');
     } else {
         return `<span style="color: #cccccc;">No scheduled</span>`;
     }

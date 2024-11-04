@@ -53,7 +53,8 @@ public class WeeklyScheduleController {
                             "endTime", schedule.getEndTime(),
                             "available", schedule.isAvailable(),
                             "clinicStaffId", schedule.getClinicStaffId(),
-                            "clinicStaffName", schedule.getClinicStaffName()
+                            "clinicStaffName", schedule.getClinicStaffName(),
+                            "clinicStaffLastName", schedule.getClinicStaffLastName()
                     )).toList()
             );
 

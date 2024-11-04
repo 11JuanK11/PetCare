@@ -47,4 +47,8 @@ public class Schedule implements Serializable {
     public String getClinicStaffName() {
         return clinicStaff != null ? clinicStaff.getName() : null;
     }
+
+    public String getClinicStaffLastName() {
+        return clinicStaff != null ? clinicStaff.getLastname() : null;
+    }
 }
