@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
     veterinarianSelect.addEventListener("change", loadAppointments);
-
     dateSelect.addEventListener("change", loadAppointments);
 
     function loadAppointments() {
@@ -28,33 +27,60 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(appointments => {
                     appointmentsContainer.innerHTML = "";
 
-                    appointments.forEach(appointment => {
-                        const appointmentCard = document.createElement("div");
-                        appointmentCard.className = "col-12 col-md-6 mb-3 d-flex justify-content-between align-items-center";
+                    const table = document.createElement("table");
+                    table.className = "table table-striped";
 
-                        const appointmentButton = document.createElement("button");
-                        appointmentButton.className = "btn btn-block";
+                    const thead = document.createElement("thead");
+                    const headerRow = document.createElement("tr");
+                    const timeHeader = document.createElement("th");
+                    timeHeader.textContent = "Time";
+                    headerRow.appendChild(timeHeader);
+                    const actionHeader = document.createElement("th");
+                    actionHeader.textContent = "Action";
+                    headerRow.appendChild(actionHeader);
+                    thead.appendChild(headerRow);
+                    table.appendChild(thead);
+
+                    const tbody = document.createElement("tbody");
+                    appointments.forEach(appointment => {
+                        const row = document.createElement("tr");
                         const formattedStartTime = appointment.startTime.substring(0, 5);
                         const formattedEndTime = appointment.endTime.substring(0, 5);
-                        appointmentButton.textContent = `${formattedStartTime} - ${formattedEndTime}`;
-                        appointmentButton.classList.add(appointment.available ? "btn-primary" : "btn-secondary");
-                        appointmentButton.disabled = !appointment.available;
 
+                        const timeCell = document.createElement("td");
+                        timeCell.textContent = `${formattedStartTime} - ${formattedEndTime}`;
+                        timeCell.style.color = "#555";
+                        row.appendChild(timeCell);
+
+                        const actionCell = document.createElement("td");
                         const assignButton = document.createElement("button");
-                        assignButton.className = "btn btn-outline-primary";
+                        assignButton.className = "btn";
+                        assignButton.style.backgroundColor = "#95BDFF";
+                        assignButton.style.color = "#fff";
                         assignButton.textContent = "Assign appointment";
-                        assignButton.onclick = () => assignAppointment(appointment.id);
 
-                        appointmentCard.appendChild(appointmentButton);
-                        appointmentCard.appendChild(assignButton);
-                        appointmentsContainer.appendChild(appointmentCard);
+                        assignButton.style.transition = "background-color 0.3s";
+                        assignButton.onmouseover = () => {
+                            assignButton.style.backgroundColor = "#7DA8E1";
+                        };
+                        assignButton.onmouseout = () => {
+                            assignButton.style.backgroundColor = "#95BDFF";
+                        };
+
+                        assignButton.onclick = () => assignAppointment(appointment.id);
+                        actionCell.appendChild(assignButton);
+                        row.appendChild(actionCell);
+
+                        tbody.appendChild(row);
                     });
+                    table.appendChild(tbody);
+                    appointmentsContainer.appendChild(table);
                 });
         }
     }
 
     function assignAppointment(appointmentId) {
-        alert(`Cita asignada: ${appointmentId}`);
+        alert(`Cita asignada`);
     }
 });
 
