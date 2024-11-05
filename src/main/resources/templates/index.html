@@ -47,7 +47,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6 mb-4 mb-md-0">
                     <h1 class="display-4 fw-bold mb-4">
-                        We take care of your pets as if they were our own.
+                        We take care of your pets as if they were our own
                     </h1>
                     <p class="lead mb-4">
                         Quality veterinary services for the well-being of your furry
@@ -68,7 +68,7 @@
             </div>
         </div>
     </section>
-    <section class="py-5">
+    <section class="py-5" id="services">
         <div class="container">
             <h2 class="text-center mb-5">Our Services</h2>
             <div class="row g-4">
@@ -78,6 +78,7 @@
                             style="background-color: var(--color-pink)"
                     >
                         <div class="card-body">
+                            <i class="fas fa-stethoscope fa-3x mb-3"></i>
                             <h3 class="card-title h5 mb-3">General Consultations</h3>
                             <p class="card-text">
                                 Routine check-ups and primary care for your pets
@@ -91,6 +92,7 @@
                             style="background-color: var(--color-green)"
                     >
                         <div class="card-body">
+                            <i class="fas fa-syringe fa-3x mb-3"></i>
                             <h3 class="card-title h5 mb-3">Vaccination</h3>
                             <p class="card-text">
                                 We keep your pets protected against common diseases
@@ -104,6 +106,7 @@
                             style="background-color: var(--color-light-blue)"
                     >
                         <div class="card-body">
+                            <i class="fas fa-user-md fa-3x mb-3"></i>
                             <h3 class="card-title h5 mb-3">Surgery</h3>
                             <p class="card-text">
                                 Advanced surgical procedures with post-operative care
@@ -117,6 +120,7 @@
                             style="background-color: var(--color-light-purple)"
                     >
                         <div class="card-body">
+                            <i class="fas fa-cut fa-3x mb-3"></i>
                             <h3 class="card-title h5 mb-3">Pet Grooming</h3>
                             <p class="card-text">
                                 Bathing and grooming services to keep your pets clean and
@@ -128,7 +132,7 @@
             </div>
         </div>
     </section>
-    <section class="py-5 bg-light">
+    <section class="py-5 bg-light" id="testimonials">
         <div class="container">
             <h2 class="text-center mb-5">What Our Clients Say</h2>
             <div
@@ -172,26 +176,26 @@
                     </div>
                 </div>
                 <button
-                    class="carousel-control-prev"
-                    type="button"
-                    data-bs-target="#testimonialCarousel"
-                    data-bs-slide="prev"
+                        class="carousel-control-prev"
+                        type="button"
+                        data-bs-target="#testimonialCarousel"
+                        data-bs-slide="prev"
                 >
                 <span
-                    class="carousel-control-prev-icon"
-                    aria-hidden="true"
+                        class="carousel-control-prev-icon"
+                        aria-hidden="true"
                 ></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button
                         class="carousel-control-next"
                         type="button"
                         data-bs-target="#testimonialCarousel"
                         data-bs-slide="next"
-                    >
+                >
                 <span
-                    class="carousel-control-next-icon"
-                    aria-hidden="true"
+                        class="carousel-control-next-icon"
+                        aria-hidden="true"
                 ></span>
                     <span class="visually-hidden">Next</span>
                 </button>
@@ -222,6 +226,7 @@
                             style="background-color: var(--color-light-blue)"
                     >
                         <i class="fas fa-heart fa-2x"></i>
+
                     </div>
                     <h3 class="h5 mb-3">Compassion</h3>
                     <p>We treat each pet with love</p>
@@ -229,7 +234,46 @@
             </div>
         </div>
     </section>
-    <section class="py-5 bg-light">
+    <section class="py-5 bg-white" id="faq">
+        <div class="container">
+            <h2 class="text-center mb-5">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3 class="h5 mb-0">What kind of pets do you attend?</h3>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We care for exotic pets such as mini pigs, rabbits, goats, fish, birds, snakes, wolves...</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3 class="h5 mb-0">How often should I bring my pet for a check-up?</h3>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We recommend bringing your pet for a check-up at least once a year. However, the frequency may vary depending on your pet's age, health condition, and lifestyle.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3 class="h5 mb-0">Do you offer emergency services?</h3>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we provide emergency veterinary services. In case of an emergency, please call our clinic immediately (during work shedule).</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3 class="h5 mb-0">What is your shedule?</h3>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our schedule is from Monday to Saturday, 8am to 9pm each day.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-5 bg-light" id="contact">
         <div class="container">
             <h2 class="text-center mb-5">Our Location</h2>
             <div class="row justify-content-center">
@@ -291,5 +335,6 @@
 </a>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+<script src="/js/index.js"></script>
 </body>
 </html>
