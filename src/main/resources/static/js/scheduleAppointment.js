@@ -117,7 +117,15 @@ document.addEventListener("DOMContentLoaded", function() {
                                 assignButton.style.backgroundColor = "#95BDFF";
                             };
 
-                            assignButton.onclick = () => assignAppointment(appointment.id);
+                            if (!appointment.available) {
+                                timeCell.style.backgroundColor = "#f8d7da";
+                                timeCell.style.color = "#721c24";
+                                actionCell.style.backgroundColor = "#f8d7da";
+                                assignButton.disabled = true;
+                                assignButton.textContent = "Not available";
+                            } else {
+                                assignButton.onclick = () => assignAppointment(appointment.id);
+                            }
                             actionCell.appendChild(assignButton);
                             row.appendChild(actionCell);
 
