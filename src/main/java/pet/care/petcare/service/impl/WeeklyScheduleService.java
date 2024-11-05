@@ -72,7 +72,7 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
     }
 
     public boolean isWeekOccupied(LocalDate startDate) {
-        Optional<WeeklySchedule> existingSchedule = weeklyScheduleRepository.findByStartDate(startDate);
-        return existingSchedule.isPresent();
+        LocalDate endDate = startDate.plusDays(5);
+        return weeklyScheduleRepository.existsByStartDateBetween(startDate, endDate);
     }
 }
