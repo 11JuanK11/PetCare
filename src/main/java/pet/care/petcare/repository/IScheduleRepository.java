@@ -8,6 +8,7 @@ import pet.care.petcare.entity.ClinicStaff;
 import pet.care.petcare.entity.Schedule;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,4 +17,7 @@ public interface IScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("SELECT s FROM Schedule s WHERE s.date = :date")
     Optional<Schedule> findByDate(@Param("date") LocalDate date);
+
+    @Query("SELECT s FROM Schedule s WHERE s.clinicStaff.id = :clinicStaffId")
+    List<Schedule> findByClinicStaffId(@Param("clinicStaffId") Long clinicStaffId);
 }

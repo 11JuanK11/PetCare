@@ -20,6 +20,9 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
     @Autowired
     private IWeeklyScheduleRepository weeklyScheduleRepository;
 
+    @Autowired
+    private AppointmentService appointmentService;
+
     @Transactional
     public WeeklySchedule create(WeeklySchedule weeklySchedule) throws ResourceNotFoundException {
         if (weeklySchedule == null || weeklySchedule.getSchedules() == null || weeklySchedule.getSchedules().isEmpty()) {
@@ -44,7 +47,13 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
             savedWeeklySchedule.getSchedules().add(schedule);
         }
 
-        return weeklyScheduleRepository.save(savedWeeklySchedule);
+        weeklyScheduleRepository.save(savedWeeklySchedule);
+
+        for (Schedule schedule : savedWeeklySchedule.getSchedules()) {
+            appointmentService.createAppointmentsForClinicStaff(schedule.getClinicStaff().getUserId());
+        }
+
+        return savedWeeklySchedule;
     }
 
     public WeeklySchedule readById(Long id) throws ResourceNotFoundException {
