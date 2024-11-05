@@ -33,4 +33,18 @@ public class ClientHomeController {
         model.addAttribute("userId", userDetails.getUser().getUserId());
         return "editPets";
     }
+
+    @GetMapping("/appointments")
+    @PreAuthorize("hasAuthority('CLIENT')")
+    public String appointments(Model model, @AuthenticationPrincipal SecurityUser userDetails){
+        model.addAttribute("userId", userDetails.getUser().getUserId());
+        return "appointments";
+    }
+
+    @GetMapping("/appointments/scheduleAppointment")
+    @PreAuthorize("hasAuthority('CLIENT')")
+    public String scheduleAppointment(Model model, @AuthenticationPrincipal SecurityUser userDetails){
+        model.addAttribute("userId", userDetails.getUser().getUserId());
+        return "scheduleAppointment";
+    }
 }
