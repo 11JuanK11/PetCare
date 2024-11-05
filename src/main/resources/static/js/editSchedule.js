@@ -278,14 +278,26 @@ async function saveScheduleChanges() {
     }
 }
 
+function getMondayOfWeek(date) {
+    const adjustedDate = new Date(date);
+    const day = adjustedDate.getDay();
+    if (day !== 0) {
+        const diff = day === 0 ? -6 : -day;
+        adjustedDate.setDate(adjustedDate.getDate() + diff);
+    }
+    return adjustedDate;
+}
 
 function getDateFromDayId(dayId, startDate) {
     const daysOffset = { mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5 };
     const offset = daysOffset[dayId];
-    const baseDate = new Date(startDate);
+
+    const baseDate = getMondayOfWeek(new Date(startDate));
+
     baseDate.setDate(baseDate.getDate() + offset);
     return baseDate.toISOString().split("T")[0];
 }
+
 
 function resetSchedule() {
     document.querySelectorAll(".schedule-cell").forEach(cell => {
