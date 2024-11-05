@@ -15,4 +15,7 @@ public interface IWeeklyScheduleRepository extends JpaRepository<WeeklySchedule,
 
     @Query("SELECT ws FROM WeeklySchedule ws WHERE ws.startDate = :startDate")
     Optional<WeeklySchedule> findByStartDate(@Param("startDate") LocalDate startDate);
+
+    @Query("SELECT COUNT(ws) > 0 FROM WeeklySchedule ws WHERE ws.startDate BETWEEN :startDate AND :endDate")
+    boolean existsByStartDateBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }
