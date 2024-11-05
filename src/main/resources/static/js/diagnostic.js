@@ -1,5 +1,3 @@
-    import { loadMedicalHistory,  } from './medicalHistoryStaff.js';
-
     document.addEventListener('DOMContentLoaded', () => {
             loadMedications();
         });
@@ -192,7 +190,13 @@ function addDiagnostic() {
                 return response.json();
             })
             .then(data => {
-                Swal.fire('Success', 'Diagnostic added successfully', 'success');
+                Swal.fire('Success', 'Diagnostic added successfully', 'success')
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        // Recargar la página después de confirmar
+                        location.reload();
+                    }
+                });
 
                 const modalElement = document.getElementById('exampleModal');
                 const modal = bootstrap.Modal.getInstance(modalElement);
