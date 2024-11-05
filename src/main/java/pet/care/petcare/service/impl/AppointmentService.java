@@ -36,17 +36,21 @@ public class AppointmentService implements IAppointmentService {
                 appointment.setStartTime(currentStartTime);
                 appointment.setEndTime(currentStartTime.plusMinutes(30));
                 appointment.setDate(schedule.getDate());
-                appointment.setAvailable(true); // Puedes establecerlo como disponible
-                appointment.setClinicStaff(schedule.getClinicStaff()); // Asignar el clinic staff
+                appointment.setAvailable(true); // disponible
+                appointment.setClinicStaff(schedule.getClinicStaff());
 
                 appointments.add(appointment);
-                currentStartTime = currentStartTime.plusMinutes(30); // Incrementar 30 minutos
+                currentStartTime = currentStartTime.plusMinutes(30);
             }
         }
 
         appointmentRepository.saveAll(appointments);
 
         return appointments;
+    }
+
+    public List<Appointment> getAppointmentsByClinicStaffAndDate(Long clinicStaffId, LocalDate date) {
+        return appointmentRepository.findByClinicStaff_UserIdAndDate(clinicStaffId, date);
     }
 
     @Override
