@@ -15,6 +15,7 @@ body {
     background-color: var(--color-blue);
 }
 
+
 .navbar-brand {
     color: black !important;
     font-weight: bold;
@@ -30,22 +31,31 @@ body {
 }
 
 .btn-outline-light:hover {
+    background-color: white;
     color: var(--color-blue);
 }
 
 .hero {
-    background-color: var(--color-light-blue);
+    background: linear-gradient(135deg, var(--color-light-blue), var(--color-blue));
     padding: 5rem 0;
+    color: #333;
 }
+
 
 .service-card {
-    border-radius: 1rem;
-    transition: transform 0.3s ease;
+    transform: scale(1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.service-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-.service-card:hover {
-    transform: translateY(-5px);
+.carousel-item .card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
 
 .icon-bg {
     width: 80px;
@@ -60,6 +70,8 @@ body {
 footer {
     background-color: var(--color-blue);
     color: black;
+    padding: 2rem 0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .social-icon {
@@ -68,6 +80,11 @@ footer {
     margin: 0 0.5rem;
     transition: color 0.3s ease;
 }
+
+a.social-icon {
+    text-decoration: none;
+}
+
 
 .social-icon:hover {
     color: white;
@@ -99,11 +116,25 @@ footer {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
     transition: background-color 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
 }
 
 .whatsapp-float:hover {
     background-color: #20b457;
 }
+
+.social-icon:hover {
+    color: white;
+    background-color: black;
+    border-radius: 50%;
+    padding: 8px;
+}
+
 
 
 @media (max-width: 991px) {
