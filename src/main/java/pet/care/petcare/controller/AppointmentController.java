@@ -3,13 +3,11 @@ package pet.care.petcare.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pet.care.petcare.entity.Appointment;
 import pet.care.petcare.service.impl.AppointmentService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -27,5 +25,12 @@ public class AppointmentController {
         } catch (Exception ex) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/appointments/available")
+    @ResponseBody
+    public List<Appointment> getAvailableAppointments(@RequestParam Long clinicStaffId, @RequestParam String date) {
+        LocalDate appointmentDate = LocalDate.parse(date);
+        return appointmentService.getAppointmentsByClinicStaffAndDate(clinicStaffId, appointmentDate);
     }
 }
