@@ -53,6 +53,12 @@ public class AppointmentService implements IAppointmentService {
         return appointmentRepository.findByClinicStaff_UserIdAndDate(clinicStaffId, date);
     }
 
+    public void deleteAppointmentsByClinicStaff(Long clinicStaffId) {
+        List<Appointment> appointments = appointmentRepository.findByClinicStaff_UserId(clinicStaffId);
+        appointmentRepository.deleteAll(appointments);
+    }
+
+
     @Override
     public Appointment assignAppointment(Long clinicStaffId, LocalTime startTime, LocalTime endTime, LocalDate date) {
         return null;

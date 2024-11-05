@@ -33,4 +33,15 @@ public class AppointmentController {
         LocalDate appointmentDate = LocalDate.parse(date);
         return appointmentService.getAppointmentsByClinicStaffAndDate(clinicStaffId, appointmentDate);
     }
+
+    @DeleteMapping("/delete/clinicStaff/{clinicStaffId}")
+    public ResponseEntity<Void> deleteAppointmentsByClinicStaff(@PathVariable Long clinicStaffId) {
+        try {
+            appointmentService.deleteAppointmentsByClinicStaff(clinicStaffId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
