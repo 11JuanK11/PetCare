@@ -13,4 +13,8 @@ public class ClinicStaff extends UserEntity implements Serializable{
     @OneToMany(mappedBy = "clinicStaff", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<Schedule> scheduleSet;
+
+    @OneToMany(mappedBy = "clinicStaff", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Appointment> appointmentSet;
 }
