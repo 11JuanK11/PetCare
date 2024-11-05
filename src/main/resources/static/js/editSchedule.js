@@ -174,7 +174,7 @@ async function deleteCurrentWeeklySchedule() {
         }
 
         console.log("Weekly schedule deleted successfully.");
-        localStorage.removeItem("selectedScheduleId"); // Clear localStorage ID after deletion
+        localStorage.removeItem("selectedScheduleId");
 
     } catch (error) {
         console.error("Error deleting weekly schedule:", error);
@@ -267,7 +267,7 @@ async function saveScheduleChanges() {
         Swal.fire({
             icon: 'success',
             title: 'Schedule Generated',
-            text: 'The schedule has been successfully generated and saved.'
+            text: 'The schedule has been successfully saved.'
         });
 
         resetSchedule();
