@@ -26,7 +26,14 @@ public class Appointment implements Serializable {
     @NotNull(message = "date cannot be null")
     private LocalDate date;
 
+    @NotNull(message = "available cannot be null")
+    private boolean available;
+
     @ManyToOne
     @JoinColumn(name = "clinicStaff_id", nullable = false)
     private ClinicStaff clinicStaff;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 }
