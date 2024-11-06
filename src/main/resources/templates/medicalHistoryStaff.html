@@ -96,7 +96,7 @@
                     <div class="row g-3">
                         <div class="mb-3">
                             <label for="diagnosticDate" class="form-label">Date <span style="color: red;">*</span></label>
-                            <input type="date" class="form-control" id="diagnosticDate" name="diagnosticDate">
+                            <input type="date" class="form-control" id="diagnosticDate" name="diagnosticDate" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="diagnosticDescription" class="form-label">Description <span style="color: red;">*</span></label>
@@ -124,7 +124,11 @@
         </div>
     </div>
 </div>
-
+<script>
+    const dateInput = document.getElementById('diagnosticDate');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+</script>
 <script src="/js/medicalHistoryStaff.js"></script>
 <script src="/js/diagnostic.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

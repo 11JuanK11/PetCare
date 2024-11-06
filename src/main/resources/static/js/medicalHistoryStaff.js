@@ -70,8 +70,10 @@ function loadMedicalHistory(petId) {
                 <div class="panel">
                     ${dateDiagnostics.map(diagnostic => `
                         <div>
-                            <p><strong>Description:</strong> ${diagnostic.description}</p>
+                            <p><strong>Description for the diagnostic:</strong> ${diagnostic.description}</p>
+                            <br>
                             <div id="recipe-${diagnostic.id}"></div>
+                            <hr>
                         </div>
                     `).join('')}
                 </div>
