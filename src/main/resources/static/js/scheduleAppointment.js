@@ -72,7 +72,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     appointmentsContainer.innerHTML = "";
                     messageContainer.innerHTML = "";
 
-                    if (appointments.length === 0) {
+
+                    const limitedAppointments = appointments.slice(0, 26);//-----------------------------
+
+                    if (limitedAppointments.length === 0) {//-----------------------------
                         messageContainer.innerHTML = "<p>No appointments available for this veterinarian on this date.</p>";
                         messageContainer.style.display = "block";
                     } else {
