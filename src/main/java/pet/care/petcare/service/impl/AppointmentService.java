@@ -58,6 +58,20 @@ public class AppointmentService implements IAppointmentService {
         appointmentRepository.deleteAll(appointments);
     }
 
+    public void deleteAppointmentsByClinicStaffAndDate(Long clinicStaffId, LocalDate date) {
+        appointmentRepository.deleteByClinicStaffIdAndDate(clinicStaffId, date);
+    }
+
+    public void deleteAppointmentsByDate(LocalDate date) {
+        List<Appointment> appointments = appointmentRepository.findByDate(date);
+        if (!appointments.isEmpty()) {
+            appointmentRepository.deleteByDate(date);
+        } else {
+            System.out.println("No appointments found for the date: " + date);
+        }
+    }
+
+
 
     @Override
     public Appointment assignAppointment(Long clinicStaffId, LocalTime startTime, LocalTime endTime, LocalDate date) {

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pet.care.petcare.entity.Schedule;
 import pet.care.petcare.entity.WeeklySchedule;
 import pet.care.petcare.exception.ResourceNotFoundException;
+import pet.care.petcare.repository.IScheduleRepository;
 import pet.care.petcare.repository.IWeeklyScheduleRepository;
 import pet.care.petcare.service.IWeeklyScheduleService;
 
@@ -22,6 +23,9 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
 
     @Autowired
     private AppointmentService appointmentService;
+
+    @Autowired
+    private IScheduleRepository scheduleRepository;
 
     @Transactional
     public WeeklySchedule create(WeeklySchedule weeklySchedule) throws ResourceNotFoundException {
@@ -56,6 +60,38 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
         return savedWeeklySchedule;
     }
 
+    @Transactional
+    public WeeklySchedule createWithStartDate(List<Schedule> schedules, LocalDate startDate) throws ResourceNotFoundException {
+        if (schedules == null || schedules.isEmpty()) {
+            throw new IllegalArgumentException("Schedules cannot be null or empty.");
+        }
+
+        // Establecer la fecha de inicio del WeeklySchedule
+        WeeklySchedule weeklySchedule = new WeeklySchedule();
+        weeklySchedule.setStartDate(startDate);
+
+        // Asignar los horarios a la nueva programación semanal
+        for (Schedule schedule : schedules) {
+            if (schedule.getClinicStaff() == null) {
+                throw new ResourceNotFoundException("Schedule with null clinicStaff is not allowed.");
+            }
+            schedule.setWeeklySchedule(weeklySchedule);
+        }
+
+        // Guardar el WeeklySchedule y los horarios en la base de datos
+        weeklySchedule = weeklyScheduleRepository.saveAndFlush(weeklySchedule);
+        scheduleRepository.saveAll(schedules);
+
+        // Llamar al servicio de citas (si es necesario)
+        for (Schedule schedule : schedules) {
+            appointmentService.createAppointmentsForClinicStaff(schedule.getClinicStaff().getUserId());
+        }
+
+        return weeklySchedule;
+    }
+
+
+
     public WeeklySchedule readById(Long id) throws ResourceNotFoundException {
         return weeklyScheduleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("WeeklySchedule not found with id: " + id));
@@ -74,5 +110,12 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
     public boolean isWeekOccupied(LocalDate startDate) {
         LocalDate endDate = startDate.plusDays(5);
         return weeklyScheduleRepository.existsByStartDateBetween(startDate, endDate);
+    }
+
+    public void updateStartDate(Long id, LocalDate newStartDate) {
+        int updatedRows = weeklyScheduleRepository.updateStartDateById(id, newStartDate);
+        if (updatedRows == 0) {
+            throw new ResourceNotFoundException("Weekly schedule not found with id " + id);
+        }
     }
 }
