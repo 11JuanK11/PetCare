@@ -15,10 +15,11 @@
                     const checkboxDiv = document.createElement('div');
                     checkboxDiv.classList.add('form-check');
     
+                    console.log("treatments id:" + treatment.id);
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     checkbox.classList.add('form-check-input');
-                    checkbox.id = 'treatment_' + treatment.id;  
+                    checkbox.id = treatment.id;  
                     checkbox.value = treatment.id;
     
                     const label = document.createElement('label');
@@ -193,8 +194,17 @@
     function addDiagnostic() {
         const diagnosticDate = document.getElementById('diagnosticDate').value;
         const diagnosticDescription = document.getElementById('diagnosticDescription').value;
-        const selectedTreatments = getSelectedTreatments();
+        
+        const selectedTreatments = getSelectedTreatments().map(treatment => {
+            return {
+                id: 0,
+                diagnostic: null,
+                treatment: { id: treatment.id }
+            };
+        });
 
+        console.log(selectedTreatments)
+        
         const recipe = {};
         fetch('/rest/recipe/', {
             method: 'POST',
@@ -214,7 +224,7 @@
                     id: idRecipe
                 },
                 date: diagnosticDate,
-                treatments: selectedTreatments
+                treatmentsDiagnostics: selectedTreatments 
             };
 
             fetch(`/rest/diagnostics/${idMedicalHistory}`, {
@@ -282,7 +292,7 @@
                 Swal.fire('Success', 'Diagnostic added successfully', 'success')
                 .then((result) => {
                     if (result.isConfirmed) {
-                        location.reload();
+                        //location.reload();
                     }
                 });
 

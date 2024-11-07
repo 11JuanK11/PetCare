@@ -27,8 +27,7 @@ function loadPets(clientId) {
                         <td>${pet.age}</td>
                         <td>${pet.weight}</td>
                         <td>${pet.race}</td>
-
-
+                        <td>${pet.sex}</td>
                         <td>
                             <button class="btn btn-warning" style="background-color: #95BDFF; border: none;"
                             onclick="editPet(${pet.id})">Edit</button>
@@ -54,6 +53,7 @@ document.getElementById('petForm').addEventListener('submit', function(event) {
         lastname: document.getElementById('petLastname').value,
         age: document.getElementById('petAge').value,
         race: document.getElementById('petRace').value,
+        sex: document.getElementById('petSex').value,
         weight: document.getElementById('petWeight').value,
         client: { userId: userId }
     };
@@ -93,3 +93,13 @@ function editPet(id) {
     localStorage.setItem('petIdToEdit', id);
     window.location.href = 'http://localhost:8080/client-panel/pets/edit';
 }
+
+
+document.getElementById('uploadButton').addEventListener('click', function() {
+    document.getElementById('petImage').click();
+});
+
+document.getElementById('petImage').addEventListener('change', function() {
+    const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+    document.getElementById('fileNameDisplay').value = fileName;
+});
