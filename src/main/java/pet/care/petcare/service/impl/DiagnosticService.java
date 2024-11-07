@@ -1,7 +1,13 @@
 package pet.care.petcare.service.impl;
 
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import pet.care.petcare.entity.Diagnostic;
 import pet.care.petcare.entity.MedicalHistory;
 import pet.care.petcare.entity.Recipe;
@@ -10,10 +16,8 @@ import pet.care.petcare.exception.ResourceNotFoundException;
 import pet.care.petcare.repository.IDiagnosticRepository;
 import pet.care.petcare.repository.IMedicalHistoryRepository;
 import pet.care.petcare.repository.IRecipeRepository;
+import pet.care.petcare.repository.ITreatmentRepository;
 import pet.care.petcare.service.IDiagnosticService;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class DiagnosticService implements IDiagnosticService {
@@ -26,9 +30,13 @@ public class DiagnosticService implements IDiagnosticService {
     @Autowired
     private IRecipeRepository recipeRepository;
 
+    @Autowired
+    private ITreatmentRepository treatmentRepository;
+
     @Override
     public Diagnostic create(Long medicalHistoryId, Diagnostic diagnostic) throws ResourceNotFoundException {
 
+        diagnostic = getDiagnosticWithTreatments(diagnostic);
         MedicalHistory medicalHistory = medicalHistoryRepository.findById(medicalHistoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Medical history not found."));
 
@@ -53,5 +61,14 @@ public class DiagnosticService implements IDiagnosticService {
     @Override
     public List<Diagnostic> readAll() {
         return diagnosticRepository.findAll();
+    }
+
+    private Diagnostic getDiagnosticWithTreatments(Diagnostic diagnostic){
+        Set<Treatment> findTreatments = new HashSet<Treatment>();
+        for (Treatment treatment : diagnostic.getTreatments()) {
+            findTreatments.add(treatmentRepository.findById(treatment.getId()).get());
+        }
+        diagnostic.setTreatments(findTreatments);
+        return diagnostic;
     }
 }

@@ -56,3 +56,71 @@
             margin: 0;
             color: #333;
         }
+
+        #accordionTreatmentsCustom .accordion-item-custom {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        #accordionTreatmentsCustom .accordion-header-custom {
+            font-size: 1rem;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        #accordionTreatmentsCustom .accordion-header-custom button {
+            width: 100%;
+            padding: 8px 12px;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: left;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: normal;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.1s ease;
+        }
+
+        #accordionTreatmentsCustom .accordion-header-custom button:focus,
+        #accordionTreatmentsCustom .accordion-header-custom button:not(.collapsed) {
+            background-color: #e0e0e0;
+        }
+
+        #accordionTreatmentsCustom .accordion-collapse-custom {
+            padding: 8px 12px;
+            display: none;
+            transition: max-height 0.1s ease-in-out;
+
+        }
+
+        #accordionTreatmentsCustom .accordion-collapse-custom.show {
+            display: block;
+            transition: max-height 0.04s ease-in;
+
+        }
+
+        #accordionTreatmentsCustom .accordion-body-custom {
+            padding: 8px 0;
+            color: #333;
+            font-weight: normal;
+        }
+
+        .accordion-icon {
+            width: 10px;
+            height: 10px;
+            border-style: solid;
+            border-width: 2px 2px 0 0;
+            transform: rotate(135deg);
+            transition: transform 0.3s ease;
+            margin-left: auto;
+        }
+
+        #accordionButtonTreatments[aria-expanded="true"] .accordion-icon {
+            transform: rotate(-45deg);
+        }

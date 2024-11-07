@@ -1,6 +1,38 @@
     document.addEventListener('DOMContentLoaded', () => {
         loadMedications();
+        fetchTreatments();
     });
+
+    function fetchTreatments() {
+        fetch('/rest/treatments/') 
+            .then(response => response.json())
+            .then(data => {
+                const treatmentsContainer = document.getElementById("accordionTreatmentsBody");
+    
+                treatmentsContainer.innerHTML = '';
+    
+                data.forEach(treatment => {
+                    const checkboxDiv = document.createElement('div');
+                    checkboxDiv.classList.add('form-check');
+    
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.classList.add('form-check-input');
+                    checkbox.id = 'treatment_' + treatment.id;  
+                    checkbox.value = treatment.id;
+    
+                    const label = document.createElement('label');
+                    label.classList.add('form-check-label');
+                    label.setAttribute('for', checkbox.id);
+                    label.textContent = treatment.name;
+    
+                    checkboxDiv.appendChild(checkbox);
+                    checkboxDiv.appendChild(label);
+                    treatmentsContainer.appendChild(checkboxDiv);
+                });
+            })
+            .catch(error => console.error('Error fetching treatments:', error));
+    }
 
     function loadMedications() {
         fetch('/rest/medications/')
@@ -161,6 +193,7 @@
     function addDiagnostic() {
         const diagnosticDate = document.getElementById('diagnosticDate').value;
         const diagnosticDescription = document.getElementById('diagnosticDescription').value;
+        const selectedTreatments = getSelectedTreatments();
 
         const recipe = {};
         fetch('/rest/recipe/', {
@@ -180,7 +213,8 @@
                 recipe: {
                     id: idRecipe
                 },
-                date: diagnosticDate
+                date: diagnosticDate,
+                treatments: selectedTreatments
             };
 
             fetch(`/rest/diagnostics/${idMedicalHistory}`, {
@@ -265,6 +299,15 @@
                 Swal.fire('Error', error.message || 'Could not add diagnostic.', 'error');
             });
         }
+    }
+
+    function getSelectedTreatments() {
+        const selectedTreatments = [];
+        const checkboxes = document.querySelectorAll('#accordionTreatmentsBody input[type="checkbox"]:checked');
+        checkboxes.forEach(checkbox => {
+            selectedTreatments.push({ id: checkbox.value });
+        });
+        return selectedTreatments;
     }
 
 

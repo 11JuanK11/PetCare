@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Data
@@ -20,5 +21,13 @@ public class Treatment implements Serializable {
 
     @NotNull(message = "Treatment price cannot be null")
     private Integer price;
+
+    @ManyToMany
+    @JoinTable(
+            name = "treatments_diagnostics",
+            joinColumns = @JoinColumn(name = "treatment_id"),
+            inverseJoinColumns = @JoinColumn(name = "diagnostic_id")
+    )
+    private Set<Diagnostic> diagnostics;
 
 }
