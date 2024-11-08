@@ -4,7 +4,7 @@
     });
 
     function fetchTreatments() {
-        fetch('/rest/treatments/') 
+        fetch('/rest/treatments/')
             .then(response => response.json())
             .then(data => {
                 const treatmentsContainer = document.getElementById("accordionTreatmentsBody");
@@ -13,13 +13,12 @@
     
                 data.forEach(treatment => {
                     const checkboxDiv = document.createElement('div');
-                    checkboxDiv.classList.add('form-check');
+                    checkboxDiv.classList.add('form-check', 'treatment-check');  
     
-                    console.log("treatments id:" + treatment.id);
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
-                    checkbox.classList.add('form-check-input');
-                    checkbox.id = treatment.id;  
+                    checkbox.classList.add('form-check-input', 'treatment-checkbox');  
+                    checkbox.id = `treatment_${treatment.id}`;
                     checkbox.value = treatment.id;
     
                     const label = document.createElement('label');
@@ -34,6 +33,7 @@
             })
             .catch(error => console.error('Error fetching treatments:', error));
     }
+    
 
     function loadMedications() {
         fetch('/rest/medications/')
@@ -130,26 +130,33 @@
     function validateFields() {
         const diagnosticDate = document.getElementById('diagnosticDate').value;
         const diagnosticDescription = document.getElementById('diagnosticDescription').value;
-
+    
         if (!diagnosticDate) {
             Swal.fire('Error', 'The date is required.', 'error');
             return false;
         }
-
+    
         if (!diagnosticDescription) {
             Swal.fire('Error', 'The description is required.', 'error');
             return false;
         }
+    
+        const selectedTreatments = document.querySelectorAll('.treatment-checkbox:checked');  // Selecciona los checkboxes con la clase "treatment-checkbox"
+        if (selectedTreatments.length === 0) {
+            Swal.fire('Error', 'Please select at least one treatment.', 'error');
+            return false;
+        }
 
+    
         const selectedMedications = document.querySelectorAll('.form-check-input:checked');
         if (selectedMedications.length === 0) {
             Swal.fire('Error', 'Please select at least one medication.', 'error');
             return false;
         }
-
+    
         let isComplete = true;
         selectedMedications.forEach(checkbox => {
-            if(checkbox.dataset.id){
+            if (checkbox.dataset.id) {
                 const medicationId = checkbox.dataset.id;
                 const amount = document.querySelector(`input[name="amount_${medicationId}"]`).value;
                 const description = document.querySelector(`input[name="description_${medicationId}"]`).value;
@@ -159,9 +166,10 @@
                 }
             }
         });
-
+    
         return isComplete;
     }
+    
 
 
     function collectMedicationData() {
@@ -194,17 +202,15 @@
     function addDiagnostic() {
         const diagnosticDate = document.getElementById('diagnosticDate').value;
         const diagnosticDescription = document.getElementById('diagnosticDescription').value;
-        
+    
         const selectedTreatments = getSelectedTreatments().map(treatment => {
             return {
-                id: 0,
-                diagnostic: null,
-                treatment: { id: treatment.id }
+                treatment: {
+                    id: treatment.id
+                }
             };
         });
-
-        console.log(selectedTreatments)
-        
+    
         const recipe = {};
         fetch('/rest/recipe/', {
             method: 'POST',
@@ -217,16 +223,13 @@
         .then(recipe => {
             const idRecipe = recipe.id;
             const idMedicalHistory = localStorage.getItem('idMedicalHistory');
-
+    
             const diagnostic = {
                 description: diagnosticDescription,
-                recipe: {
-                    id: idRecipe
-                },
-                date: diagnosticDate,
-                treatmentsDiagnostics: selectedTreatments 
+                recipe: { id: idRecipe },
+                date: diagnosticDate
             };
-
+    
             fetch(`/rest/diagnostics/${idMedicalHistory}`, {
                 method: 'POST',
                 headers: {
@@ -234,22 +237,45 @@
                 },
                 body: JSON.stringify(diagnostic)
             })
-            .then(response => {
-                console.log('Successfully added diagnostic');
+            .then(response => response.json())
+            .then(diagnosticResponse => {
+                console.log('Successfully added diagnostic', diagnosticResponse);
+                
+                const treatmentsDiagnostics = selectedTreatments.map(t => {
+                    return {
+                        diagnostic: { id: diagnosticResponse.id },
+                        treatment: t.treatment
+                    };
+                });
+    
+                fetch('/rest/treatments-diagnostics/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(treatmentsDiagnostics)
+                })
+                .then(response => response.json())
+                .then(treatmentDiagnosticResponse => {
+                    console.log('Successfully added treatments to diagnostic', treatmentDiagnosticResponse);
+                })
+                .catch(error => {
+                    console.error('Error adding treatments to diagnostic:', error);
+                    Swal.fire('Error', error.message || 'Could not add treatments.', 'error');
+                });
             })
             .catch(error => {
                 console.error('Error adding diagnostic:', error);
                 Swal.fire('Error', error.message || 'Could not add diagnostic.', 'error');
             });
-
             modifyStoredMedicationData(idRecipe);
             sendMedicationData();
         })
         .catch(error => {
             console.error('Error adding recipe:', error);
-            Swal.fire('Error', error.message || 'Could not add diagnostic.', 'error');
+            Swal.fire('Error', error.message || 'Could not add recipe.', 'error');
         });
-    }
+    }    
 
 
     function modifyStoredMedicationData(id) {
@@ -292,7 +318,7 @@
                 Swal.fire('Success', 'Diagnostic added successfully', 'success')
                 .then((result) => {
                     if (result.isConfirmed) {
-                        //location.reload();
+                        location.reload();
                     }
                 });
 

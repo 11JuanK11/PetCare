@@ -85,12 +85,23 @@
                             <input type="text" class="form-control" id="petLastname" name="lastname" placeholder="Enter pet name here" required>
                         </div>
                         <div class="col-12 col-md-4">
-                            <label for="petAge">Pet Age <span style="color: red;">*</span></label>
+                            <label for="petAge">Pet Age (Years) <span style="color: red;">*</span></label>
                             <input type="number" class="form-control" id="petAge" name="age" placeholder="Enter pet age here" required min="1">
                         </div>
                         <div class="col-12 col-md-4">
                             <label for="petRace">Pet Race <span style="color: red;">*</span></label>
-                            <input type="text" class="form-control" id="petRace" name="race" placeholder="Enter pet race here" required>
+                            <select class="form-control" id="petRace" name="race" required>
+                                <option value="">Select pet race</option>
+                                <option value="Lovebird">Lovebird</option>
+                                <option value="Nymph">Nymph</option>
+                                <option value="Kramer">Kramer</option>
+                                <option value="Rosella">Rosella</option>
+                                <option value="Ferret">Ferret</option>
+                                <option value="Hedgehog">Hedgehog</option>
+                                <option value="Mini Pig">Mini Pig</option>
+                                <option value="Chameleon">Chameleon</option>
+                                <option value="Ornamental Fish">Ornamental Fish</option>
+                            </select>
                         </div>
                         <div class="col-12 col-md-4">
                             <label for="petWeight">Pet Weight (kg) <span style="color: red;">*</span></label>

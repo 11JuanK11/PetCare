@@ -40,14 +40,14 @@ function loadMedicalHistory(petId) {
     function displayDiagnostics(diagnostics) {
         const container = document.getElementById('medicalHistoryContainer');
         container.innerHTML = '';
-
+    
         if (!diagnostics || diagnostics.length === 0) {
             container.innerHTML = `<p>No diagnostic records available for this pet.</p>`;
             return;
         }
-
+    
         diagnostics.sort((a, b) => new Date(b.date) - new Date(a.date));
-
+    
         const groupedDiagnostics = {};
         diagnostics.forEach(diagnostic => {
             const date = new Date(diagnostic.date).toLocaleDateString('en-US', {
@@ -56,35 +56,42 @@ function loadMedicalHistory(petId) {
                 month: '2-digit',
                 day: '2-digit'
             });
-
+    
             if (!groupedDiagnostics[date]) {
                 groupedDiagnostics[date] = [];
             }
             groupedDiagnostics[date].push(diagnostic);
         });
-
+    
         for (const date in groupedDiagnostics) {
+
             const dateDiagnostics = groupedDiagnostics[date];
             const accordionHtml = `
                 <button class="accordion">${date}</button>
-                <div class="panel">
-                    ${dateDiagnostics.map(diagnostic => `
-                        <div>
-                            <p><strong>Description for the diagnostic:</strong> ${diagnostic.description}</p>
-                            <br>
-                            <div id="recipe-${diagnostic.id}"></div>
-                            <hr>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+                    <div class="panel">
+                        ${dateDiagnostics.map(diagnostic => `
+                            <div id="diagnostic-${diagnostic.id}">
+                                <p><strong>Description for the diagnostic:</strong> ${diagnostic.description}</p>
+                                <p><strong>Treatments:</strong></p>
+                                <ul id="treatments-list-${diagnostic.id}"></ul>
+                                <br>
+                                <div id="recipe-${diagnostic.id}"></div>
+                                <hr>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
             container.innerHTML += accordionHtml;
+    
+            dateDiagnostics.forEach(diagnostic => {
+                loadTreatmentsForDiagnostic(diagnostic.id);
+            });
 
             dateDiagnostics.forEach(diagnostic => {
                 loadRecipeAndDoses(diagnostic);
             });
         }
-
+    
         const accordions = document.getElementsByClassName("accordion");
         for (let i = 0; i < accordions.length; i++) {
             accordions[i].addEventListener("click", function() {
@@ -121,6 +128,27 @@ function loadMedicalHistory(petId) {
             const recipeContainer = document.getElementById(`recipe-${diagnostic.id}`);
             recipeContainer.innerHTML = `<p>No recipe associated with this diagnostic.</p>`;
         }
+    }
+
+    function loadTreatmentsForDiagnostic(diagnosticId) {
+        fetch(`/rest/treatments-diagnostics/${diagnosticId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error loading treatments for diagnostic.');
+                }
+                return response.json();
+            })
+            .then(treatments => {
+                const treatmentsListContainer = document.getElementById(`treatments-list-${diagnosticId}`);
+                treatmentsListContainer.innerHTML = treatments.map(treatment => `
+                    <li>${treatment.name}</li>
+                `).join('');
+            })
+            .catch(error => {
+                console.error('Error loading treatments:', error.message);
+                const treatmentsListContainer = document.getElementById(`treatments-list-${diagnosticId}`);
+                treatmentsListContainer.innerHTML = '<li>No treatments available for this diagnostic.</li>';
+            });
     }
 
     function loadDoseAndMedication(dose) {
