@@ -2,8 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const petId = localStorage.getItem('petIdToEdit');
     const userId = document.getElementById('userId').textContent.trim();
 
-    console.log(petId);
-    console.log(userId);
     if (!petId || petId === 'null') {
         window.location.href = 'http://localhost:8080/client-panel/pets';
         return;
@@ -12,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPetData(petId);
 
     document.getElementById('petForm').addEventListener('submit', function(event) {
-        event.preventDefault(); 
+        event.preventDefault();
         if (validateForm()) {
             updatePet(petId);
         }
@@ -25,8 +23,9 @@ function validateForm() {
     const petAge = document.getElementById('petAge').value.trim();
     const petRace = document.getElementById('petRace').value.trim();
     const petWeight = document.getElementById('petWeight').value.trim();
+    const petSex = document.getElementById('petSex').value;
 
-    if (!petName || !petLastname || !petAge || !petRace || !petWeight) {
+    if (!petName || !petLastname || !petAge || !petRace || !petWeight || !petSex) {
         Swal.fire({
             title: 'Warning!',
             text: 'All fields are required!',
@@ -46,8 +45,9 @@ function loadPetData(id) {
             document.getElementById('petLastname').value = pet.lastname;
             document.getElementById('petAge').value = pet.age;
             document.getElementById('petRace').value = pet.race;
+            document.getElementById('petSex').value = pet.sex;
             document.getElementById('petWeight').value = pet.weight;
-            document.getElementById('petImageDisplay').src = pet.image; 
+            document.getElementById('petImageDisplay').src = pet.image;
         })
         .catch(error => console.error('Error loading pet data:', error));
 }
@@ -61,29 +61,10 @@ async function updatePet(petId) {
         lastname: document.getElementById('petLastname').value,
         age: document.getElementById('petAge').value,
         race: document.getElementById('petRace').value,
+        sex: document.getElementById('petSex').value,
         weight: document.getElementById('petWeight').value,
         client: { userId: userId }
     };
-
-    const result = await Swal.fire({
-        title: 'Confirm Update',
-        html: `
-            <p><strong>Name:</strong> ${petData.name}</p>
-            <p><strong>Lastname:</strong> ${petData.lastname}</p>
-            <p><strong>Age:</strong> ${petData.age}</p>
-            <p><strong>Race:</strong> ${petData.race}</p>
-            <p><strong>Weight:</strong> ${petData.weight}</p>
-        `,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Go Back'
-    });
-    
-
-    if (!result.isConfirmed) {
-        return;
-    }
 
     const formData = new FormData();
     formData.append('pet', new Blob([JSON.stringify(petData)], { type: 'application/json' }));
@@ -94,7 +75,7 @@ async function updatePet(petId) {
     } else {
         const existingImageSrc = document.getElementById('petImageDisplay').src;
         const filename = existingImageSrc.split('/').pop();
-        
+
         try {
             const response = await fetch(`http://localhost:8080/uploads/${filename}`);
             const blob = await response.blob();
@@ -117,7 +98,6 @@ async function updatePet(petId) {
         return response.json();
     })
     .then(data => {
-        console.log('Success:', data);
         Swal.fire({
             title: 'Success!',
             text: 'Pet updated successfully!',
@@ -137,3 +117,13 @@ async function updatePet(petId) {
         });
     });
 }
+
+document.getElementById('uploadButton').addEventListener('click', function() {
+    document.getElementById('petImage').click();
+});
+
+document.getElementById('petImage').addEventListener('change', function() {
+    const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+    document.getElementById('fileNameDisplay').value = fileName;
+});
+

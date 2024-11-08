@@ -36,6 +36,10 @@ public class Pet {
     @Column(nullable = false)
     private String race;
 
+    @NotNull(message = "The sex is required")
+    @Column(nullable = false)
+    private String sex;
+
     @NotNull(message = "The weight is required")
     @Column(nullable = false)
     private Float weight;

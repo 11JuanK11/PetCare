@@ -1,19 +1,19 @@
 package pet.care.petcare.service.impl;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import pet.care.petcare.entity.Diagnostic;
 import pet.care.petcare.entity.MedicalHistory;
 import pet.care.petcare.entity.Recipe;
-import pet.care.petcare.entity.Treatment;
 import pet.care.petcare.exception.ResourceNotFoundException;
 import pet.care.petcare.repository.IDiagnosticRepository;
 import pet.care.petcare.repository.IMedicalHistoryRepository;
 import pet.care.petcare.repository.IRecipeRepository;
 import pet.care.petcare.service.IDiagnosticService;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class DiagnosticService implements IDiagnosticService {

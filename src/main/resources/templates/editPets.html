@@ -97,17 +97,44 @@
                         </div>
                         <div class="col-12 col-md-4">
                             <label for="petRace">Pet Race <span style="color: red;">*</span></label>
-                            <input type="text" class="form-control" id="petRace" name="race" placeholder="Enter pet race here" required>
+                            <select class="form-control" id="petRace" name="race" required>
+                                <option value="">Select pet race</option>
+                                <option value="Lovebird">Lovebird</option>
+                                <option value="Nymph">Nymph</option>
+                                <option value="Kramer">Kramer</option>
+                                <option value="Rosella">Rosella</option>
+                                <option value="Ferret">Ferret</option>
+                                <option value="Hedgehog">Hedgehog</option>
+                                <option value="Mini Pig">Mini Pig</option>
+                                <option value="Chameleon">Chameleon</option>
+                                <option value="Ornamental Fish">Ornamental Fish</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="petSex">Sex <span style="color: red;">*</span></label>
+                            <select class="form-control" id="petSex" name="sex" required>
+                                <option value="" disabled selected>Select pet sex</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Not Applicable">Not Applicable</option>
+                            </select>
                         </div>
                         <div class="col-12 col-md-4">
                             <label for="petWeight">Pet Weight (kg) <span style="color: red;">*</span></label>
                             <input type="number" class="form-control" id="petWeight" name="weight" placeholder="Enter pet weight here" required min="0" step="0.1">
                         </div>
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-4 mb-3">
                             <label for="petImage">Upload Pet Image</label>
-                            <input type="file" class="form-control" id="petImage" name="image" accept="image/*">
+                            <div class="input-group">
+                                <button type="button" class="btn btn-info" style="background-color: #95BDFF;" id="uploadButton">Select Image</button>
+                                <input type="file" class="form-control" id="petImage" name="image" accept="image/*" style="display: none;">
+                                <input type="text" class="form-control" id="fileNameDisplay" placeholder="No file chosen" readonly>
+                            </div>
                         </div>
                         <input type="hidden" name="ownerId" id="ownerId" value="" />
+                        <hr>
+                    </div>
+                    <div class="row g-3">
                         <div class="col-auto d-grid">
                             <button type="submit" class="btn btn-primary">Update Pet</button>
                         </div>
