@@ -17,11 +17,13 @@ function loadTreatments() {
             treatmentList.innerHTML = '';
 
             treatments.forEach(treatment => {
+                const formattedPrice = 'COP ' + new Intl.NumberFormat('es-CO', { minimumFractionDigits: 0 }).format(treatment.price);
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${treatment.id}</td>
                     <td>${treatment.name}</td>
-                    <td>${treatment.price}</td>
+                    <td>${formattedPrice}</td>
                     <td>
                         <button class="btn" style="background-color: #95BDFF; border: none;"
                                 onclick="editTreatment(${treatment.id})">Edit</button>
@@ -34,6 +36,7 @@ function loadTreatments() {
         })
         .catch(error => console.error('Error loading treatments:', error));
 }
+
 
 function editTreatment(id) {
     localStorage.setItem('treatmentIdToEdit', id);
