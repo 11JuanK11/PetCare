@@ -57,17 +57,12 @@ function drop(event) {
         const vet = veterinarians.find(v => v.userId == vetId);
         if (vet) {
             if (slot.classList.contains("slot-filled")) {
-                const existingVetId = slot.dataset.vetId;
-                const existingVet = veterinarians.find(v => v.userId == existingVetId);
-                addVetToPanel(existingVet);
+                return;
             }
 
             slot.classList.add("slot-filled");
             slot.innerHTML = `${vet.name} ${vet.lastname}<br>ID: ${vet.userId} <button onclick="removeVetFromSlot('${slot.id}')" class="btn btn-danger btn-sm ms-2">x</button>`;
             slot.dataset.vetId = vetId;
-
-            const vetCard = document.querySelector(`.vet-card[data-id='${vetId}']`);
-            if (vetCard) vetCard.remove();
 
             const schedule = JSON.parse(localStorage.getItem("schedule")) || {};
             schedule[slot.id] = vetId;
@@ -86,7 +81,6 @@ function removeVetFromSlot(slotId) {
     const vetId = slot.dataset.vetId;
     if (vetId) {
         const vet = veterinarians.find(v => v.userId == vetId);
-        addVetToPanel(vet);
         slot.classList.remove("slot-filled");
         slot.innerHTML = "";
         delete slot.dataset.vetId;
@@ -117,13 +111,11 @@ async function checkWeekAvailability(startDate) {
 
 async function generateSchedule() {
     const schedule = JSON.parse(localStorage.getItem("schedule"));
-    console.log("Generating schedule for the database:", schedule);
 
     if (schedule && Object.keys(schedule).length > 0) {
         const mondayDateStr = document.getElementById("monday-picker").value;
 
         const mondayDate = new Date(mondayDateStr);
-        console.log(`Schedule will start on: ${mondayDate}`);
 
         try {
             const weekOccupied = await checkWeekAvailability(mondayDate);
@@ -178,7 +170,6 @@ async function generateSchedule() {
             }
 
             const weeklyScheduleResult = await weeklyScheduleResponse.json();
-            console.log("WeeklySchedule created:", weeklyScheduleResult);
 
             for (const schedule of schedules) {
                 const updateResponse = await fetch(`http://localhost:8080/rest/schedule/update/${schedule.id}`, {

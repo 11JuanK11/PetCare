@@ -20,4 +20,9 @@ public interface IScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("SELECT s FROM Schedule s WHERE s.clinicStaff.id = :clinicStaffId")
     List<Schedule> findByClinicStaffId(@Param("clinicStaffId") Long clinicStaffId);
+
+    Optional<Schedule> findByDateAndClinicStaff_UserId(LocalDate date, Long clinicStaffId);
+    void deleteByDateAndClinicStaff_UserId(LocalDate date, Long clinicStaffId);
+
+    List<Schedule> findByClinicStaffUserIdAndDate(Long userId, LocalDate date);
 }

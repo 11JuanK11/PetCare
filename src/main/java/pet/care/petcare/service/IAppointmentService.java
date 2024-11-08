@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IAppointmentService {
 
-    List<Appointment> createAppointmentsForClinicStaff(Long clinicStaffId);
+    List<Appointment> createAppointmentsForClinicStaffAndDate(Long clinicStaffId, LocalDate date);
     Appointment assignAppointment(Long clinicStaffId, LocalTime startTime, LocalTime endTime, LocalDate date);
     void deleteAppointment(Long appointmentId);
     Appointment readById(Long id);

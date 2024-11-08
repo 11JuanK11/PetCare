@@ -1,5 +1,6 @@
 package pet.care.petcare.service.impl;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pet.care.petcare.entity.Appointment;
@@ -23,10 +24,11 @@ public class AppointmentService implements IAppointmentService {
     @Autowired
     private IAppointmentRepository appointmentRepository;
 
-    public List<Appointment> createAppointmentsForClinicStaff(Long clinicStaffId) {
-        List<Appointment> appointments = new ArrayList<>();
+    @Transactional
+    public List<Appointment> createAppointmentsForClinicStaffAndDate(Long clinicStaffId, LocalDate date) {
+        List<Schedule> schedules = scheduleRepository.findByClinicStaffUserIdAndDate(clinicStaffId, date);
 
-        List<Schedule> schedules = scheduleRepository.findByClinicStaffId(clinicStaffId);
+        List<Appointment> appointments = new ArrayList<>();
 
         for (Schedule schedule : schedules) {
             LocalTime currentStartTime = schedule.getStartTime();
@@ -36,7 +38,7 @@ public class AppointmentService implements IAppointmentService {
                 appointment.setStartTime(currentStartTime);
                 appointment.setEndTime(currentStartTime.plusMinutes(30));
                 appointment.setDate(schedule.getDate());
-                appointment.setAvailable(true); // disponible
+                appointment.setAvailable(true);
                 appointment.setClinicStaff(schedule.getClinicStaff());
 
                 appointments.add(appointment);
@@ -69,6 +71,11 @@ public class AppointmentService implements IAppointmentService {
         } else {
             System.out.println("No appointments found for the date: " + date);
         }
+    }
+
+    @Transactional
+    public void deleteAppointmentByDateAndClinicStaffId(LocalDate date, Long clinicStaffId) {
+        appointmentRepository.deleteByDateAndClinicStaff_UserId(date, clinicStaffId);
     }
 
 

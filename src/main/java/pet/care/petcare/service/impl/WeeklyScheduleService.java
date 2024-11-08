@@ -39,10 +39,12 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
         weeklySchedule.setStartDate(startDate);
 
         List<Schedule> schedules = new ArrayList<>(weeklySchedule.getSchedules());
-        weeklySchedule.setSchedules(new ArrayList<>());
+        weeklySchedule.setSchedules(new ArrayList<>()); // Clear the list before saving
 
+        // Save WeeklySchedule first
         WeeklySchedule savedWeeklySchedule = weeklyScheduleRepository.saveAndFlush(weeklySchedule);
 
+        // Link the schedules with the weekly schedule and save them
         for (Schedule schedule : schedules) {
             if (schedule.getClinicStaff() == null) {
                 throw new ResourceNotFoundException("Schedule with null clinicStaff is not allowed.");
@@ -54,13 +56,14 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
         weeklyScheduleRepository.save(savedWeeklySchedule);
 
         for (Schedule schedule : savedWeeklySchedule.getSchedules()) {
-            appointmentService.createAppointmentsForClinicStaff(schedule.getClinicStaff().getUserId());
+            appointmentService.createAppointmentsForClinicStaffAndDate(schedule.getClinicStaff().getUserId(), schedule.getDate());
         }
 
         return savedWeeklySchedule;
     }
 
-    @Transactional
+
+    /*@Transactional
     public WeeklySchedule createWithStartDate(List<Schedule> schedules, LocalDate startDate) throws ResourceNotFoundException {
         if (schedules == null || schedules.isEmpty()) {
             throw new IllegalArgumentException("Schedules cannot be null or empty.");
@@ -88,7 +91,7 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
         }
 
         return weeklySchedule;
-    }
+    }*/
 
 
 

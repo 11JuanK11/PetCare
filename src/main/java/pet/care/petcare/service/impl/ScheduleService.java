@@ -34,13 +34,11 @@ public class ScheduleService implements IScheduleService {
         ClinicStaff clinicStaff = clinicStaffRepository.findById(clinicStaffId)
                 .orElseThrow(() -> new IllegalArgumentException("Veterinarian not found"));
 
-        // Verificar si el veterinario ya tiene un turno asignado para esa fecha
         Optional<Schedule> existingSchedule = scheduleRepository.findByClinicStaffAndDate(clinicStaff, date);
         if (existingSchedule.isPresent()) {
             throw new IllegalArgumentException("Veterinarian is already scheduled for this date");
         }
 
-        // Verificar si hay algún horario en la fecha dada
         boolean exists = checkIfScheduleExists(date);
         if (exists) {
             throw new IllegalArgumentException("There is already a schedule assigned for this date");
@@ -49,7 +47,7 @@ public class ScheduleService implements IScheduleService {
         Schedule schedule = new Schedule();
         schedule.setClinicStaff(clinicStaff);
         schedule.setDate(date);
-        schedule.setAvailable(true); // Marcar como no disponible al crear el horario
+        schedule.setAvailable(true);
         return scheduleRepository.save(schedule);
     }
 
@@ -72,7 +70,6 @@ public class ScheduleService implements IScheduleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id: " + scheduleId));
 
         if (updates.containsKey("weeklyScheduleId")) {
-            // Suponiendo que el weeklyScheduleId es un Long
             Long weeklyScheduleId = ((Number) updates.get("weeklyScheduleId")).longValue();
             WeeklySchedule weeklySchedule = weeklyScheduleRepository.findById(weeklyScheduleId)
                     .orElseThrow(() -> new ResourceNotFoundException("WeeklySchedule not found with id: " + weeklyScheduleId));
@@ -87,6 +84,13 @@ public class ScheduleService implements IScheduleService {
         return existingSchedule.isPresent();
     }
 
+    public Optional<Schedule> findScheduleByDateAndClinicStaffId(LocalDate date, Long clinicStaffId) {
+        return scheduleRepository.findByDateAndClinicStaff_UserId(date, clinicStaffId);
+    }
 
+    @Transactional
+    public void deleteScheduleByDateAndClinicStaffId(LocalDate date, Long clinicStaffId) {
+        scheduleRepository.deleteByDateAndClinicStaff_UserId(date, clinicStaffId);
+    }
 
 }
