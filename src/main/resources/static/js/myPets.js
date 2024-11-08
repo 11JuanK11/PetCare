@@ -24,7 +24,7 @@ function loadPets(clientId) {
                     row.innerHTML = `
                         <td>${pet.id}</td>
                         <td>${pet.name} ${pet.lastname}</td>
-                        <td>${pet.age}</td>
+                        <td>${calculateAge(pet.age)}</td>
                         <td>${pet.weight}</td>
                         <td>${pet.race}</td>
                         <td>${pet.sex}</td>
@@ -103,3 +103,43 @@ document.getElementById('petImage').addEventListener('change', function() {
     const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
     document.getElementById('fileNameDisplay').value = fileName;
 });
+
+function calculateAge(birthDate) {
+    const currentDate = new Date();
+    const birthDateObj = new Date(birthDate);
+
+    let ageInYears = currentDate.getFullYear() - birthDateObj.getFullYear();
+    const monthDifference = currentDate.getMonth() - birthDateObj.getMonth();
+    const dayDifference = currentDate.getDate() - birthDateObj.getDate();
+
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+        ageInYears--;
+    }
+
+    if (ageInYears === 0) {
+        const ageInMonths = currentDate.getMonth() - birthDateObj.getMonth() + (ageInYears * 12);
+        if (ageInMonths < 0) {
+            ageInMonths += 12;
+        }
+
+        if (ageInMonths === 0) {
+            const ageInDays = dayDifference;
+            return `${ageInDays} days`;
+        } else {
+            return `${ageInMonths} months`;
+        }
+    } else {
+        return `${ageInYears} years`;
+    }
+}
+
+function getCurrentDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); 
+    const day = String(today.getDate()).padStart(2, '0');        
+    return `${year}-${month}-${day}`;
+}
+
+    const currentDate = getCurrentDate();
+    document.getElementById('petAge').setAttribute('max', currentDate);
