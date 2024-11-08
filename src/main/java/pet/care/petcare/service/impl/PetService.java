@@ -129,7 +129,8 @@ public class PetService implements IPetService {
                     newPet.getLastname().equals(pet.getLastname()) &&
                     newPet.getAge().equals(pet.getAge()) &&
                     newPet.getRace().equals(pet.getRace()) &&
-                    newPet.getWeight().equals(pet.getWeight())) {
+                    newPet.getWeight().equals(pet.getWeight()) &&
+                    newPet.getSex().equals(pet.getSex())) {
                     validation = true;
                     break;
                 }

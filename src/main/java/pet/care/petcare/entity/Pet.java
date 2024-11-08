@@ -1,5 +1,7 @@
 package pet.care.petcare.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +32,7 @@ public class Pet {
 
     @NotNull(message = "The age is required")
     @Column(nullable = false)
-    private Long age;
+    private LocalDate age;
 
     @NotNull(message = "The race is required")
     @Column(nullable = false)

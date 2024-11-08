@@ -21,7 +21,7 @@ function populateTable(pets) {
         row.innerHTML = `
             <td>${pet.id}</td>
             <td>${pet.name}</td>
-            <td>${pet.age}</td>
+            <td>${calculateAge(pet.age)}</td>
             <td>${pet.race}</td>
             <td>${pet.weight}</td>
             <td>
@@ -41,7 +41,7 @@ function populateTable(pets) {
         row.innerHTML = `
             <td>${pet.id}</td>
             <td>${pet.name}</td>
-            <td>${pet.age}</td>
+            <td>${calculateAge(pet.age)}</td>
             <td>${pet.race}</td>
             <td>${pet.weight}</td>
             <td>
@@ -120,3 +120,32 @@ window.onload = fetchPets;
 
 document.getElementById('searchId').addEventListener('input', searchPets);
 document.getElementById('searchName').addEventListener('input', searchPets);
+
+function calculateAge(birthDate) {
+    const currentDate = new Date();
+    const birthDateObj = new Date(birthDate);
+
+    let ageInYears = currentDate.getFullYear() - birthDateObj.getFullYear();
+    const monthDifference = currentDate.getMonth() - birthDateObj.getMonth();
+    const dayDifference = currentDate.getDate() - birthDateObj.getDate();
+
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+        ageInYears--;
+    }
+
+    if (ageInYears === 0) {
+        const ageInMonths = currentDate.getMonth() - birthDateObj.getMonth() + (ageInYears * 12);
+        if (ageInMonths < 0) {
+            ageInMonths += 12;
+        }
+
+        if (ageInMonths === 0) {
+            const ageInDays = dayDifference;
+            return `${ageInDays} days`;
+        } else {
+            return `${ageInMonths} months`;
+        }
+    } else {
+        return `${ageInYears} years`;
+    }
+}
