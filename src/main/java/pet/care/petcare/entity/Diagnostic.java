@@ -13,8 +13,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -41,8 +41,9 @@ public class Diagnostic implements Serializable {
     @JoinColumn(name = "recipe_id", referencedColumnName = "id")
     private Recipe recipe;
 
-    @ManyToMany(mappedBy = "diagnostics")
-    private Set<Treatment> treatments;
+    @OneToMany(mappedBy = "diagnostic", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<TreatmentsDiagnostics> treatmentsDiagnosticses;
 
     @NotNull(message = "Date is required")
     @Column(nullable = false)

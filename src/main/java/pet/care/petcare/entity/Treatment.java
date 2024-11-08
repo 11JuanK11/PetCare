@@ -1,11 +1,17 @@
 package pet.care.petcare.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Set;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 @Entity
 @Data
@@ -22,12 +28,7 @@ public class Treatment implements Serializable {
     @NotNull(message = "Treatment price cannot be null")
     private Integer price;
 
-    @ManyToMany
-    @JoinTable(
-            name = "treatments_diagnostics",
-            joinColumns = @JoinColumn(name = "treatment_id"),
-            inverseJoinColumns = @JoinColumn(name = "diagnostic_id")
-    )
-    private Set<Diagnostic> diagnostics;
+    @OneToMany(mappedBy = "treatment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TreatmentsDiagnostics> treatmentsDiagnosticses;
 
 }
