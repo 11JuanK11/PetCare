@@ -1,6 +1,7 @@
 package pet.care.petcare.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +18,11 @@ public class AppointmentController {
     @Autowired
     private AppointmentService appointmentService;
 
-    @PostMapping("/create/{clinicStaffId}")
-    public ResponseEntity<List<Appointment>> createAppointmentsForClinicStaff(@PathVariable Long clinicStaffId) {
+    @PostMapping("/create/{clinicStaffId}/{date}")
+    public ResponseEntity<List<Appointment>> createAppointmentsForClinicStaffAndDate(@PathVariable Long clinicStaffId, @PathVariable String date) {
         try {
-            List<Appointment> appointments = appointmentService.createAppointmentsForClinicStaff(clinicStaffId);
+            LocalDate appointmentDate = LocalDate.parse(date);
+            List<Appointment> appointments = appointmentService.createAppointmentsForClinicStaffAndDate(clinicStaffId, appointmentDate);
             return new ResponseEntity<>(appointments, HttpStatus.CREATED);
         } catch (Exception ex) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -42,6 +44,14 @@ public class AppointmentController {
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @DeleteMapping("/delete/{date}/{clinicStaffId}")
+    public void deleteAppointmentByDateAndClinicStaffId(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @PathVariable Long clinicStaffId) {
+
+        appointmentService.deleteAppointmentByDateAndClinicStaffId(date, clinicStaffId);
     }
 
 }

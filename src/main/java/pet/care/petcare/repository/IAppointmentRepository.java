@@ -28,4 +28,6 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
 
     List<Appointment> findByDate(LocalDate date);
 
+    void deleteByDateAndClinicStaff_UserId(LocalDate date, Long clinicStaffId);
+
 }

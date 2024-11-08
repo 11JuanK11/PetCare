@@ -2,6 +2,7 @@ package pet.care.petcare.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import pet.care.petcare.service.impl.ScheduleService;
 
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest/schedule")
@@ -80,6 +82,22 @@ public class ScheduleController {
         } catch (Exception ex) {
             return new ResponseEntity<>("An error occurred while checking the schedule.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/find/{date}/{clinicStaffId}")
+    public Optional<Schedule> getScheduleByDateAndClinicStaffId(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @PathVariable Long clinicStaffId) {
+
+        return scheduleService.findScheduleByDateAndClinicStaffId(date, clinicStaffId);
+    }
+
+    @DeleteMapping("/delete/{date}/{clinicStaffId}")
+    public void deleteScheduleByDateAndClinicStaffId(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @PathVariable Long clinicStaffId) {
+
+        scheduleService.deleteScheduleByDateAndClinicStaffId(date, clinicStaffId);
     }
 
 
