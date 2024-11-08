@@ -91,7 +91,7 @@
                 amountLabel.appendChild(amountAsterisk);
 
                 const amountInput = document.createElement('input');
-                amountInput.type = 'text';
+                amountInput.type = 'number';
                 amountInput.classList.add('form-control', 'mb-2');
                 amountInput.name = `amount_${medicationId}`;
 
@@ -347,66 +347,71 @@
     }
 
 
-    async function validateStock() {
-        const validate = document.getElementById('validateStock');
-        let allValid = true;
+        async function validateStock() {
+            const validate = document.getElementById('validateStock');
+            let allValid = true;
 
-        if (validate.checked) {
-            const storedData = localStorage.getItem('selectedMedications');
+            if (validate.checked) {
+                const storedData = localStorage.getItem('selectedMedications');
 
-            if (storedData) {
-                const doses = JSON.parse(storedData);
+                if (storedData) {
+                    const doses = JSON.parse(storedData);
 
-                await Promise.all(doses.map(async (dose) => {
-                    const medicationId = dose.medication.id;
-
-                    try {
-                        const response = await fetch(`/rest/medications/${medicationId}`);
-                        const medication = await response.json();
-
-                        if (!(medication.stock >= dose.amount)) {
-                            allValid = false;
-                            Swal.fire('Error', 'Validate available stock of medicines.', 'error');
-                        }
-                    } catch (error) {
-                        allValid = false;
-                        console.error('Error updating medication:', error);
-                        Swal.fire('Error', error.message || 'Could not update medication.', 'error');
-                    }
-                }));
-
-                if (allValid) {
                     await Promise.all(doses.map(async (dose) => {
                         const medicationId = dose.medication.id;
-                        const response = await fetch(`/rest/medications/${medicationId}`);
-                        const medication = await response.json();
-                        medication.stock -= dose.amount;
 
-                        const updateMedication = {
-                            name: medication.name,
-                            unitPrice: medication.unitPrice,
-                            stock: medication.stock
-                        };
+                        try {
+                            const response = await fetch(`/rest/medications/${medicationId}`);
+                            const medication = await response.json();
 
-                        const updateResponse = await fetch(`/rest/medications/${medicationId}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(updateMedication)
-                        });
-
-                        if (!updateResponse.ok) {
+                            if (medication.stock === 0) {
+                                allValid = false;
+                                Swal.fire('Error', 'Validate available stock of medicines.', 'error');
+                            }
+                        } catch (error) {
                             allValid = false;
-                            const errorData = await updateResponse.json();
-                            throw new Error(errorData.message || 'Could not update medication stock.');
+                            console.error('Error updating medication:', error);
+                            Swal.fire('Error', error.message || 'Could not add doses.', 'error');
                         }
                     }));
-                    addDiagnostic();
+
+                    if (allValid) {
+                        await Promise.all(doses.map(async (dose) => {
+                            const medicationId = dose.medication.id;
+                            const response = await fetch(`/rest/medications/${medicationId}`);
+                            const medication = await response.json();
+
+                            if(medication.stock < dose.amount){
+                                medication.stock = 0;
+                            } else {
+                                medication.stock -= dose.amount;
+                            }
+
+                            const updateMedication = {
+                                name: medication.name,
+                                unitPrice: medication.unitPrice,
+                                stock: medication.stock
+                            };
+
+                            const updateResponse = await fetch(`/rest/medications/${medicationId}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(updateMedication)
+                            });
+
+                            if (!updateResponse.ok) {
+                                allValid = false;
+                                const errorData = await updateResponse.json();
+                                throw new Error(errorData.message || 'Could not update medication stock.');
+                            }
+                        }));
+                        addDiagnostic();
+                    }
                 }
+            } else {
+                addDiagnostic();
             }
-        } else {
-            addDiagnostic();
         }
-    }
 
