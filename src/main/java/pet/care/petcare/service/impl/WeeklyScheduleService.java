@@ -39,12 +39,10 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
         weeklySchedule.setStartDate(startDate);
 
         List<Schedule> schedules = new ArrayList<>(weeklySchedule.getSchedules());
-        weeklySchedule.setSchedules(new ArrayList<>()); // Clear the list before saving
+        weeklySchedule.setSchedules(new ArrayList<>());
 
-        // Save WeeklySchedule first
         WeeklySchedule savedWeeklySchedule = weeklyScheduleRepository.saveAndFlush(weeklySchedule);
 
-        // Link the schedules with the weekly schedule and save them
         for (Schedule schedule : schedules) {
             if (schedule.getClinicStaff() == null) {
                 throw new ResourceNotFoundException("Schedule with null clinicStaff is not allowed.");
@@ -61,38 +59,6 @@ public class WeeklyScheduleService implements IWeeklyScheduleService {
 
         return savedWeeklySchedule;
     }
-
-
-    /*@Transactional
-    public WeeklySchedule createWithStartDate(List<Schedule> schedules, LocalDate startDate) throws ResourceNotFoundException {
-        if (schedules == null || schedules.isEmpty()) {
-            throw new IllegalArgumentException("Schedules cannot be null or empty.");
-        }
-
-        // Establecer la fecha de inicio del WeeklySchedule
-        WeeklySchedule weeklySchedule = new WeeklySchedule();
-        weeklySchedule.setStartDate(startDate);
-
-        // Asignar los horarios a la nueva programación semanal
-        for (Schedule schedule : schedules) {
-            if (schedule.getClinicStaff() == null) {
-                throw new ResourceNotFoundException("Schedule with null clinicStaff is not allowed.");
-            }
-            schedule.setWeeklySchedule(weeklySchedule);
-        }
-
-        // Guardar el WeeklySchedule y los horarios en la base de datos
-        weeklySchedule = weeklyScheduleRepository.saveAndFlush(weeklySchedule);
-        scheduleRepository.saveAll(schedules);
-
-        // Llamar al servicio de citas (si es necesario)
-        for (Schedule schedule : schedules) {
-            appointmentService.createAppointmentsForClinicStaff(schedule.getClinicStaff().getUserId());
-        }
-
-        return weeklySchedule;
-    }*/
-
 
 
     public WeeklySchedule readById(Long id) throws ResourceNotFoundException {
