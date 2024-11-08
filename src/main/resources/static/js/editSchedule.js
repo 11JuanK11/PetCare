@@ -221,8 +221,7 @@ async function saveScheduleChanges() {
     let scheduleData = Object.entries(schedules);
     console.log(scheduleData);
 
-    const earliestDay = getEarliestDay(scheduleData);
-    console.log(earliestDay);
+    const earliestDay = getEarliestDay(scheduleData);//-------
 
     assignedVets.forEach(vet => {
         let exists = false;
@@ -288,12 +287,17 @@ function getEarliestDay(scheduleData) {
         sat: 5
     };
 
-    const earliestDay = Object.keys(scheduleData).reduce((earliest, day) => {
-        return daysOfWeek[day] < daysOfWeek[earliest] ? day : earliest;
+    const earliestDay = scheduleData.reduce((earliest, current) => {
+        const currentDay = current[0];
+        const earliestDayValue = daysOfWeek[earliest[0]];
+        const currentDayValue = daysOfWeek[currentDay];
+
+        return currentDayValue < earliestDayValue ? current : earliest;
     });
 
-    return earliestDay;
+    return [earliestDay[0], earliestDay[1]];
 }
+
 
 function deleteSchedules(schedulesToDelete) {
     const selectedScheduleId = localStorage.getItem("selectedScheduleId");
@@ -395,10 +399,6 @@ function createSchedules(schedulesToCreate) {
         });
     }).catch(error => console.error("Error fetching weekly schedule:", error));
 }
-
-
-//los que se modifican, ej: uno que ya estaba, lo quite, y luego lo pongo otra vez pero en otro dia
-// el crear toca guardar los nuevos en un array y luego setearles el id de los que no se modificaron, en caso de que se borren todos, crear un nuevo horario semanal
 
 function getMondayOfWeek(date) {
     const adjustedDate = new Date(date);
