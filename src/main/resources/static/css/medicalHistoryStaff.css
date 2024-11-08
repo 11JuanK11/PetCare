@@ -124,3 +124,7 @@
         #accordionButtonTreatments[aria-expanded="true"] .accordion-icon {
             transform: rotate(-45deg);
         }
+
+        .medication-list-dose {
+            margin-left: 22px;
+        }
