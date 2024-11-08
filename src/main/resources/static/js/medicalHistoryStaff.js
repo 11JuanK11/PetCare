@@ -161,16 +161,20 @@ function loadMedicalHistory(petId) {
             })
             .then(medication => {
                 return `
-                    <div>
-                        <p><strong>Medication Name:</strong> ${medication.name}</p>
-                        <p><strong>Amount:</strong> ${dose.amount}</p>
-                        <p><strong>Description:</strong> ${dose.description}</p>
+                <li>
+                    <strong>${medication.name}</strong>
+                    <div class="medication-list-dose">
+                        <strong>Amount:</strong> ${dose.amount}
                     </div>
-                `;
+                    <div class="medication-list-dose">
+                        <strong>Description:</strong> ${dose.description}
+                    </div>
+                </li>
+            `;
             })
             .catch(error => {
                 console.error(error.message);
-                return `<p>No medication details available.</p>`;
+                return `<li>No medication details available.</li>`;
             });
     }
 
