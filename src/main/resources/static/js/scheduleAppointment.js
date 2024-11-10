@@ -1,8 +1,18 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const veterinarianSelect = document.getElementById("veterinarianSelect");
     const dateSelect = document.getElementById("dateSelect");
     const appointmentsContainer = document.querySelector(".appointments .row");
     const messageContainer = document.createElement("div");
+
+    const userIdElement = document.querySelector("#userId span");
+    const userId = userIdElement ? userIdElement.textContent.trim() : null;
+
+    if (userId) {
+        sessionStorage.setItem("userId", userId);
+    }
+
+    const petSelect = document.getElementById("petSelect");
+
     messageContainer.style.backgroundColor = "#f8d7da";
     messageContainer.style.color = "#721c24";
     messageContainer.style.border = "1px solid #f5c6cb";
@@ -12,6 +22,22 @@ document.addEventListener("DOMContentLoaded", function() {
     messageContainer.style.display = "none";
     appointmentsContainer.parentNode.insertBefore(messageContainer, appointmentsContainer);
     let veterinarians = [];
+
+    if (userId) {
+        fetch(`http://localhost:8080/rest/client/pets/${userId}`)
+            .then(response => response.json())
+            .then(pets => {
+                pets.forEach(pet => {
+                    const option = document.createElement("option");
+                    option.value = pet.id;
+                    option.textContent = `${pet.name} ${pet.lastname}`;
+                    petSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error fetching pets:", error));
+    } else {
+        console.error("User ID not found");
+    }
 
     fetch("http://localhost:8080/rest/clinic-staff/")
         .then(response => response.json())
@@ -72,10 +98,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     appointmentsContainer.innerHTML = "";
                     messageContainer.innerHTML = "";
 
+                    const limitedAppointments = appointments.slice(0, 26);
 
-                    const limitedAppointments = appointments.slice(0, 26);//-----------------------------
-
-                    if (limitedAppointments.length === 0) {//-----------------------------
+                    if (limitedAppointments.length === 0) {
                         messageContainer.innerHTML = "<p>No appointments available for this veterinarian on this date.</p>";
                         messageContainer.style.display = "block";
                     } else {
@@ -127,7 +152,10 @@ document.addEventListener("DOMContentLoaded", function() {
                                 assignButton.disabled = true;
                                 assignButton.textContent = "Not available";
                             } else {
-                                assignButton.onclick = () => assignAppointment(appointment.id);
+                                assignButton.onclick = (event) => {
+                                    event.preventDefault();
+                                    assignAppointment(appointment.id);
+                                };
                             }
                             actionCell.appendChild(assignButton);
                             row.appendChild(actionCell);
@@ -142,7 +170,43 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function assignAppointment(appointmentId) {
-        alert("Appointment assigned");
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to book this appointment?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, book it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`http://localhost:8080/rest/appointment/book/${appointmentId}/${petSelect.value}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Appointment assigned successfully!',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            loadAppointments();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Failed to assign appointment. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            }
+        });
     }
 });
 
