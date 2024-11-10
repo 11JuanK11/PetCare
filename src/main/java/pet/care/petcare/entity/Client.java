@@ -21,7 +21,7 @@ public class Client extends UserEntity{
     @JsonIgnore
     private List<Pet> pets;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    /*@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Set<Appointment> appointmentSet;
+    private Set<Appointment> appointmentSet;*/
 }

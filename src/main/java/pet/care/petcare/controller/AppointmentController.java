@@ -54,4 +54,13 @@ public class AppointmentController {
         appointmentService.deleteAppointmentByDateAndClinicStaffId(date, clinicStaffId);
     }
 
+    @PostMapping("/book/{appointmentId}/{petId}")
+    public ResponseEntity<Appointment> bookAppointment(@PathVariable Long appointmentId, @PathVariable Long petId) {
+        try {
+            Appointment appointment = appointmentService.bookAppointment(appointmentId, petId);
+            return ResponseEntity.ok(appointment);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 }
