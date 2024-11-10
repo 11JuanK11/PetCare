@@ -33,7 +33,11 @@ public class Appointment implements Serializable {
     @JoinColumn(name = "clinicStaff_id", nullable = false)
     private ClinicStaff clinicStaff;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "client_id")
-    private Client client;
+    private Client client;*/
+
+    @ManyToOne
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
 }

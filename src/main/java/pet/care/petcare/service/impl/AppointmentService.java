@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pet.care.petcare.entity.Appointment;
+import pet.care.petcare.entity.Pet;
 import pet.care.petcare.entity.Schedule;
 import pet.care.petcare.repository.IAppointmentRepository;
 import pet.care.petcare.repository.IScheduleRepository;
@@ -78,11 +79,22 @@ public class AppointmentService implements IAppointmentService {
         appointmentRepository.deleteByDateAndClinicStaff_UserId(date, clinicStaffId);
     }
 
-
-
+    @Transactional
     @Override
-    public Appointment assignAppointment(Long clinicStaffId, LocalTime startTime, LocalTime endTime, LocalDate date) {
-        return null;
+    public Appointment bookAppointment(Long appointmentId, Long petId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        if (!appointment.isAvailable()) {
+            throw new RuntimeException("Appointment is already booked");
+        }
+
+        Pet pet = new Pet();
+        pet.setId(petId);
+        appointment.setPet(pet);
+        appointment.setAvailable(false);
+
+        return appointmentRepository.save(appointment);
     }
 
     @Override

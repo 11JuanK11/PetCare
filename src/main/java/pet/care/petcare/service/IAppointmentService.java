@@ -9,7 +9,7 @@ import java.util.List;
 public interface IAppointmentService {
 
     List<Appointment> createAppointmentsForClinicStaffAndDate(Long clinicStaffId, LocalDate date);
-    Appointment assignAppointment(Long clinicStaffId, LocalTime startTime, LocalTime endTime, LocalDate date);
+    Appointment bookAppointment(Long appointmentId, Long petId);
     void deleteAppointment(Long appointmentId);
     Appointment readById(Long id);
 }
