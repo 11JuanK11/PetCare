@@ -97,13 +97,13 @@ public class AppointmentService implements IAppointmentService {
         return appointmentRepository.save(appointment);
     }
 
-    @Override
-    public void deleteAppointment(Long appointmentId) {
-
+    public List<Appointment> getAppointmentsByPetId(Long petId) {
+        return appointmentRepository.findByPet_Id(petId);
     }
 
     @Override
-    public Appointment readById(Long id) {
-        return null;
+    @Transactional
+    public void deleteAppointmentByDateTimeAndPetId(LocalDate date, LocalTime startTime, Long petId) {
+        appointmentRepository.updateAppointmentAvailability(date, startTime, petId);
     }
 }

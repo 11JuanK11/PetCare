@@ -170,3 +170,9 @@ main {
 #userId{
     display: none;
 }
+
+.card-custom {
+    background-color: #F0F8FF;
+    border-radius: 10px;
+}
+
