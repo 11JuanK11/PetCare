@@ -43,7 +43,7 @@ function populateTable(pets) {
             <td>${pet.name}</td>
             <td>${calculateAge(pet.age)}</td>
             <td>${pet.race}</td>
-            <td>${pet.weight}</td>
+            <td>${weightUnit(pet.weight)}</td>
             <td>
                 <a href="http://localhost:8080/staff-panel/medicalHistoryStaff/${pet.id}" class="btn btn-sm" style="background-color: #95BDFF; border: none;" data-pet-id="${pet.id}">View Medical History</a>
             </td>
@@ -147,5 +147,14 @@ function calculateAge(birthDate) {
         }
     } else {
         return `${ageInYears} years`;
+    }
+}
+
+function weightUnit(weight){
+    if(weight < 1){
+        weight = weight * 1000
+        return weight + " g"
+    }else{
+        return weight + " Kg"
     }
 }

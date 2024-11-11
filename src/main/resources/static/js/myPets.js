@@ -25,7 +25,7 @@ function loadPets(clientId) {
                         <td>${pet.id}</td>
                         <td>${pet.name} ${pet.lastname}</td>
                         <td>${calculateAge(pet.age)}</td>
-                        <td>${pet.weight}</td>
+                        <td>${weightUnit(pet.weight)}</td>
                         <td>${pet.race}</td>
                         <td>${pet.sex}</td>
                         <td>
@@ -54,7 +54,7 @@ document.getElementById('petForm').addEventListener('submit', function(event) {
         age: document.getElementById('petAge').value,
         race: document.getElementById('petRace').value,
         sex: document.getElementById('petSex').value,
-        weight: document.getElementById('petWeight').value,
+        weight: standardizeWeight(),
         client: { userId: userId }
     };
 
@@ -143,3 +143,26 @@ function getCurrentDate() {
 
     const currentDate = getCurrentDate();
     document.getElementById('petAge').setAttribute('max', currentDate);
+
+document.getElementById('petWeight').addEventListener('input', standardizeWeight);
+document.getElementById('weightUnit').addEventListener('change', standardizeWeight);
+
+function standardizeWeight() {
+    const weightInput = document.getElementById('petWeight');
+    const weightUnit = document.getElementById('weightUnit').value;
+    let weightInKg = parseFloat(weightInput.value);
+
+    if (weightUnit === 'g') {
+        weightInKg /= 1000;
+    }
+    return weightInKg; 
+}
+
+function weightUnit(weight){
+    if(weight < 1){
+        weight = weight * 1000
+        return weight + " g"
+    }else{
+        return weight + " Kg"
+    }
+}

@@ -46,8 +46,9 @@ function loadPetData(id) {
             document.getElementById('petAge').value = pet.age;
             document.getElementById('petRace').value = pet.race;
             document.getElementById('petSex').value = pet.sex;
-            document.getElementById('petWeight').value = pet.weight;
             document.getElementById('petImageDisplay').src = pet.image;
+            weightAndUnit(pet.weight)
+
         })
         .catch(error => console.error('Error loading pet data:', error));
 }
@@ -62,7 +63,7 @@ async function updatePet(petId) {
         age: document.getElementById('petAge').value,
         race: document.getElementById('petRace').value,
         sex: document.getElementById('petSex').value,
-        weight: document.getElementById('petWeight').value,
+        weight: standardizeWeight(),
         client: { userId: userId }
     };
 
@@ -138,5 +139,30 @@ function getCurrentDate() {
 
     const currentDate = getCurrentDate();
     document.getElementById('petAge').setAttribute('max', currentDate);
+
+    document.getElementById('petWeight').addEventListener('input', standardizeWeight);
+    document.getElementById('weightUnit').addEventListener('change', standardizeWeight);
+    
+    function standardizeWeight() {
+        const weightInput = document.getElementById('petWeight');
+        const weightUnit = document.getElementById('weightUnit').value;
+        let weightInKg = parseFloat(weightInput.value);
+    
+        if (weightUnit === 'g') {
+            weightInKg /= 1000;
+        }
+        return weightInKg; 
+    }
+    
+    function weightAndUnit(weight){
+        if(weight < 1){
+            document.getElementById('petWeight').value = weight * 1000;
+            document.getElementById('weightUnit').value = "g";
+        }else{
+            document.getElementById('petWeight').value = weight;
+            document.getElementById('weightUnit').value = "kg";
+        }
+    
+    }
 
 
