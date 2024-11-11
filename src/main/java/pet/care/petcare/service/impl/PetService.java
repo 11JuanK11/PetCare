@@ -85,6 +85,9 @@ public class PetService implements IPetService {
             if (entity.getWeight() != null) {
                 pet.setWeight(entity.getWeight());
             }
+            if (entity.getSex() != null) {
+                pet.setSex(entity.getSex());
+            }
             if(file != null){
                 uploadService.deleteUpload(pet.getImage());
                 String newImageName = uploadService.saveUpload(file);
