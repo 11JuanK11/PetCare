@@ -9,6 +9,7 @@ import pet.care.petcare.entity.Appointment;
 import pet.care.petcare.service.impl.AppointmentService;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -63,4 +64,26 @@ public class AppointmentController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+    @GetMapping("/pet/{petId}")
+    public ResponseEntity<List<Appointment>> getAppointmentsByPetId(@PathVariable Long petId) {
+        List<Appointment> appointments = appointmentService.getAppointmentsByPetId(petId);
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/delete/{date}/{startTime}/{petId}")
+    public ResponseEntity<Void> deleteAppointmentByDateTimeAndPetId(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
+            @PathVariable Long petId) {
+        try {
+            appointmentService.deleteAppointmentByDateTimeAndPetId(date, startTime, petId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

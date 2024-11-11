@@ -88,28 +88,19 @@
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="content mt-4 p-4">
-                <h2 class="mb-4">Schedule a New Appointment</h2>
+                <h2 class="mb-4">Cancel a pet's Appointment</h2>
                 <form action="/admin-panel/appointments/create" method="post">
                     <label for="clientSelect" class="form-label mb-3">Select a client:</label>
                     <select class="form-select mb-3" id="clientSelect" name="clientId" required>
                         <option value="" selected disabled>Select a client...</option>
                     </select>
-
-                    <label for="petSelect" class="form-label mb-3">Select Pet:</label>
+                    <label for="petSelect" class="form-label mb-3">Select a client's pet:</label>
                     <select class="form-select mb-3" id="petSelect" name="petId" required>
                         <option value="" selected disabled>Select a pet...</option>
                     </select>
-
-                    <label for="dateSelect" class="form-label mb-3">Select Date:</label>
-                    <input type="text" class="form-control mb-3" id="dateSelect" name="date" required placeholder="Select a date...">
-
-                    <label for="veterinarianSelect" class="form-label mb-3">Veterinarian:</label>
-                    <select class="form-select mb-3" id="veterinarianSelect" name="veterinarianId" required>
-                        <option value="" selected disabled>Select a veterinarian...</option>
-                    </select>
-
                     <div class="appointments mt-4">
-                        <div class="row">
+                        <h4>Appointments</h4>
+                        <div class="row" id="appointmentsContainer">
                         </div>
                     </div>
                 </form>
@@ -120,6 +111,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="/js/scheduleAppointmentAdmin.js"></script>
+<script src="/js/cancelAppointment.js"></script>
 </body>
 </html>

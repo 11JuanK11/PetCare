@@ -80,4 +80,16 @@ public class AdminHomeController {
     public String appointmentManagement(){
         return "scheduleAppointmentAdmin";
     }
+
+    @GetMapping("/indexAppointment")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String appointmentManagement2(){
+        return "indexAppointment";
+    }
+
+    @GetMapping("/cancelAppointment")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String appointmentManagement3(){
+        return "cancelAppointment";
+    }
 }

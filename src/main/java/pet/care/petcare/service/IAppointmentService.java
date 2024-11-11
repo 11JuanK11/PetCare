@@ -10,6 +10,5 @@ public interface IAppointmentService {
 
     List<Appointment> createAppointmentsForClinicStaffAndDate(Long clinicStaffId, LocalDate date);
     Appointment bookAppointment(Long appointmentId, Long petId);
-    void deleteAppointment(Long appointmentId);
-    Appointment readById(Long id);
+    void deleteAppointmentByDateTimeAndPetId(LocalDate date, LocalTime startTime, Long petId);
 }

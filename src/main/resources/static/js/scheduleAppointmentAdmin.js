@@ -31,13 +31,12 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(data => {
             veterinarians = data;
-            loadAvailableVeterinarians();  // Initial call to load veterinarians
+            loadAvailableVeterinarians();
         });
 
     veterinarianSelect.addEventListener("change", loadAppointments);
     dateSelect.addEventListener("change", loadAvailableVeterinarians);
 
-    // Function to load clients (for selecting a client)
     async function loadClients() {
         try {
             const response = await fetch('http://localhost:8080/rest/client/');
@@ -55,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Function to load pets for the selected client
     async function loadPets(userId) {
         const petSelect = document.getElementById('petSelect');
         petSelect.innerHTML = '<option value="" selected disabled>Select a pet...</option>';
@@ -79,7 +77,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Function to load available appointments for the selected veterinarian and date
     function loadAppointments() {
         const vetId = veterinarianSelect.value;
         const date = dateSelect.value;
@@ -162,11 +159,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Function to load available veterinarians based on the selected date
     function loadAvailableVeterinarians() {
         const date = dateSelect.value;
-        veterinarianSelect.innerHTML = "";  // Clear current options
-        messageContainer.innerHTML = "";  // Clear any message
+        veterinarianSelect.innerHTML = "";
+        messageContainer.innerHTML = "";
 
         if (date) {
             Promise.all(veterinarians.map(vet =>
@@ -201,7 +197,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Function to assign an appointment
     function assignAppointment(appointmentId) {
         Swal.fire({
             title: 'Are you sure?',

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import pet.care.petcare.entity.Appointment;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -29,5 +30,14 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
     List<Appointment> findByDate(LocalDate date);
 
     void deleteByDateAndClinicStaff_UserId(LocalDate date, Long clinicStaffId);
+
+    List<Appointment> findByPet_Id(Long petId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Appointment a SET a.pet = null, a.available = true WHERE a.date = :date AND a.startTime = :startTime AND a.pet.id = :petId")
+    void updateAppointmentAvailability(LocalDate date, LocalTime startTime, Long petId);
+
+
 
 }
