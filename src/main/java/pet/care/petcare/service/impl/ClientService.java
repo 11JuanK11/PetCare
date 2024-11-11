@@ -16,7 +16,6 @@ public class ClientService extends IClientService {
     @Autowired
     private IClientRepository clientRepository;
 
-
     @Override
     public Client insert(Client entity) throws RuntimeException {
         if (entity == null) {
