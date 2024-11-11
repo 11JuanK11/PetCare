@@ -74,4 +74,10 @@ public class AdminHomeController {
     public String scheduleManagement4(){
         return "editSchedule";
     }
+
+    @GetMapping("/scheduleAppointmentAdmin")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String appointmentManagement(){
+        return "scheduleAppointmentAdmin";
+    }
 }

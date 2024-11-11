@@ -34,4 +34,10 @@ public class ClientController {
         List<Pet> pets = clientService.getPetsByClient(clientService.findById(clientId));
         return ResponseEntity.ok(pets);
     }
+
+    @GetMapping("/")
+    public ResponseEntity<List<Client>> getAllClients() {
+        List<Client> clients = clientService.findAll();
+        return ResponseEntity.ok(clients);
+    }
 }
