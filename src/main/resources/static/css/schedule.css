@@ -156,5 +156,28 @@ main {
     font-weight: normal;
 }
 
+#vet-list {
+  max-height: 400px;
+  overflow-y: scroll;
+  padding-right: 10px;
+}
+
+#vet-list::-webkit-scrollbar {
+  width: 0px;
+}
+
+#vet-list::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+#vet-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#vet-list {
+  scrollbar-width: none;
+}
+
+
 
 
