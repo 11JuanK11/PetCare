@@ -2,7 +2,9 @@ package pet.care.petcare.controller.views_controllers;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -47,8 +49,24 @@ public class AdminHomeController {
 
     @GetMapping("/clinic-staff/edit")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String editVeterinaryManagement(){
-        return "editClinicStaff";
+    public String editVeterinaryManagement(){return "editClinicStaff"; }
+
+    @GetMapping("/pets")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String petManagement(){return "petAdmin"; }
+
+    @GetMapping("/medicalHistoryAdmin/{petId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String medicalHistoryStaffAdmin(@PathVariable Long petId, Model model){
+        model.addAttribute("petId", petId);
+        return "medicalHistoryAdmin";
+    }
+
+    @GetMapping("appointmentsAdmin/{petId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String appointmentsAdmin(@PathVariable Long petId, Model model){
+        model.addAttribute("petId", petId);
+        return "petAppointmentsAdmin";
     }
 
     @GetMapping("/createSchedule")
