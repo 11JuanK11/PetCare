@@ -202,8 +202,6 @@ async function deleteCurrentWeeklySchedule() {
 async function saveScheduleChanges() {
     const schedules = JSON.parse(localStorage.getItem("schedule"));
     const assignedVets = JSON.parse(localStorage.getItem("assignedVets"));
-    console.log("Saving changes for schedule:", schedules);
-    console.log("assignedVets:", assignedVets);
 
     if (!schedules || Object.keys(schedules).length === 0) {
         Swal.fire({
@@ -219,65 +217,55 @@ async function saveScheduleChanges() {
     let schedulesToCreate = [];
 
     let scheduleData = Object.entries(schedules);
-    console.log(scheduleData);
-
-    const earliestDay = getEarliestDay(scheduleData);//-------
+    const scheduleDataCopy = [...scheduleData];
 
     assignedVets.forEach(vet => {
         let exists = false;
-        scheduleData.forEach(sch => {
+
+        scheduleDataCopy.forEach(sch => {
             if (vet.clinicStaffId == sch[1] && vet.dayId == sch[0]) {
                 exists = true;
+                schedulesToKeep.push(sch);
+                scheduleData = scheduleData.filter(item => item !== sch);
             }
         });
+
         if (!exists) {
             schedulesToDelete.push(vet);
-            
         }
     });
 
-    console.log(scheduleData);
-    console.log(assignedVets);
+    schedulesToCreate = [...scheduleData];
 
-    assignedVets.forEach(vet => {
-        scheduleData.forEach(sch => {
-            if (vet.clinicStaffId == sch[1]) {
-                if (vet.dayId == sch[0]) {
-                    schedulesToKeep.push(sch);
-                    scheduleData.splice(scheduleData.indexOf(sch), 1);
-                } else {
-                    schedulesToCreate.push(sch);
-                    scheduleData.splice(scheduleData.indexOf(sch), 1);
-                }
-            }
-        })
-    });
+    try {
+        if (schedulesToDelete.length > 0) {
+            await deleteSchedules(schedulesToDelete);
+        }
 
-    schedulesToCreate = schedulesToCreate.concat(scheduleData);
+        if (schedulesToCreate.length > 0) {
+            await createSchedules(schedulesToCreate);
+        }
 
-    if (schedulesToDelete.length > 0) {
-        deleteSchedules(schedulesToDelete);
+        Swal.fire({
+            icon: 'success',
+            title: 'Schedule modified',
+            text: 'The schedule has been successfully saved.'
+        }).then(() => {
+            resetSchedule();
+        });
+
+    } catch (error) {
+        console.error("Error saving schedule changes:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while saving the schedule changes.'
+        });
     }
-
-    if (schedulesToCreate.length > 0) {
-        createSchedules(schedulesToCreate);
-    }
-    
-
-
-    console.log("schedulesToDelete:", schedulesToDelete);
-    console.log("schedulesToKeep:", schedulesToKeep);
-    console.log("schedulesToCreate:", schedulesToCreate);
-
-    Swal.fire({
-        icon: 'success',
-        title: 'Schedule modified',
-        text: 'The schedule has been successfully saved.'
-    });
-
 }
 
-function getEarliestDay(scheduleData) {
+
+/*function getEarliestDay(scheduleData) {
     const daysOfWeek = {
         mon: 0,
         tue: 1,
@@ -296,7 +284,7 @@ function getEarliestDay(scheduleData) {
     });
 
     return [earliestDay[0], earliestDay[1]];
-}
+}*/
 
 
 function deleteSchedules(schedulesToDelete) {
@@ -304,10 +292,10 @@ function deleteSchedules(schedulesToDelete) {
 
     if (!selectedScheduleId) {
         console.error("No selected schedule ID found in localStorage.");
-        return;
+        return Promise.resolve();
     }
 
-    fetch(`/rest/weeklyschedule/${selectedScheduleId}`, {
+    return fetch(`/rest/weeklyschedule/${selectedScheduleId}`, {
         method: "GET"
     }).then(response => {
         if (!response.ok) {
@@ -315,34 +303,24 @@ function deleteSchedules(schedulesToDelete) {
         }
         return response.json();
     }).then(data => {
-        
-        schedulesToDelete.forEach(vet => {
+        const deletePromises = schedulesToDelete.map(vet => {
             const date = getDateFromDayId(vet.dayId, data.startDate);
             const clinicStaffId = vet.clinicStaffId;
 
-            fetch(`http://localhost:8080/rest/schedule/delete/${date}/${clinicStaffId}`, {
-                method: "DELETE"
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error("Failed to delete the schedule.");
-                }
-                else{
-                    fetch(`http://localhost:8080/rest/appointment/delete/${date}/${clinicStaffId}`, {
-                        method: "DELETE"
-                    }).then(response => {
-                        if (!response.ok) {
-                            throw new Error("Failed to delete the appointment.");
-                        }
-                    })
-                }
-            })
-
+            return fetch(`http://localhost:8080/rest/schedule/delete/${date}/${clinicStaffId}`, { method: "DELETE" })
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to delete the schedule.");
+                    return fetch(`http://localhost:8080/rest/appointment/delete/${date}/${clinicStaffId}`, { method: "DELETE" });
+                });
         });
 
+        return Promise.all(deletePromises);
     }).catch(error => {
-        console.error("Error retrieving weekly schedule:", error);
+        console.error("Error deleting schedules:", error);
+        return Promise.reject(error);
     });
 }
+
 
 function createSchedules(schedulesToCreate) {
     const selectedScheduleId = localStorage.getItem("selectedScheduleId");
@@ -357,9 +335,10 @@ function createSchedules(schedulesToCreate) {
     }).then(data => {
         schedulesToCreate.forEach(vet => {
             const date = getDateFromDayId(vet[0], data.startDate);
-            const clinicStaffId = vet[1];
+            const formattedDate = new Date(date).toISOString().split('T')[0];
+            const clinicStaffId = parseInt(vet[1], 10);
 
-            fetch(`http://localhost:8080/rest/schedule/assign?clinicStaffId=${clinicStaffId}&date=${date}`, {
+            fetch(`http://localhost:8080/rest/schedule/assign?clinicStaffId=${clinicStaffId}&date=${formattedDate}`, {
                 method: "POST"
             }).then(response => {
                 if (!response.ok) {
