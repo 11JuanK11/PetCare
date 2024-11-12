@@ -74,7 +74,7 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="content mt-4 p-4">
                 <h2 class="mb-4">Schedule a New Appointment</h2>
-                <p id="userId">User ID: <span th:text="${userId}"></span></p>
+                <p id="userId" style="display: none;">User ID: <span th:text="${userId}"></span></p>
 
                 <form action="/client-panel/appointments/create" method="post">
                     <label for="petSelect" class="form-label">Select Pet:</label>
