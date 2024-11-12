@@ -46,9 +46,6 @@ function loadMedications() {
         });
 }
 
-
-
-
 document.getElementById('medicationForm').addEventListener('submit', (e) => {
     e.preventDefault();
     addMedication();
@@ -58,11 +55,12 @@ function addMedication() {
     const name = document.getElementById('medicationName').value;
     const unitPrice = parseInt(document.getElementById('medicationPrice').value);
     const stock = parseInt(document.getElementById('medicationStock').value);
-
+    const isVaccine = document.getElementById('isVaccine').checked;
     const medication = {
         name: name,
         unitPrice: unitPrice,
-        stock: stock
+        stock: stock,
+        vaccine: isVaccine
     };
 
     fetch('/rest/medications/', {
