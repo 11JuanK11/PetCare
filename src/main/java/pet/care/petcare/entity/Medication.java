@@ -32,4 +32,7 @@ public class Medication implements Serializable {
     @JsonIgnore
     private Set<Dose> doses;
 
+    @Column(nullable = false)
+    private boolean isVaccine;
+
 }

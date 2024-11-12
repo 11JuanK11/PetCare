@@ -122,12 +122,20 @@
                             <label for="medicationStock">Medication Stock <span style="color: red;">*</span></label>
                             <input type="number" class="form-control" id="medicationStock" placeholder="Enter stock quantity" required min="1">
                         </div>
+                        <div class="col-12 col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="isVaccine">
+                                <label class="form-check-label" for="isVaccine">Is this a vaccine?</label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row g-3">
                         <div class="col-auto d-grid">
-                            <button type="submit" class="btn btn-primary">Add Medication</button>
+                            <button type="submit" class="btn btn-primary">Add medication</button>
                         </div>
                     </div>
                 </form>
-
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered">
                         <thead class="table-dark">
