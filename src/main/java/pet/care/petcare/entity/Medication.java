@@ -35,4 +35,8 @@ public class Medication implements Serializable {
     @Column(nullable = false)
     private boolean isVaccine;
 
+    @OneToMany(mappedBy = "medication", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Vaccine> vaccines;
+
 }

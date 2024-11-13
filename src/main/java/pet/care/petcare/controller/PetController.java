@@ -18,9 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pet.care.petcare.entity.MedicalHistory;
 import pet.care.petcare.entity.Pet;
+import pet.care.petcare.entity.VaccinationCard;
 import pet.care.petcare.exception.ValidationException;
 import pet.care.petcare.service.IMedicalHistoryService;
 import pet.care.petcare.service.IPetService;
+import pet.care.petcare.service.IVaccinationCardService;
 
 @RestController
 @RequestMapping("/rest/pets")
@@ -31,11 +33,16 @@ public class PetController {
     @Autowired
     private IMedicalHistoryService medicalHistoryService;
 
+    @Autowired
+    private IVaccinationCardService vaccinationCardService;
+
+
     @PostMapping("/")
     public ResponseEntity<?> registerPet(@RequestPart("pet") Pet pet, @RequestPart("image") MultipartFile image) {
         try {
             Pet newPet = petService.insert(pet, image);
             MedicalHistory medicalHistory = medicalHistoryService.create(newPet.getId(), new MedicalHistory());
+            VaccinationCard vaccinationCard = vaccinationCardService.insertVaccinationCard(new VaccinationCard(), newPet.getId());
             return ResponseEntity.ok(newPet);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));

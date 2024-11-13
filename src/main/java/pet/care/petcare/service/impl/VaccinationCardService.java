@@ -22,8 +22,8 @@ public class VaccinationCardService implements IVaccinationCardService {
     private IPetRepository petRepository;
     @Transactional
     @Override
-    public VaccinationCard insertVaccinationCard(VaccinationCard vaccinationCard) throws IllegalArgumentException {
-        Optional<Pet> petOpt = petRepository.findById(vaccinationCard.getPet().getId());
+    public VaccinationCard insertVaccinationCard(VaccinationCard vaccinationCard, Long petId) throws IllegalArgumentException {
+        Optional<Pet> petOpt = petRepository.findById(petId);
         if (!petOpt.isPresent()) {
             throw new IllegalArgumentException("Pet not found");
         }
@@ -45,4 +45,10 @@ public class VaccinationCardService implements IVaccinationCardService {
     public Optional<VaccinationCard> getVaccinationCardById(Long id) {
         return vaccinationCardRepository.findById(id);
     }
+
+    @Override
+    public Optional<VaccinationCard> getVaccinationCardByPetId(Long petId) {
+        return vaccinationCardRepository.findByPetId(petId);
+    }
+
 }

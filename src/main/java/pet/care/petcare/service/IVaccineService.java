@@ -9,4 +9,5 @@ public interface IVaccineService {
     public Vaccine insertVaccine(Vaccine vaccine) throws IllegalArgumentException;
     public List<Vaccine> getAllVaccines();
     public Optional<Vaccine> getVaccineById(Long id);
+    public List<Vaccine> getVaccinesByVaccinationCard(Long vaccinationCardId);
 }

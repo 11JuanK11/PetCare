@@ -36,4 +36,13 @@ public class StaffHomeController {
         return "medicalHistoryStaff";
     }
 
+    @GetMapping("/vaccineStaff/{petId}")
+    @PreAuthorize("hasAuthority('CLINIC_STAFF')")
+    public String vaccineStaff(@PathVariable Long petId, Model model){
+        model.addAttribute("petId", petId);
+        return "vaccineVeterinary";
+    }
+
+
+
 }
