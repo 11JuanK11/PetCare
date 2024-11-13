@@ -137,24 +137,37 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    document.getElementById('saveVaccineButton').addEventListener('click', async function () {
-        const vaccineDate = document.getElementById('vaccineDate').value;
-        const vaccineDose = parseFloat(document.getElementById('vaccineDose').value);
-        const medicationId = document.getElementById('medicationSelect').value;
+document.getElementById('saveVaccineButton').addEventListener('click', async function () {
+    const vaccineDate = document.getElementById('vaccineDate').value;
+    const vaccineDose = 1;
+    const medicationId = document.getElementById('medicationSelect').value;
 
-        if (!vaccineDate || !vaccineDose || !medicationId) {
-            Swal.fire('Error', 'Please fill in all required fields.', 'error');
-            return;
+    if (!vaccineDate || !medicationId) {
+        Swal.fire('Error', 'Please fill in all required fields.', 'error');
+        return;
+    }
+
+    const isDuplicate = await validateDuplicateVaccine(medicationId, vaccineDate);
+
+    if (isDuplicate) {
+        Swal.fire('Error', 'This vaccine has already been registered on this date.', 'error');
+        return;
+    }
+
+    const vaccinationCardId = localStorage.getItem('idVaccinationCard');
+
+    try {
+        const stockResponse = await fetch(`/rest/medications/decrement-stock/${medicationId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!stockResponse.ok) {
+            const errorMessage = await stockResponse.text();
+            throw new Error(`Stock update failed: ${errorMessage}`);
         }
-
-        const isDuplicate = await validateDuplicateVaccine(medicationId, vaccineDate);
-
-        if (isDuplicate) {
-            Swal.fire('Error', 'This vaccine has already been registered on this date.', 'error');
-            return;
-        }
-
-        const vaccinationCardId = localStorage.getItem('idVaccinationCard');
 
         const vaccineData = {
             date: vaccineDate,
@@ -164,29 +177,28 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         };
 
-        try {
-            const response = await fetch(`/rest/vaccines/${vaccinationCardId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(vaccineData)
-            });
+        const response = await fetch(`/rest/vaccines/${vaccinationCardId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(vaccineData)
+        });
 
-            if (!response.ok) {
-                throw new Error('Failed to add vaccine');
-            }
-
-            Swal.fire('Success', 'Vaccine added successfully!', 'success');
-            loadVaccines(vaccinationCardId);
-            resetForm();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('vaccinationModal'));
-            modal.hide();
-        } catch (error) {
-            console.error('Error adding vaccine:', error);
-            Swal.fire('Error', error.message, 'error');
+        if (!response.ok) {
+            throw new Error('Failed to add vaccine');
         }
-    });
+
+        Swal.fire('Success', 'Vaccine added successfully!', 'success');
+        loadVaccines(vaccinationCardId);
+        resetForm();
+        const modal = bootstrap.Modal.getInstance(document.getElementById('vaccinationModal'));
+        modal.hide();
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire('Error', error.message, 'error');
+    }
+});
 
     document.getElementById('vaccinationModal').addEventListener('hidden.bs.modal', resetForm);
 });
