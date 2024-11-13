@@ -72,13 +72,27 @@
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <h1 id="vaccinationCardTitle">Vaccination Records</h1>
-      <div id="vaccinationCardContainer"></div>
+      <div id="vaccinationCardContainer">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Dose (ml)</th>
+          </tr>
+          </thead>
+          <tbody id="vaccinationTableBody"></tbody>
+        </table>
+      </div>
     </main>
   </div>
 </div>
+
 <button type="button" class="btn btn-primary floating-btn" data-bs-toggle="modal" data-bs-target="#vaccinationModal">
   <i class="bi bi-plus-lg"></i>
 </button>
+
+<!-- Modal Form to Add Vaccine -->
 <div class="modal fade" id="vaccinationModal" tabindex="-1" aria-labelledby="vaccinationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog">
     <div class="modal-content" id="modalContent">
@@ -97,7 +111,6 @@
               <label for="vaccineDose" class="form-label">Dose <span style="color: red;">*</span></label>
               <input type="number" class="form-control" id="vaccineDose" name="dose" required step="0.1" min="0">
             </div>
-
             <div class="mb-3">
               <label for="medicationSelect" class="form-label">Vaccine <span style="color: red;">*</span></label>
               <select class="form-select" id="medicationSelect" required>
@@ -114,6 +127,7 @@
     </div>
   </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/vaccineStaff.js"></script>
 </body>
