@@ -5,7 +5,6 @@ dateInput.value = today;
 document.addEventListener("DOMContentLoaded", function () {
     const medicationSelect = document.getElementById("medicationSelect");
 
-
     async function loadMedications() {
         try {
             const response = await fetch("/rest/medications/");
@@ -13,10 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 throw new Error("Failed to fetch medications");
             }
             const medications = await response.json();
-            console.log(medications);
 
             const vaccines = medications.filter(medication => medication.vaccine);
-            console.log(vaccines);
 
             medicationSelect.innerHTML = `<option value="">Select Vaccine</option>`;
             vaccines.forEach(vaccine => {
@@ -31,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     loadMedications();
-
 
     async function loadVaccinationCard(petId) {
         loadPetName(petId);
@@ -50,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
     async function loadVaccines(vaccinationCardId) {
         try {
             const response = await fetch(`/rest/vaccines/byVaccinationCard/${vaccinationCardId}`);
@@ -64,7 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
             alert(error.message);
         }
     }
-
 
     function displayVaccines(vaccines) {
         const container = document.getElementById('vaccinationCardContainer');
@@ -91,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-
     async function loadPetName(petId) {
         try {
             const response = await fetch(`/rest/pets/${petId}`);
@@ -107,6 +100,33 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    async function validateDuplicateVaccine(vaccineId, vaccinationDate) {
+        try {
+            const vaccinationCardId = localStorage.getItem('idVaccinationCard');
+
+            const response = await fetch(`/rest/vaccines/byVaccinationCard/${vaccinationCardId}`);
+            if (!response.ok) {
+                throw new Error('Error fetching vaccination records.');
+            }
+            const vaccines = await response.json();
+
+            const existingVaccine = vaccines.find(vaccine =>
+                new Date(vaccine.date).toLocaleDateString() === new Date(vaccinationDate).toLocaleDateString() &&
+                vaccine.medication.id === parseInt(vaccineId)
+            );
+
+            return existingVaccine ? true : false;
+        } catch (error) {
+            console.error("Error validating vaccine:", error);
+            return false;
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('vaccineDate').value = today;
+        document.getElementById('vaccineDose').value = '';
+        document.getElementById('medicationSelect').value = '';
+    }
 
     window.onload = function () {
         const petId = localStorage.getItem('selectedPetId');
@@ -117,7 +137,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-
     document.getElementById('saveVaccineButton').addEventListener('click', async function () {
         const vaccineDate = document.getElementById('vaccineDate').value;
         const vaccineDose = parseFloat(document.getElementById('vaccineDose').value);
@@ -125,6 +144,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!vaccineDate || !vaccineDose || !medicationId) {
             Swal.fire('Error', 'Please fill in all required fields.', 'error');
+            return;
+        }
+
+        const isDuplicate = await validateDuplicateVaccine(medicationId, vaccineDate);
+
+        if (isDuplicate) {
+            Swal.fire('Error', 'This vaccine has already been registered on this date.', 'error');
             return;
         }
 
@@ -151,9 +177,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 throw new Error('Failed to add vaccine');
             }
 
-            const addedVaccine = await response.json();
             Swal.fire('Success', 'Vaccine added successfully!', 'success');
             loadVaccines(vaccinationCardId);
+            resetForm();
             const modal = bootstrap.Modal.getInstance(document.getElementById('vaccinationModal'));
             modal.hide();
         } catch (error) {
@@ -161,4 +187,6 @@ document.addEventListener("DOMContentLoaded", function () {
             Swal.fire('Error', error.message, 'error');
         }
     });
+
+    document.getElementById('vaccinationModal').addEventListener('hidden.bs.modal', resetForm);
 });
