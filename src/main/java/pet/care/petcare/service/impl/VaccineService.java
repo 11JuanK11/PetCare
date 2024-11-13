@@ -53,8 +53,6 @@ public class VaccineService implements IVaccineService {
         return savedVaccine;
     }
 
-
-
     @Override
     public List<Vaccine> getAllVaccines() {
         return vaccineRepository.findAll();
@@ -64,6 +62,12 @@ public class VaccineService implements IVaccineService {
     public Optional<Vaccine> getVaccineById(Long id) {
         return vaccineRepository.findById(id);
     }
+
+    @Override
+    public List<Vaccine> getVaccinesByVaccinationCard(Long vaccinationCardId) {
+        return vaccineRepository.findByVaccinationCardId(vaccinationCardId);
+    }
+
 }
 
 

@@ -27,7 +27,7 @@ public class Vaccine {
     @Column(nullable = false)
     private float dose;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "medication_id", nullable = false)
     private Medication medication;
 

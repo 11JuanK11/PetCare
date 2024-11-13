@@ -26,6 +26,7 @@ function populateTable(pets) {
             <td>${pet.weight}</td>
             <td>
                 <a href="http://localhost:8080/staff-panel/medicalHistoryStaff/${pet.id}" class="btn btn-sm" style="background-color: #95BDFF; border: none;">View Medical History</a>
+                 <a href="http://localhost:8080/staff-panel/vaccineStaff/${pet.id}" class="btn btn-sm" style="background-color: #95BDFF; border: none;" data-pet-id="${pet.id}">View Vaccines</a>
             </td>
         `;
         tableBody.appendChild(row);
@@ -46,6 +47,7 @@ function populateTable(pets) {
             <td>${weightUnit(pet.weight)}</td>
             <td>
                 <a href="http://localhost:8080/staff-panel/medicalHistoryStaff/${pet.id}" class="btn btn-sm" style="background-color: #95BDFF; border: none;" data-pet-id="${pet.id}">View Medical History</a>
+                <a href="http://localhost:8080/staff-panel/vaccineStaff/${pet.id}" class="btn btn-sm" style="background-color: #95BDFF; border: none;" data-pet-id="${pet.id}">View Vaccines</a>
             </td>
         `;
         tableBody.appendChild(row);
