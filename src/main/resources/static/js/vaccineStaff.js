@@ -208,3 +208,134 @@ document.getElementById('saveVaccineButton').addEventListener('click', async fun
 
     document.getElementById('vaccinationModal').addEventListener('hidden.bs.modal', resetForm);
 });
+
+document.getElementById('downloadPdfButton').addEventListener('click', async function () {
+    const petId = localStorage.getItem('selectedPetId');
+    if (!petId) {
+        Swal.fire('Error', 'No pet ID found.', 'error');
+        return;
+    }
+
+    try {
+
+        const response = await fetch(`/rest/vaccination-cards/pets/${petId}`);
+        if (!response.ok) throw new Error('Vaccination card for the pet was not found.');
+        const vaccinationCard = await response.json();
+
+        const petResponse = await fetch(`/rest/pets/${petId}`);
+        if (!petResponse.ok) throw new Error('Pet not found.');
+        const pet = await petResponse.json();
+
+        const vaccinesResponse = await fetch(`/rest/vaccines/byVaccinationCard/${vaccinationCard.id}`);
+        if (!vaccinesResponse.ok) throw new Error('No vaccines records found for this vaccination card.');
+        const vaccines = await vaccinesResponse.json();
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+
+
+        const colors = {
+            pink: "#F7C8E0",
+            green: "#DFFFD8",
+            lightBlue: "#B4E4FF",
+            blue: "#95BDFF",
+            lightPurple: "#B1AFFF"
+        };
+
+        pdf.setFillColor(colors.blue);
+        pdf.rect(0, 0, 210, 35, 'F');
+
+
+        const logoUrl = '/img/logo.png';
+        const logoX = 8, logoY = 8, logoWidth = 20, logoHeight = 20;
+        const logoImage = new Image();
+        logoImage.src = logoUrl;
+
+        logoImage.onload = function () {
+            pdf.addImage(logoImage, 'PNG', logoX, logoY, logoWidth, logoHeight);
+
+
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(20);
+            pdf.setTextColor('#000000');
+            pdf.text(`Vaccination Card`, 105, 15, { align: 'center' });
+
+
+            pdf.setFontSize(14);
+            pdf.text(`PetCare Veterinary Clinic`, 105, 25, { align: 'center' });
+
+
+            pdf.setFontSize(12);
+            pdf.setTextColor('#000000');
+
+            pdf.setFont("helvetica", "bold");
+            pdf.text(`Pet:`, 10, 50);
+            pdf.setFont("helvetica", "normal");
+            pdf.text(`${pet.name} ${pet.lastname}`, 30, 50);
+
+            pdf.setFont("helvetica", "bold");
+            pdf.text(`Owner:`, 10, 60);
+            pdf.setFont("helvetica", "normal");
+            pdf.text(`${pet.client.name} ${pet.client.lastname}`, 30, 60);
+
+            pdf.setFont("helvetica", "bold");
+            pdf.text(`Generated on:`, 10, 70);
+            pdf.setFont("helvetica", "normal");
+            pdf.text(`${new Date().toLocaleDateString()}`, 40, 70);
+
+
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(12);
+            pdf.text(`Vaccines:`, 10, 80);
+
+
+            let yPosition = 90;
+            vaccines.sort((a, b) => new Date(b.date) - new Date(a.date));
+            vaccines.forEach(vaccine => {
+                const date = new Date(vaccine.date).toLocaleDateString('en-US', {
+                    timeZone: 'UTC',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+
+
+                pdf.setFillColor(colors.lightBlue);
+                pdf.rect(10, yPosition - 5, 190, 10, 'F');
+
+
+                pdf.setFontSize(12);
+                pdf.setFont("helvetica", "bold");
+                pdf.setTextColor('#000000');
+                pdf.text(`- ${vaccine.medication.name}`, 12, yPosition);
+
+                pdf.setFont("helvetica", "normal");
+                pdf.text(`Date: ${date}`, 70, yPosition);
+                pdf.text(`Dose: ${vaccine.dose} ml`, 140, yPosition);
+
+                yPosition += 15;
+            });
+
+            if (vaccines.length === 0) {
+                pdf.setFontSize(12);
+                pdf.setTextColor('#FF0000');
+                pdf.text(`No vaccination records available.`, 10, 90);
+            }
+
+
+            pdf.save(`${pet.name}_Vaccination_Card.pdf`);
+        };
+
+        logoImage.onerror = function () {
+            Swal.fire('Error', 'Unable to load the logo image.', 'error');
+        };
+
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        Swal.fire('Error', error.message, 'error');
+    }
+});
+
+
+
+
