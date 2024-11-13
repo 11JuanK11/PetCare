@@ -71,12 +71,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         vaccines.sort((a, b) => new Date(b.date) - new Date(a.date));
         vaccines.forEach(vaccine => {
+            const date = new Date(vaccine.date).toLocaleDateString('en-US', {
+                            timeZone: 'UTC',
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+            });
             const vaccineCard = `
                 <hr>
                 <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title">${vaccine.medication.name}</h5>
-                        <p class="card-text"><strong>Date:</strong> ${new Date(vaccine.date).toLocaleDateString()}</p>
+                        <p class="card-text"><strong>Date:</strong> ${date}</p>
                         <p class="card-text"><strong>Dose:</strong> ${vaccine.dose} ml</p>
                     </div>
                 </div>
