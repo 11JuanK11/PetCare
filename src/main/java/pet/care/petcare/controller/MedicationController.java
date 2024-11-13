@@ -66,4 +66,26 @@ public class MedicationController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
+
+    @PatchMapping("/decrement-stock/{id}")
+    public ResponseEntity<?> decrementMedicationStock(@PathVariable Long id) {
+        try {
+            Optional<Medication> medicationOpt = medicationService.getMedicationById(id);
+            if (medicationOpt.isPresent()) {
+                Medication medication = medicationOpt.get();
+                if (medication.getStock() <= 0) {
+                    return ResponseEntity.badRequest().body("Insufficient stock for medication: " + medication.getName());
+                }
+                medication.setStock(medication.getStock() - 1);
+                medicationService.updateMedication(id, medication);
+                return ResponseEntity.ok("Stock updated successfully for medication: " + medication.getName());
+            } else {
+                return ResponseEntity.status(404).body("Medication not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
+        }
+    }
+
+
 }

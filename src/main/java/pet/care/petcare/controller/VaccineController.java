@@ -45,4 +45,18 @@ public class VaccineController {
         }
     }
 
+    @GetMapping("/byVaccinationCard/{vaccinationCardId}")
+    public ResponseEntity<List<Vaccine>> getVaccinesByVaccinationCard(@PathVariable Long vaccinationCardId) {
+        try {
+            List<Vaccine> vaccines = vaccineService.getVaccinesByVaccinationCard(vaccinationCardId);
+            if (vaccines.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(vaccines);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
 }
