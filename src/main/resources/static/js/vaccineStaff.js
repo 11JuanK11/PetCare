@@ -78,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
         vaccines.sort((a, b) => new Date(b.date) - new Date(a.date));
         vaccines.forEach(vaccine => {
             const vaccineCard = `
+                <hr>
                 <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title">${vaccine.medication.name}</h5>
@@ -89,6 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
             container.innerHTML += vaccineCard;
         });
     }
+
 
     async function loadPetName(petId) {
         try {
@@ -115,4 +117,48 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
+
+    document.getElementById('saveVaccineButton').addEventListener('click', async function () {
+        const vaccineDate = document.getElementById('vaccineDate').value;
+        const vaccineDose = parseFloat(document.getElementById('vaccineDose').value);
+        const medicationId = document.getElementById('medicationSelect').value;
+
+        if (!vaccineDate || !vaccineDose || !medicationId) {
+            Swal.fire('Error', 'Please fill in all required fields.', 'error');
+            return;
+        }
+
+        const vaccinationCardId = localStorage.getItem('idVaccinationCard');
+
+        const vaccineData = {
+            date: vaccineDate,
+            dose: vaccineDose,
+            medication: {
+                id: medicationId
+            }
+        };
+
+        try {
+            const response = await fetch(`/rest/vaccines/${vaccinationCardId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(vaccineData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add vaccine');
+            }
+
+            const addedVaccine = await response.json();
+            Swal.fire('Success', 'Vaccine added successfully!', 'success');
+            loadVaccines(vaccinationCardId);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('vaccinationModal'));
+            modal.hide();
+        } catch (error) {
+            console.error('Error adding vaccine:', error);
+            Swal.fire('Error', error.message, 'error');
+        }
+    });
 });
