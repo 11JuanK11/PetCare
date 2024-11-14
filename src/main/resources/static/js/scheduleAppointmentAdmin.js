@@ -221,8 +221,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     headers: {
                         "Content-Type": "application/json"
                     }
-                }).then(response => {
-                    if (response.ok) {
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(errorMessage => {
+                                throw new Error(errorMessage);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
                         Swal.fire({
                             title: 'Success!',
                             text: 'Appointment assigned successfully!',
@@ -231,15 +239,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         }).then(() => {
                             loadAppointments();
                         });
-                    } else {
+                    })
+                    .catch(error => {
                         Swal.fire({
                             title: 'Error',
-                            text: 'Failed to assign appointment. Please try again.',
+                            text: error.message,
                             icon: 'error',
                             confirmButtonText: 'OK'
                         });
-                    }
-                });
+                    });
             }
         });
     }

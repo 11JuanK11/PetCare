@@ -106,4 +106,13 @@ public class AppointmentService implements IAppointmentService {
     public void deleteAppointmentByDateTimeAndPetId(LocalDate date, LocalTime startTime, Long petId) {
         appointmentRepository.updateAppointmentAvailability(date, startTime, petId);
     }
+
+    public boolean hasAppointmentOnDate(Long petId, LocalDate date) {
+        return appointmentRepository.existsByPet_IdAndDate(petId, date);
+    }
+
+    public Appointment findAppointmentById(Long appointmentId) {
+        return appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + appointmentId));
+    }
 }
