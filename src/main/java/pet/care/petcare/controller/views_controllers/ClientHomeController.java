@@ -54,4 +54,11 @@ public class ClientHomeController {
         model.addAttribute("userId", userDetails.getUser().getUserId());
         return "scheduleAppointment";
     }
+
+    @GetMapping("/pets-recipes")
+    @PreAuthorize("hasAuthority('CLIENT')")
+    public String petsRecipes(Model model, @AuthenticationPrincipal SecurityUser userDetails){
+        model.addAttribute("userId", userDetails.getUser().getUserId());
+        return "viewRecipeClient";
+    }
 }
