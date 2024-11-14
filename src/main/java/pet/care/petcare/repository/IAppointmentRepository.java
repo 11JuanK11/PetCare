@@ -38,6 +38,8 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
     @Query("UPDATE Appointment a SET a.pet = null, a.available = true WHERE a.date = :date AND a.startTime = :startTime AND a.pet.id = :petId")
     void updateAppointmentAvailability(LocalDate date, LocalTime startTime, Long petId);
 
+    boolean existsByPet_IdAndDate(Long petId, LocalDate date);
+
 
 
 }
