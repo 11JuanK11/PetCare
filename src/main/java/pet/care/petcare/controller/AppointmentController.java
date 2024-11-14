@@ -55,15 +55,21 @@ public class AppointmentController {
         appointmentService.deleteAppointmentByDateAndClinicStaffId(date, clinicStaffId);
     }
 
+    // AppointmentController.java
     @PostMapping("/book/{appointmentId}/{petId}")
-    public ResponseEntity<Appointment> bookAppointment(@PathVariable Long appointmentId, @PathVariable Long petId) {
+    public ResponseEntity<?> bookAppointment(@PathVariable Long appointmentId, @PathVariable Long petId) {
         try {
-            Appointment appointment = appointmentService.bookAppointment(appointmentId, petId);
-            return ResponseEntity.ok(appointment);
+            Appointment appointment = appointmentService.findAppointmentById(appointmentId);
+            if (appointmentService.hasAppointmentOnDate(petId, appointment.getDate())) {
+                return ResponseEntity.badRequest().body("The pet already has an appointment scheduled on this date.");
+            }
+            Appointment bookedAppointment = appointmentService.bookAppointment(appointmentId, petId);
+            return ResponseEntity.ok(bookedAppointment);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().body("Error assigning the appointment.");
         }
     }
+
 
     @GetMapping("/pet/{petId}")
     public ResponseEntity<List<Appointment>> getAppointmentsByPetId(@PathVariable Long petId) {
