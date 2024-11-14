@@ -132,3 +132,25 @@
         .client-information {
             margin-left: 22px;
         }
+
+        .download-container {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .download-btn {
+            background-color: #95BDFF;
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+            box-shadow: none;
+        }
+
+        .download-btn:hover {
+            background-color: #f1a8c1;
+        }
