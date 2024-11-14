@@ -34,6 +34,13 @@ public class ClientHomeController {
         return "editPets";
     }
 
+    @GetMapping("/pets/medical-history")
+    @PreAuthorize("hasAuthority('CLIENT')")
+    public String medicalHistory(Model model, @AuthenticationPrincipal SecurityUser userDetails){
+        model.addAttribute("userId", userDetails.getUser().getUserId());
+        return "medicalHistoryClient";
+    }
+
     @GetMapping("/appointments")
     @PreAuthorize("hasAuthority('CLIENT')")
     public String appointments(Model model, @AuthenticationPrincipal SecurityUser userDetails){
