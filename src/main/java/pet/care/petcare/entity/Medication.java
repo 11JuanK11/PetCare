@@ -39,4 +39,16 @@ public class Medication implements Serializable {
     @JsonIgnore
     private Set<Vaccine> vaccines;
 
+    @Override
+    public String toString() {
+        return "Medication{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", unitPrice=" + unitPrice +
+                ", stock=" + stock +
+                ", isVaccine=" + isVaccine +
+                '}';
+    }
+
+
 }
