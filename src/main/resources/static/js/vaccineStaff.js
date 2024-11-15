@@ -46,50 +46,56 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    async function loadVaccines(vaccinationCardId) {
-        try {
-            const response = await fetch(`/rest/vaccines/byVaccinationCard/${vaccinationCardId}`);
-            if (!response.ok) {
-                throw new Error('No vaccines records found for this vaccination card.');
-            }
-            const vaccines = await response.json();
-            displayVaccines(vaccines);
-        } catch (error) {
-            console.error(error.message);
-            alert(error.message);
-        }
-    }
+  async function loadVaccines(vaccinationCardId) {
+          try {
+              const response = await fetch(`/rest/vaccines/byVaccinationCard/${vaccinationCardId}`);
+              if (!response.ok) {
+                  throw new Error('No vaccines records found for this vaccination card.');
+              }
+              const vaccines = await response.json();
+              displayVaccines(vaccines);
+          } catch (error) {
+              console.error(error.message);
+              displayVaccines([]);
+          }
+      }
 
-    function displayVaccines(vaccines) {
-        const container = document.getElementById('vaccinationCardContainer');
-        container.innerHTML = '';
+      function displayVaccines(vaccines) {
+          const container = document.getElementById('vaccinationCardContainer');
+          container.innerHTML = '';
 
-        if (!vaccines || vaccines.length === 0) {
-            container.innerHTML = `<p class="text-muted text-center">No vaccination records available for this card.</p>`;
-            return;
-        }
+          if (!vaccines || vaccines.length === 0) {
 
-        vaccines.sort((a, b) => new Date(b.date) - new Date(a.date));
-        vaccines.forEach(vaccine => {
-            const date = new Date(vaccine.date).toLocaleDateString('en-US', {
-                            timeZone: 'UTC',
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit'
-            });
-            const vaccineCard = `
-                <hr>
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">${vaccine.medication.name}</h5>
-                        <p class="card-text"><strong>Date:</strong> ${date}</p>
-                        <p class="card-text"><strong>Dose:</strong> ${vaccine.dose} ml</p>
-                    </div>
-                </div>
-            `;
-            container.innerHTML += vaccineCard;
-        });
-    }
+              container.innerHTML = `
+                  <p class="text-muted text-center" style="font-size: 1.2rem; padding: 20px;">
+                      No vaccination records available for this card.
+                  </p>`;
+              return;
+          }
+
+
+          vaccines.sort((a, b) => new Date(b.date) - new Date(a.date));
+          vaccines.forEach(vaccine => {
+              const date = new Date(vaccine.date).toLocaleDateString('en-US', {
+                  timeZone: 'UTC',
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit'
+              });
+
+              const vaccineCard = `
+                  <hr>
+                  <div class="card mb-3">
+                      <div class="card-body">
+                          <h5 class="card-title">${vaccine.medication.name}</h5>
+                          <p class="card-text"><strong>Date:</strong> ${date}</p>
+                          <p class="card-text"><strong>Dose:</strong> ${vaccine.dose} ml</p>
+                      </div>
+                  </div>
+              `;
+              container.innerHTML += vaccineCard;
+          });
+      }
 
     async function loadPetName(petId) {
         try {
