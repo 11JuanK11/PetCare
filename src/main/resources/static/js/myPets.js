@@ -31,6 +31,8 @@ function loadPets(clientId) {
                         <td>
                             <button class="btn btn-warning" style="background-color: #95BDFF; border: none;"
                             onclick="editPet(${pet.id})">Edit</button>
+                            <button class="btn btn-warning" style="background-color: #95BDFF; border: none;"
+                             onclick="viewMedicalHistory(${pet.id})">View medical history</button>
                         </td>
                     `;
                     petList.appendChild(row);
@@ -92,6 +94,11 @@ document.getElementById('petForm').addEventListener('submit', function(event) {
 function editPet(id) {
     localStorage.setItem('petIdToEdit', id);
     window.location.href = 'http://localhost:8080/client-panel/pets/edit';
+}
+
+function viewMedicalHistory(id) {
+    localStorage.setItem('petIdMedicalHistory', id);
+    window.location.href = 'http://localhost:8080/client-panel/pets/medical-history';
 }
 
 

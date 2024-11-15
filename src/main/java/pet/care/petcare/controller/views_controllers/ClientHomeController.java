@@ -40,6 +40,13 @@ public class ClientHomeController {
         return "editPets";
     }
 
+    @GetMapping("/pets/medical-history")
+    @PreAuthorize("hasAuthority('CLIENT')")
+    public String medicalHistory(Model model, @AuthenticationPrincipal SecurityUser userDetails){
+        model.addAttribute("userId", userDetails.getUser().getUserId());
+        return "medicalHistoryClient";
+    }
+
     @GetMapping("/appointments")
     @PreAuthorize("hasAuthority('CLIENT')")
     public String appointments(Model model, @AuthenticationPrincipal SecurityUser userDetails){
@@ -52,5 +59,12 @@ public class ClientHomeController {
     public String scheduleAppointment(Model model, @AuthenticationPrincipal SecurityUser userDetails){
         model.addAttribute("userId", userDetails.getUser().getUserId());
         return "scheduleAppointment";
+    }
+
+    @GetMapping("/pets-recipes")
+    @PreAuthorize("hasAuthority('CLIENT')")
+    public String petsRecipes(Model model, @AuthenticationPrincipal SecurityUser userDetails){
+        model.addAttribute("userId", userDetails.getUser().getUserId());
+        return "viewRecipeClient";
     }
 }

@@ -72,6 +72,8 @@
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <h1 id="vaccinationCardTitle">Vaccination Records</h1>
+      <br>
+      <button id="downloadPdfButton" class="btn btn-primary">Download PDF</button>
       <div id="vaccinationCardContainer">
         <table class="table table-striped">
           <thead>
@@ -87,12 +89,9 @@
     </main>
   </div>
 </div>
-
 <button type="button" class="btn btn-primary floating-btn" data-bs-toggle="modal" data-bs-target="#vaccinationModal">
   <i class="bi bi-plus-lg"></i>
 </button>
-
-
 <div class="modal fade" id="vaccinationModal" tabindex="-1" aria-labelledby="vaccinationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog">
     <div class="modal-content" id="modalContent">
@@ -130,5 +129,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/vaccineStaff.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </body>
 </html>
