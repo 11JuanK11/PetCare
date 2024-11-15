@@ -1,5 +1,6 @@
 package pet.care.petcare.controller.views_controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -8,15 +9,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import pet.care.petcare.entity.SecurityUser;
+import pet.care.petcare.service.impl.NotificationClient;
 
 @Controller
 @RequestMapping("/client-panel")
 public class ClientHomeController {
 
+    @Autowired
+    private NotificationClient notificationClient;
+
     @GetMapping("")
     @PreAuthorize("hasAuthority('CLIENT')")
     public String home(Model model, @AuthenticationPrincipal SecurityUser userDetails){
         model.addAttribute("name", userDetails.getUser().getName() + " " + userDetails.getUser().getLastname());
+        model.addAttribute("notifications", notificationClient.getAllNotifications(userDetails.getUser().getUserId()));
         return "indexClient";
     }
 
