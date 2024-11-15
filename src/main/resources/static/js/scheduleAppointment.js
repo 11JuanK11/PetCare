@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const userId = userIdElement ? userIdElement.textContent.trim() : null;
 
     if (userId) {
+        console.log(userId);
         sessionStorage.setItem("userId", userId);
     }
 
@@ -196,6 +197,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         }).then(() => {
                             loadAppointments();
                         });
+                        fetch(`/rest/notifications/${userId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                        })
                     } else {
                         Swal.fire({
                             title: 'Error',
