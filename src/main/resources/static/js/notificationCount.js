@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const notificationBadge = document.querySelector('.notification-badge');
     const notificationList = document.querySelector('.dropdown-menu');
-    const noNotificationsMessage = document.getElementById('no-notifications-message');
     const notificationDropdown = document.querySelector('.dropdown-toggle');
 
     function getTimeElapsed(dateString, timeString) {
@@ -20,33 +19,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
         for (const [unit, secondsInUnit] of Object.entries(intervals)) {
             const elapsed = Math.floor(seconds / secondsInUnit);
-            if (elapsed > 1) return `hace ${elapsed} ${unit}s`;
-            if (elapsed === 1) return `hace 1 ${unit}`;
+            if (elapsed > 1) return `${elapsed} ${unit}s ago`;
+            if (elapsed === 1) return `1 ${unit} ago`;
         }
-        return 'hace unos segundos';
+        return 'a few seconds ago';
     }
 
     function updateNotificationCount() {
         const notifications = document.querySelectorAll('.dropdown-menu li[id^="notification-"]');
-        const appointmentCount = notifications.length;
+        const notificationCount = notifications.length;
 
-        if (appointmentCount > 0) {
+        if (notificationCount > 0) {
             notificationBadge.style.display = 'block';
-            notificationBadge.textContent = appointmentCount;
-            noNotificationsMessage.style.display = 'none';
+            notificationBadge.textContent = notificationCount;
+            const noNotificationMessageElement = document.querySelector('.dropdown-menu .no-notifications');
+            if (noNotificationMessageElement) {
+                noNotificationMessageElement.remove(); 
+            }
         } else {
             notificationBadge.style.display = 'none';
-            noNotificationsMessage.style.display = 'block';
+            if (!document.querySelector('.dropdown-menu .no-notifications')) {
+                const noNotificationMessageElement = document.createElement('li');
+                noNotificationMessageElement.classList.add('no-notifications');
+                noNotificationMessageElement.innerHTML = `<a class="dropdown-item" href="#">No notifications</a>`;
+                notificationList.appendChild(noNotificationMessageElement);
+            }
         }
     }
 
-    document.querySelectorAll('.time-elapsed').forEach(span => {
-        const date = span.getAttribute('data-date');
-        const time = span.getAttribute('data-time');
-        span.textContent = getTimeElapsed(date, time);
-    });
-
-    updateNotificationCount();
+    function initializeTimeElapsed() {
+        document.querySelectorAll('.time-elapsed').forEach(span => {
+            const date = span.getAttribute('data-date');
+            const time = span.getAttribute('data-time');
+            span.textContent = getTimeElapsed(date, time);
+        });
+    }
 
     notificationList.addEventListener('click', function (event) {
         if (event.target && event.target.classList.contains('close-btn')) {
@@ -59,10 +66,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    notificationDropdown.addEventListener('click', function (event) {
-        const notifications = document.querySelectorAll('.dropdown-menu li[id^="notification-"]');
-        if (notifications.length === 0) {
-            event.stopPropagation();
-        }
-    });
+    if (notificationDropdown) {
+        notificationDropdown.addEventListener('click', function (event) {
+            const notifications = document.querySelectorAll('.dropdown-menu li[id^="notification-"]');
+            if (notifications.length === 0) {
+                event.stopPropagation();
+            }
+        });
+    }
+
+    initializeTimeElapsed();
+    updateNotificationCount();
 });

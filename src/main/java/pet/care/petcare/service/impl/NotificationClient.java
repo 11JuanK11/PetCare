@@ -27,7 +27,7 @@ public class NotificationClient {
     private IClientService clientService;
 
     public void createNotifications(long clientId){
-        List<Notification> allNotifications = new ArrayList<>();
+        List<Notification> allNotifications = new ArrayList<>(), existingNotifications = notificationRepository.findAll();
         Client client = clientService.findById(clientId);
         for (Appointment appointment : getAllApointments(client)) {
             Notification notification = new Notification();
@@ -39,7 +39,15 @@ public class NotificationClient {
                         + " on " + appointment.getDate()
                         + " from " + appointment.getStartTime() 
                         + " to " + appointment.getEndTime() + ".");
-            allNotifications.add(notification);
+            boolean isNewNotification = true;
+            for (Notification existingNotification : existingNotifications) {
+                if(notification.getMessage().equals(existingNotification.getMessage())){
+                    isNewNotification = false;
+                }
+            }
+            if(isNewNotification){
+                allNotifications.add(notification);
+            }
         }
         notificationRepository.saveAll(allNotifications);
 
