@@ -26,6 +26,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             appointmentsContainer.innerHTML = '';
 
+            if (appointments.length === 0) {
+                appointmentsContainer.innerHTML = `
+                            <div class="alert alert-info" role="alert">
+                                <p>No appointments assigned for this pet.</p>
+                            </div>
+                        `;
+                return;
+            }
+
             appointments.forEach(appointment => {
                 const card = document.createElement('div');
                 card.className = 'card mb-3 card-custom';
