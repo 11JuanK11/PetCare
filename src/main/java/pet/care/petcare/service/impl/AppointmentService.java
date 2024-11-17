@@ -7,6 +7,7 @@ import pet.care.petcare.entity.Appointment;
 import pet.care.petcare.entity.Pet;
 import pet.care.petcare.entity.Schedule;
 import pet.care.petcare.repository.IAppointmentRepository;
+import pet.care.petcare.repository.IPetRepository;
 import pet.care.petcare.repository.IScheduleRepository;
 import pet.care.petcare.service.IAppointmentService;
 
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AppointmentService implements IAppointmentService {
@@ -24,6 +26,9 @@ public class AppointmentService implements IAppointmentService {
 
     @Autowired
     private IAppointmentRepository appointmentRepository;
+
+    @Autowired
+    private IPetRepository petRepository;
 
     @Transactional
     public List<Appointment> createAppointmentsForClinicStaffAndDate(Long clinicStaffId, LocalDate date) {
@@ -122,30 +127,25 @@ public class AppointmentService implements IAppointmentService {
 
     @Transactional
     @Override
-    public Appointment updateAppointment(Long appointmentId, LocalDate date, LocalTime startTime, LocalTime endTime, Long clinicStaffId, Long petId) {
+    public Appointment updateAppointment(Long appointmentId, LocalDate date, LocalTime startTime, Long petId) {
 
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + appointmentId));
 
-        appointment.setDate(date);
-        appointment.setStartTime(startTime);
-        appointment.setEndTime(endTime);
+        appointment.setPet(null);
+        appointment.setAvailable(true);
 
-        if (clinicStaffId != null) {
-            appointment.getClinicStaff().setUserId(clinicStaffId);
+        Optional<Appointment> updateAppointment = appointmentRepository.findByDateAndStartTime(date, startTime);
+        Optional<Pet> pet = petRepository.findById(petId);
+        Appointment appointment1 = updateAppointment.get();
+        if(updateAppointment.isPresent()){
+            appointment1.setPet(pet.get());
+            appointment1.setAvailable(false);
         }
 
-        if (petId != null) {
-            Pet pet = new Pet();
-            pet.setId(petId);
-            appointment.setPet(pet);
-            appointment.setAvailable(false);
-        } else {
-            appointment.setPet(null);
-            appointment.setAvailable(true);
-        }
+        appointmentRepository.save(appointment);
 
-        return appointmentRepository.save(appointment);
+        return appointmentRepository.save(appointment1);
     }
 
 }

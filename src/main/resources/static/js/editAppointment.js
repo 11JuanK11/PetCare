@@ -52,15 +52,13 @@ async function loadAppointmentsByPetId(petId) {
                         </select>
                     </p>
                     <p class="card-text"><strong>Veterinarian:</strong>
-                        <input type="text" id="clinicStaff-${appointment.id}" value="${appointment.clinicStaff?.name || 'N/A'}" class="form-control" readonly>
+                        <input type="text" id="clinicStaff-${appointment.id}" value="${appointment.clinicStaff ? `${appointment.clinicStaff.name} ${appointment.clinicStaff.lastname}` : 'N/A'}"  class="form-control" readonly>
                     </p>
                     <button class="btn btn-primary" onclick="updateAppointment(${appointment.id}, ${petId})">Update</button>
                 </div>
             `;
 
             appointmentsContainer.appendChild(card);
-
-
 
             const dateInput = document.getElementById(`date-${appointment.id}`);
             dateInput.addEventListener('change', function () {
@@ -80,37 +78,24 @@ async function loadAvailableAppointments(appointmentId, clinicStaffId, date, sta
     try {
         const response = await fetch(`/rest/appointment/appointments/available?clinicStaffId=${clinicStaffId}&date=${date}`);
         const contentType = response.headers.get("content-type");
-
-
         if (contentType && contentType.includes("application/json")) {
             const appointments = await response.json();
-            console.log(appointments)
             const availableAppointments = appointments.filter(appointment => appointment.available);
             const appointmentSelect = document.getElementById(`appointmentTime-${appointmentId}`);
             appointmentSelect.innerHTML = '';
 
-
-            const currentAppointment = availableAppointments.find(app => app.date == date);
-
-
-            if (currentAppointment) {
                 const option = document.createElement('option');
-                console.log("current appointment: " + currentAppointment);
-                option.value = `${currentAppointment.startTime} - ${currentAppointment.endTime}`;
+                option.value = `${startTime} - ${endTime}`;
                 option.textContent = `${startTime} - ${endTime}`;
                 option.selected = true;
                 appointmentSelect.appendChild(option);
-            }
-
 
             availableAppointments.forEach(available => {
-
-                if (available.startTime !== currentAppointment?.startTime) {
                     const option = document.createElement('option');
                     option.value = `${available.startTime} - ${available.endTime}`;
                     option.textContent = `${available.startTime} - ${available.endTime}`;
                     appointmentSelect.appendChild(option);
-                }
+
             });
         } else {
             console.error("Error: La respuesta no es JSON.");
@@ -119,10 +104,6 @@ async function loadAvailableAppointments(appointmentId, clinicStaffId, date, sta
         console.error('Error fetching available appointments:', error);
     }
 }
-
-
-
-
 
     async function updateAppointment(appointmentId, petId) {
         event.preventDefault();
@@ -148,17 +129,16 @@ async function loadAvailableAppointments(appointmentId, clinicStaffId, date, sta
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const response = await fetch(`http://localhost:8080/rest/appointment/update/${appointmentId}`, {
+
+                    const url = new URL(`/rest/appointment/update/${appointmentId}`, window.location.origin);
+                    url.searchParams.append('date', date);
+                    url.searchParams.append('startTime', startTime);
+                    if (petId) {
+                        url.searchParams.append('petId', petId);
+                    }
+
+                    const response = await fetch(url.toString(), {
                         method: 'PUT',
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            date,
-                            startTime,
-                            endTime,
-                            petId
-                        })
                     });
 
                     if (response.ok) {
@@ -187,6 +167,7 @@ async function loadAvailableAppointments(appointmentId, clinicStaffId, date, sta
             }
         });
     }
+
 
     async function loadClients() {
         try {

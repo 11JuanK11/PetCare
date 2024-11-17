@@ -101,12 +101,10 @@ public class AppointmentController {
             @PathVariable Long appointmentId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime,
-            @RequestParam(required = false) Long clinicStaffId,
             @RequestParam(required = false) Long petId) {
         try {
             Appointment updatedAppointment = appointmentService.updateAppointment(
-                    appointmentId, date, startTime, endTime, clinicStaffId, petId
+                    appointmentId, date, startTime, petId
             );
             return ResponseEntity.ok(updatedAppointment);
         } catch (RuntimeException e) {

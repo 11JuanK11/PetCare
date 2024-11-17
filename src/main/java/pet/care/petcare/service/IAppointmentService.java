@@ -14,6 +14,6 @@ public interface IAppointmentService {
 
     void deleteAppointmentByDateTimeAndPetId(LocalDate date, LocalTime startTime, Long petId);
 
-    public Appointment updateAppointment(Long appointmentId, LocalDate date, LocalTime startTime, LocalTime endTime, Long clinicStaffId, Long petId);
+    public Appointment updateAppointment(Long appointmentId, LocalDate date, LocalTime startTime, Long petId);
 
 }
