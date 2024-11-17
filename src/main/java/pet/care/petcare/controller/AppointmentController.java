@@ -37,6 +37,12 @@ public class AppointmentController {
         return appointmentService.getAppointmentsByClinicStaffAndDate(clinicStaffId, appointmentDate);
     }
 
+    @GetMapping("/pets/available")
+    @ResponseBody
+    public List<Appointment> getPetsAvailableAppointments(@RequestParam Long clinicStaffId, @RequestParam Long petId) {
+        return appointmentService.getAppointmentsByClinicStaffAndPetId(clinicStaffId, petId);
+    }
+
     @DeleteMapping("/delete/clinicStaff/{clinicStaffId}")
     public ResponseEntity<Void> deleteAppointmentsByClinicStaff(@PathVariable Long clinicStaffId) {
         try {
