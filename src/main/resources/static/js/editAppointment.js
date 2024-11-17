@@ -129,17 +129,16 @@ async function loadAvailableAppointments(appointmentId, clinicStaffId, date, sta
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const response = await fetch(`http://localhost:8080/rest/appointment/update/${appointmentId}`, {
+
+                    const url = new URL(`/rest/appointment/update/${appointmentId}`, window.location.origin);
+                    url.searchParams.append('date', date);
+                    url.searchParams.append('startTime', startTime);
+                    if (petId) {
+                        url.searchParams.append('petId', petId);
+                    }
+
+                    const response = await fetch(url.toString(), {
                         method: 'PUT',
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            date,
-                            startTime,
-                            endTime,
-                            petId
-                        })
                     });
 
                     if (response.ok) {
@@ -168,6 +167,7 @@ async function loadAvailableAppointments(appointmentId, clinicStaffId, date, sta
             }
         });
     }
+
 
     async function loadClients() {
         try {

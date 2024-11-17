@@ -127,7 +127,7 @@ public class AppointmentService implements IAppointmentService {
 
     @Transactional
     @Override
-    public Appointment updateAppointment(Long appointmentId, LocalDate date, LocalTime startTime, LocalTime endTime, Long petId) {
+    public Appointment updateAppointment(Long appointmentId, LocalDate date, LocalTime startTime, Long petId) {
 
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + appointmentId));
