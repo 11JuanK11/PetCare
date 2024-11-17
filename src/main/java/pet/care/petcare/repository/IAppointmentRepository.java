@@ -10,12 +10,15 @@ import pet.care.petcare.entity.Appointment;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IAppointmentRepository extends JpaRepository<Appointment, Long> {
     List<Appointment> findByClinicStaff_UserIdAndDate(Long userId, LocalDate date);
     List<Appointment> findByClinicStaff_UserId(Long clinicStaffId);
     List<Appointment> findByClinicStaff_UserIdAndPetId(Long userId, Long petId);
+    Optional<Appointment> findByDateAndStartTime(LocalDate date, LocalTime startTime);
+
 
     @Transactional
     @Modifying

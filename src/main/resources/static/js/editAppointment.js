@@ -52,7 +52,7 @@ async function loadAppointmentsByPetId(petId) {
                         </select>
                     </p>
                     <p class="card-text"><strong>Veterinarian:</strong>
-                        <input type="text" id="clinicStaff-${appointment.id}" value="${appointment.clinicStaff?.name || 'N/A'}" class="form-control" readonly>
+                        <input type="text" id="clinicStaff-${appointment.id}" value="${appointment.clinicStaff ? `${appointment.clinicStaff.name} ${appointment.clinicStaff.lastname}` : 'N/A'}"  class="form-control" readonly>
                     </p>
                     <button class="btn btn-primary" onclick="updateAppointment(${appointment.id}, ${petId})">Update</button>
                 </div>
