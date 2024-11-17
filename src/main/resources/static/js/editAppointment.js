@@ -60,8 +60,6 @@ async function loadAppointmentsByPetId(petId) {
 
             appointmentsContainer.appendChild(card);
 
-
-
             const dateInput = document.getElementById(`date-${appointment.id}`);
             dateInput.addEventListener('change', function () {
                 loadAvailableAppointments(appointment.id, appointment.clinicStaff.userId, dateInput.value, appointment.startTime, appointment.endTime); // Cambiar la fecha
@@ -80,37 +78,24 @@ async function loadAvailableAppointments(appointmentId, clinicStaffId, date, sta
     try {
         const response = await fetch(`/rest/appointment/appointments/available?clinicStaffId=${clinicStaffId}&date=${date}`);
         const contentType = response.headers.get("content-type");
-
-
         if (contentType && contentType.includes("application/json")) {
             const appointments = await response.json();
-            console.log(appointments)
             const availableAppointments = appointments.filter(appointment => appointment.available);
             const appointmentSelect = document.getElementById(`appointmentTime-${appointmentId}`);
             appointmentSelect.innerHTML = '';
 
-
-            const currentAppointment = availableAppointments.find(app => app.date == date);
-
-
-            if (currentAppointment) {
                 const option = document.createElement('option');
-                console.log("current appointment: " + currentAppointment);
-                option.value = `${currentAppointment.startTime} - ${currentAppointment.endTime}`;
+                option.value = `${startTime} - ${endTime}`;
                 option.textContent = `${startTime} - ${endTime}`;
                 option.selected = true;
                 appointmentSelect.appendChild(option);
-            }
-
 
             availableAppointments.forEach(available => {
-
-                if (available.startTime !== currentAppointment?.startTime) {
                     const option = document.createElement('option');
                     option.value = `${available.startTime} - ${available.endTime}`;
                     option.textContent = `${available.startTime} - ${available.endTime}`;
                     appointmentSelect.appendChild(option);
-                }
+
             });
         } else {
             console.error("Error: La respuesta no es JSON.");
@@ -119,10 +104,6 @@ async function loadAvailableAppointments(appointmentId, clinicStaffId, date, sta
         console.error('Error fetching available appointments:', error);
     }
 }
-
-
-
-
 
     async function updateAppointment(appointmentId, petId) {
         event.preventDefault();
