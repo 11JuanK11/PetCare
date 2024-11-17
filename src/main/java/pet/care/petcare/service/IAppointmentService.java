@@ -9,6 +9,11 @@ import java.util.List;
 public interface IAppointmentService {
 
     List<Appointment> createAppointmentsForClinicStaffAndDate(Long clinicStaffId, LocalDate date);
+
     Appointment bookAppointment(Long appointmentId, Long petId);
+
     void deleteAppointmentByDateTimeAndPetId(LocalDate date, LocalTime startTime, Long petId);
+
+    public Appointment updateAppointment(Long appointmentId, LocalDate date, LocalTime startTime, LocalTime endTime, Long clinicStaffId, Long petId);
+
 }

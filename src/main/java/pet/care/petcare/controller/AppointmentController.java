@@ -61,7 +61,6 @@ public class AppointmentController {
         appointmentService.deleteAppointmentByDateAndClinicStaffId(date, clinicStaffId);
     }
 
-    // AppointmentController.java
     @PostMapping("/book/{appointmentId}/{petId}")
     public ResponseEntity<?> bookAppointment(@PathVariable Long appointmentId, @PathVariable Long petId) {
         try {
@@ -96,6 +95,27 @@ public class AppointmentController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping("/update/{appointmentId}")
+    public ResponseEntity<?> updateAppointment(
+            @PathVariable Long appointmentId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime,
+            @RequestParam(required = false) Long clinicStaffId,
+            @RequestParam(required = false) Long petId) {
+        try {
+            Appointment updatedAppointment = appointmentService.updateAppointment(
+                    appointmentId, date, startTime, endTime, clinicStaffId, petId
+            );
+            return ResponseEntity.ok(updatedAppointment);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating the appointment.");
+        }
+    }
+
 
 
 }
