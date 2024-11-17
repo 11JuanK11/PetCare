@@ -115,4 +115,33 @@ public class AppointmentService implements IAppointmentService {
         return appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + appointmentId));
     }
+
+    @Transactional
+    @Override
+    public Appointment updateAppointment(Long appointmentId, LocalDate date, LocalTime startTime, LocalTime endTime, Long clinicStaffId, Long petId) {
+
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + appointmentId));
+
+        appointment.setDate(date);
+        appointment.setStartTime(startTime);
+        appointment.setEndTime(endTime);
+
+        if (clinicStaffId != null) {
+            appointment.getClinicStaff().setUserId(clinicStaffId);
+        }
+
+        if (petId != null) {
+            Pet pet = new Pet();
+            pet.setId(petId);
+            appointment.setPet(pet);
+            appointment.setAvailable(false);
+        } else {
+            appointment.setPet(null);
+            appointment.setAvailable(true);
+        }
+
+        return appointmentRepository.save(appointment);
+    }
+
 }

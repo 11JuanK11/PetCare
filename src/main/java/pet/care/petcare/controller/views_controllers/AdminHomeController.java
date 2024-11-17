@@ -110,4 +110,10 @@ public class AdminHomeController {
     public String appointmentManagement3(){
         return "cancelAppointment";
     }
+
+    @GetMapping("/editAppointment")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String appointmentManagement4(){
+        return "editAppointment";
+    }
 }
