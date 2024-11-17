@@ -56,6 +56,10 @@ public class AppointmentService implements IAppointmentService {
         return appointmentRepository.findByClinicStaff_UserIdAndDate(clinicStaffId, date);
     }
 
+    public List<Appointment> getAppointmentsByClinicStaffAndPetId(Long clinicStaffId, Long petId) {
+        return appointmentRepository.findByClinicStaff_UserIdAndPetId(clinicStaffId, petId);
+    }
+
     public void deleteAppointmentsByClinicStaff(Long clinicStaffId) {
         List<Appointment> appointments = appointmentRepository.findByClinicStaff_UserId(clinicStaffId);
         appointmentRepository.deleteAll(appointments);

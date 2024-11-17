@@ -15,6 +15,7 @@ import java.util.List;
 public interface IAppointmentRepository extends JpaRepository<Appointment, Long> {
     List<Appointment> findByClinicStaff_UserIdAndDate(Long userId, LocalDate date);
     List<Appointment> findByClinicStaff_UserId(Long clinicStaffId);
+    List<Appointment> findByClinicStaff_UserIdAndPetId(Long userId, Long petId);
 
     @Transactional
     @Modifying
