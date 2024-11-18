@@ -84,6 +84,12 @@ document.addEventListener("DOMContentLoaded", function () {
                             'success'
                         );
                         loadAppointmentsByPetId(petId);
+                        await fetch(`http://localhost:8080/rest/notifications/appointment-cancelled/${date}/${startTime}/${petId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
                     } else {
                         Swal.fire(
                             'Error!',
