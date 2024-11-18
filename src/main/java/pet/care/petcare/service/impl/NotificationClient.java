@@ -1,7 +1,10 @@
 package pet.care.petcare.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import pet.care.petcare.entity.Notification;
 import pet.care.petcare.entity.Pet;
 import pet.care.petcare.repository.IAppointmentRepository;
 import pet.care.petcare.repository.INotificationRepository;
+import pet.care.petcare.repository.IPetRepository;
 import pet.care.petcare.service.IClientService;
 
 @Service
@@ -23,6 +27,9 @@ public class NotificationClient {
 
     @Autowired
     private IAppointmentRepository appointmentRepository;
+
+    @Autowired
+    private IPetRepository petRepository ;
 
     @Autowired
     private IClientService clientService;
@@ -51,7 +58,22 @@ public class NotificationClient {
             }
         }
         notificationRepository.saveAll(allNotifications);
+    }
 
+    public void createAppointmentCancellationNotification(LocalDate date, String startTime, Long petId) {
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new IllegalArgumentException("Pet not found with ID: " + petId));
+
+        String message = String.format("The appointment for your pet %s on %s at %s has been cancelled.",
+                pet.getName(), date, startTime);
+
+        Notification notification = new Notification();
+        notification.setUser(pet.getClient());
+        notification.setMessage(message);
+        notification.setDate(LocalDate.now());
+        notification.setTime(LocalTime.now());
+
+        notificationRepository.save(notification);
     }
 
     public List<Notification> getAllNotifications(Long clientId){
@@ -79,5 +101,40 @@ public class NotificationClient {
         notification.setReadState(readState);
         notificationRepository.save(notification);
     }
+
+    public void createNotificationForAppointment(Long petId, LocalDate date, LocalTime startTime, Long appointmentId) {
+        if (petId == null) {
+            throw new IllegalArgumentException("The pet ID is required to create the notification.");
+        }
+
+        Optional<Pet> pet = petRepository.findById(petId);
+        if (pet.isEmpty() || pet.get().getClient() == null) {
+            throw new RuntimeException("The pet or its associated owner was not found.");
+        }
+
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + appointmentId));
+
+        LocalDate previousDate = appointment.getDate();
+        LocalTime previousStartTime = appointment.getStartTime();
+        
+        String message = String.format(
+                "Your pet's appointment has been rescheduled. The previous date was %s at %s, " +
+                "and it has been changed to %s at %s.",
+                previousDate.toString(), previousStartTime.toString(),
+                date.toString(), startTime.toString()
+        );
+
+        Long userId = pet.get().getClient().getUserId();
+
+        Notification notification = new Notification();
+        notification.setUser(clientService.findById(userId));
+        notification.setMessage(message);
+        notification.setDate(LocalDate.now());
+        notification.setTime(LocalTime.now());
+
+        notificationRepository.save(notification);
+    }
+
 
 }
