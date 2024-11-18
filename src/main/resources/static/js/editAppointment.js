@@ -148,6 +148,26 @@ async function loadAvailableAppointments(appointmentId, clinicStaffId, date, sta
                             'success'
                         );
                         loadAppointmentsByPetId(petId);
+
+                        const notificationUrl = new URL(`/rest/notifications/reprogrammed/${appointmentId}`, window.location.origin);
+                        notificationUrl.searchParams.append('date', date);
+                        notificationUrl.searchParams.append('startTime', startTime);
+                        if (petId) {
+                            notificationUrl.searchParams.append('petId', petId);
+                        }
+
+                        fetch(notificationUrl.toString(), {
+                            method: 'POST',
+                        }).then(notificationResponse => {
+                            if (notificationResponse.ok) {
+                                console.log('Notification sent successfully.');
+                            } else {
+                                console.error('Error sending notification.');
+                            }
+                        }).catch(error => {
+                            console.error('Error making notification request:', error);
+                        });
+
                     } else {
                         const error = await response.text();
                         Swal.fire(
