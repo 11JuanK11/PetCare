@@ -30,6 +30,7 @@ public class ClientHomeController {
     @PreAuthorize("hasAuthority('CLIENT')")
     public String myPets(Model model, @AuthenticationPrincipal SecurityUser userDetails){
         model.addAttribute("userId", userDetails.getUser().getUserId());
+        model.addAttribute("notifications", notificationClient.getAllNotifications(userDetails.getUser().getUserId()));
         return "myPets";
     }
 
@@ -37,6 +38,7 @@ public class ClientHomeController {
     @PreAuthorize("hasAuthority('CLIENT')")
     public String editMyPets(Model model, @AuthenticationPrincipal SecurityUser userDetails){
         model.addAttribute("userId", userDetails.getUser().getUserId());
+        model.addAttribute("notifications", notificationClient.getAllNotifications(userDetails.getUser().getUserId()));
         return "editPets";
     }
 
@@ -44,6 +46,7 @@ public class ClientHomeController {
     @PreAuthorize("hasAuthority('CLIENT')")
     public String medicalHistory(Model model, @AuthenticationPrincipal SecurityUser userDetails){
         model.addAttribute("userId", userDetails.getUser().getUserId());
+        model.addAttribute("notifications", notificationClient.getAllNotifications(userDetails.getUser().getUserId()));
         return "medicalHistoryClient";
     }
 
@@ -51,6 +54,7 @@ public class ClientHomeController {
     @PreAuthorize("hasAuthority('CLIENT')")
     public String appointments(Model model, @AuthenticationPrincipal SecurityUser userDetails){
         model.addAttribute("userId", userDetails.getUser().getUserId());
+        model.addAttribute("notifications", notificationClient.getAllNotifications(userDetails.getUser().getUserId()));
         return "appointments";
     }
 
@@ -58,6 +62,8 @@ public class ClientHomeController {
     @PreAuthorize("hasAuthority('CLIENT')")
     public String scheduleAppointment(Model model, @AuthenticationPrincipal SecurityUser userDetails){
         model.addAttribute("userId", userDetails.getUser().getUserId());
+        model.addAttribute("notifications", notificationClient.getAllNotifications(userDetails.getUser().getUserId()));
+
         return "scheduleAppointment";
     }
 
@@ -65,6 +71,7 @@ public class ClientHomeController {
     @PreAuthorize("hasAuthority('CLIENT')")
     public String petsRecipes(Model model, @AuthenticationPrincipal SecurityUser userDetails){
         model.addAttribute("userId", userDetails.getUser().getUserId());
+        model.addAttribute("notifications", notificationClient.getAllNotifications(userDetails.getUser().getUserId()));
         return "viewRecipeClient";
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import pet.care.petcare.entity.Appointment;
 import pet.care.petcare.entity.Client;
 import pet.care.petcare.entity.Notification;
@@ -70,6 +71,13 @@ public class NotificationClient {
             appointments.addAll(appointmentRepository.findByPet_Id(pet.getId()));
         }
         return appointments;
+    }
+
+    public void updateReadState(Long id, Boolean readState) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Notification not found"));
+        notification.setReadState(readState);
+        notificationRepository.save(notification);
     }
 
 }
