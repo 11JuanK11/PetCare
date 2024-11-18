@@ -32,7 +32,7 @@
                             <span style="display: none;" class="badge text-bg-primary rounded-pill notification-badge"></span>
                         </a>
                         <ul class="dropdown-menu" style="max-height: 300px; overflow-y: auto;">
-                            <li th:each="notification, iter : ${notifications}" th:id="'notification-' + ${iter.index}">
+                            <li th:each="notification, iter : ${notifications}" th:id="'notification-'" th:data-id="${notification.id}">
                                 <a class="dropdown-item" href="#">
                                     <strong th:text="${notification.message}">Notification Message</strong>
                                     <button type="button" class="close-btn"
@@ -43,7 +43,7 @@
                                     <span class="time-elapsed" th:data-date="${notification.date}" th:data-time="${notification.time}">
                                     </span>
                                 </a>
-                            </li>
+                            </li>                            
                         </ul>
                     </div>                                                          
                 </li>
