@@ -212,6 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             confirmButtonText: 'OK'
                         }).then(() => {
                             loadAppointments();
+                            location.reload();
                         });
                         fetch(`/rest/notifications/${userId}`, {
                             method: 'POST',

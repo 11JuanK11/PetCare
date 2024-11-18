@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function () {
     const notificationBadge = document.querySelector('.notification-badge');
     const notificationList = document.querySelector('.dropdown-menu');
@@ -59,7 +60,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (event.target && event.target.classList.contains('close-btn')) {
             const notificationElement = event.target.closest('li');
             if (notificationElement) {
+                const notificationId = notificationElement.getAttribute('data-id');
                 notificationElement.remove();
+                markNotificationAsRead(notificationId);
                 updateNotificationCount();
                 event.stopPropagation();
             }
@@ -74,7 +77,24 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-
     initializeTimeElapsed();
     updateNotificationCount();
 });
+
+async function markNotificationAsRead(notificationId) {
+    try {
+        const response = await fetch(`http://localhost:8080/rest/notifications/${notificationId}/mark-as-read`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ readState: false })
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to update notification ${notificationId}`);
+        }
+    } catch (error) {
+        console.error(`Error updating notification ${notificationId}:`, error);
+    }
+}
