@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     const notificationBadge = document.querySelector('.notification-badge');
     const notificationList = document.querySelector('.dropdown-menu');
@@ -77,6 +76,23 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    notificationList.addEventListener('click', function (event) {
+        if (event.target && !event.target.classList.contains('close-btn') && event.target.closest('li')) {
+            const notificationElement = event.target.closest('li');
+            const notificationMessage = notificationElement.querySelector('strong').innerText;
+
+            Swal.fire({
+                title: 'Notification Details',
+                html: `
+                    <strong>Message.</strong><br> ${notificationMessage} 
+                    
+                `,
+                icon: 'info'
+            });
+        }
+    });
+
     initializeTimeElapsed();
     updateNotificationCount();
 });
