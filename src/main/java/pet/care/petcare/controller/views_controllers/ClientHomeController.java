@@ -23,6 +23,8 @@ public class ClientHomeController {
     public String home(Model model, @AuthenticationPrincipal SecurityUser userDetails){
         model.addAttribute("name", userDetails.getUser().getName() + " " + userDetails.getUser().getLastname());
         model.addAttribute("notifications", notificationClient.getAllNotifications(userDetails.getUser().getUserId()));
+        notificationClient.createRememberAppointment(userDetails.getUser().getUserId());
+        model.addAttribute("reminder", notificationClient.getAllRemindersByClient(userDetails.getUser().getUserId()));
         return "indexClient";
     }
 

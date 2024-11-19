@@ -2,9 +2,13 @@ package pet.care.petcare.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,14 +83,14 @@ public class NotificationClient {
     public List<Notification> getAllNotifications(Long clientId){
         Client client = clientService.findById(clientId);
         ArrayList<Notification> activeNotifications = new ArrayList<>();
-        for(Notification notification: client.getNotificationList()){
-            if(notification.getReadState()){
+        for (Notification notification : client.getNotificationList()) {
+            if (notification.getReadState() && !notification.getMessage().contains("Reminder")) {
                 activeNotifications.add(notification);
             }
         }
         return activeNotifications;
     }
-
+    
     private List<Appointment> getAllApointments(Client client){
         ArrayList<Appointment> appointments = new ArrayList<>();
         for (Pet pet : client.getPets()) {
@@ -135,6 +139,52 @@ public class NotificationClient {
 
         notificationRepository.save(notification);
     }
+    
+    public void createRememberAppointment(Long clientId) {
+        Set<Notification> rememberNotifications = new HashSet<>();
+        Client client = clientService.findById(clientId);
+    
+        for (Appointment appointment : getAllApointments(client)) {
+            long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), appointment.getDate());
+    
+            if (daysBetween == 1 || daysBetween == 0) {
+
+                String message = String.format(
+                    "Reminder: You have an appointment scheduled for %s at %s.",
+                    appointment.getDate().toString(),
+                    appointment.getStartTime().toString()
+                );
+    
+                Notification notification = new Notification();
+                notification.setUser(client);
+                notification.setMessage(message);
+
+                boolean isNewNotification = true;
+                for (Notification existingNotification : client.getNotificationList() ) {
+                    if(existingNotification.getMessage().equals(message)){
+                        isNewNotification = false;
+                    } 
+                }
+
+                if(isNewNotification){
+                    rememberNotifications.add(notification);
+                }
+            }
+        }
+        notificationRepository.saveAll(rememberNotifications);  
+    }
+
+    public List<Notification> getAllRemindersByClient(Long clientId) {
+        Client client = clientService.findById(clientId);
+
+        return client.getNotificationList().stream()
+            .filter(notification -> notification.getMessage().contains("Reminder"))
+            .filter(Notification::getReadState)
+            .collect(Collectors.toList());
+    }
+
+    
+    
 
 
 }
