@@ -106,6 +106,15 @@ public class NotificationClient {
         notificationRepository.save(notification);
     }
 
+    public Notification updateReminder(Long id) {
+        Notification notification = notificationRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Notification not found with ID: " + id));
+
+        notification.setReminder(LocalDate.now().plusDays(1));
+
+        return notificationRepository.save(notification);
+    }
+
     public void createNotificationForAppointment(Long petId, LocalDate date, LocalTime startTime, Long appointmentId) {
         if (petId == null) {
             throw new IllegalArgumentException("The pet ID is required to create the notification.");
@@ -183,7 +192,13 @@ public class NotificationClient {
             .collect(Collectors.toList());
     }
 
-    
+    public void deleteNotification(Long id) {
+        if (notificationRepository.existsById(id)) {
+            notificationRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("Notification with ID " + id + " not found");
+        }
+    }
     
 
 
