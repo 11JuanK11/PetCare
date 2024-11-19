@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import pet.care.petcare.entity.Notification;
 import pet.care.petcare.exception.ValidationException;
 import pet.care.petcare.service.impl.NotificationClient;
 
@@ -73,5 +75,17 @@ public class NotificationController {
         Boolean readState = payload.get("readState");
         notificationClient.updateReadState(id, readState);
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{id}/update-reminder")
+    public ResponseEntity<Notification> updateReminder(@PathVariable Long id) {
+        Notification updatedNotification = notificationClient.updateReminder(id);
+        return ResponseEntity.ok(updatedNotification);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNotification(@PathVariable Long id) {
+        notificationClient.deleteNotification(id);
+        return ResponseEntity.noContent().build();
     }
 }

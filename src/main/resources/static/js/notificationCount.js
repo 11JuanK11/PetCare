@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (notificationElement) {
                 const notificationId = notificationElement.getAttribute('data-id');
                 notificationElement.remove();
-                markNotificationAsRead(notificationId);
+                deleteNotification(notificationId);
                 updateNotificationCount();
                 event.stopPropagation();
             }
@@ -114,3 +114,23 @@ async function markNotificationAsRead(notificationId) {
         console.error(`Error updating notification ${notificationId}:`, error);
     }
 }
+
+async function deleteNotification(notificationId) {
+    try {
+        const response = await fetch(`http://localhost:8080/rest/notifications/${notificationId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to delete notification ${notificationId}`);
+        } else {
+            console.log(`Notification ${notificationId} deleted successfully`);
+        }
+    } catch (error) {
+        console.error(`Error deleting notification ${notificationId}:`, error);
+    }
+}
+

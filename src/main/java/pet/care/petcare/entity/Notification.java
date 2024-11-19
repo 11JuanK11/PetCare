@@ -32,6 +32,7 @@ public class Notification {
     private LocalDate date;
     private LocalTime time;
     private Boolean readState;
+    private LocalDate reminder;
 
     public Notification() {
         this.date = LocalDate.now();
