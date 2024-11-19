@@ -223,7 +223,6 @@ document.getElementById('downloadPdfButton').addEventListener('click', async fun
     }
 
     try {
-
         const response = await fetch(`/rest/vaccination-cards/pets/${petId}`);
         if (!response.ok) throw new Error('Vaccination card for the pet was not found.');
         const vaccinationCard = await response.json();
@@ -233,12 +232,31 @@ document.getElementById('downloadPdfButton').addEventListener('click', async fun
         const pet = await petResponse.json();
 
         const vaccinesResponse = await fetch(`/rest/vaccines/byVaccinationCard/${vaccinationCard.id}`);
-        if (!vaccinesResponse.ok) throw new Error('No vaccines records found for this vaccination card.');
-        const vaccines = await vaccinesResponse.json();
+        if (!vaccinesResponse.ok) throw new Error('No vaccination records found for this pet.');
+
+        let vaccines = [];
+        try {
+            vaccines = await vaccinesResponse.json();
+        } catch (error) {
+            Swal.fire(
+                'No Vaccination Records',
+                'There are no registered vaccines for this pet. Please update the records and try again.',
+                'info'
+            );
+            return;
+        }
+
+        if (vaccines.length === 0) {
+            Swal.fire(
+                'No Vaccination Records',
+                'There are no registered vaccines for this pet. Please update the records and try again.',
+                'info'
+            );
+            return;
+        }
 
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF();
-
 
         const colors = {
             pink: "#F7C8E0",
@@ -251,7 +269,6 @@ document.getElementById('downloadPdfButton').addEventListener('click', async fun
         pdf.setFillColor(colors.blue);
         pdf.rect(0, 0, 210, 35, 'F');
 
-
         const logoUrl = '/img/logo.png';
         const logoX = 8, logoY = 8, logoWidth = 20, logoHeight = 20;
         const logoImage = new Image();
@@ -260,16 +277,13 @@ document.getElementById('downloadPdfButton').addEventListener('click', async fun
         logoImage.onload = function () {
             pdf.addImage(logoImage, 'PNG', logoX, logoY, logoWidth, logoHeight);
 
-
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(20);
             pdf.setTextColor('#000000');
             pdf.text(`Vaccination Card`, 105, 15, { align: 'center' });
 
-
             pdf.setFontSize(14);
             pdf.text(`PetCare Veterinary Clinic`, 105, 25, { align: 'center' });
-
 
             pdf.setFontSize(12);
             pdf.setTextColor('#000000');
@@ -289,11 +303,9 @@ document.getElementById('downloadPdfButton').addEventListener('click', async fun
             pdf.setFont("helvetica", "normal");
             pdf.text(`${new Date().toLocaleDateString()}`, 40, 70);
 
-
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(12);
             pdf.text(`Vaccines:`, 10, 80);
-
 
             let yPosition = 90;
             vaccines.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -305,10 +317,8 @@ document.getElementById('downloadPdfButton').addEventListener('click', async fun
                     day: '2-digit'
                 });
 
-
                 pdf.setFillColor(colors.lightBlue);
                 pdf.rect(10, yPosition - 5, 190, 10, 'F');
-
 
                 pdf.setFontSize(12);
                 pdf.setFont("helvetica", "bold");
@@ -322,13 +332,6 @@ document.getElementById('downloadPdfButton').addEventListener('click', async fun
                 yPosition += 15;
             });
 
-            if (vaccines.length === 0) {
-                pdf.setFontSize(12);
-                pdf.setTextColor('#FF0000');
-                pdf.text(`No vaccination records available.`, 10, 90);
-            }
-
-
             pdf.save(`${pet.name}_Vaccination_Card.pdf`);
         };
 
@@ -341,6 +344,7 @@ document.getElementById('downloadPdfButton').addEventListener('click', async fun
         Swal.fire('Error', error.message, 'error');
     }
 });
+
 
 
 
