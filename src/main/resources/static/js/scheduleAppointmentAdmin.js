@@ -236,6 +236,13 @@ document.addEventListener("DOMContentLoaded", function () {
                             confirmButtonText: 'OK'
                         }).then(() => {
                             loadAppointments();
+                            const userId = document.getElementById('clientSelect').value;
+                            fetch(`/rest/notifications/${userId}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                            });
                         });
                     })
                     .catch(error => {
