@@ -80,10 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function loadAppointments() {
         const vetId = veterinarianSelect.value;
         const date = dateSelect.value;
-        const today = new Date();
-        const currentHour = today.getHours();
-        const currentMinute = today.getMinutes();
-        const currentDate = today.toISOString().split("T")[0];
 
         if (vetId && date) {
             fetch(`/rest/appointment/appointments/available?clinicStaffId=${vetId}&date=${date}`)
@@ -114,9 +110,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         table.appendChild(thead);
 
                         const tbody = document.createElement("tbody");
-                        appointments.forEach(appointment => {
+                        limitedAppointments.forEach(appointment => {
                             const row = document.createElement("tr");
-                            const [startHour, startMinute] = appointment.startTime.split(':').map(Number);
+
+                            const appointmentDateTime = new Date(`${date}T${appointment.startTime}`);
+                            const now = new Date();
+
                             const formattedStartTime = appointment.startTime.substring(0, 5);
                             const formattedEndTime = appointment.endTime.substring(0, 5);
 
@@ -140,9 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 assignButton.style.backgroundColor = "#95BDFF";
                             };
 
-                            const isPastTime = date === currentDate &&
-                                (startHour < currentHour || (startHour === currentHour && startMinute <= currentMinute));
-                            if (!appointment.available || isPastTime) {
+                            if (!appointment.available || appointmentDateTime < now) {
                                 timeCell.style.backgroundColor = "#f8d7da";
                                 timeCell.style.color = "#721c24";
                                 actionCell.style.backgroundColor = "#f8d7da";
@@ -165,6 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
         }
     }
+
 
     function loadAvailableVeterinarians() {
         const date = dateSelect.value;
