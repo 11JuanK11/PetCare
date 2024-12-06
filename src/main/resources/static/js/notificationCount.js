@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (notificationElement) {
                 const notificationId = notificationElement.getAttribute('data-id');
                 notificationElement.remove();
-                deleteNotification(notificationId);
+                markNotificationAsRead(notificationId);
                 updateNotificationCount();
                 event.stopPropagation();
             }

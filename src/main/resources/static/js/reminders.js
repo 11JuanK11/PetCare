@@ -24,7 +24,7 @@ if (reminder.length > 0) {
         }).then(async result => {
             if (result.isConfirmed) {
                 for (const notification of reminder.filter(n => n.reminder === null || n.reminder === today)) {
-                    await deleteNotification(notification.id);
+                    await markNotificationAsRead(notification.id);
                 }
                 Swal.fire("Confirmed!", "Your reminders have been marked as read.", "success");
             } else if (result.dismiss === Swal.DismissReason.cancel) {
