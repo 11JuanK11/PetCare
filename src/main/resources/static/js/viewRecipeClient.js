@@ -110,9 +110,7 @@ function displayDiagnostics(diagnostics) {
                 ${dateDiagnostics.map(diagnostic => `
                     <div id="diagnostic-${diagnostic.id}">
                         <div id="recipe-${diagnostic.id}"></div>
-                        <div class="download-container">
-                            <button class="download-btn" onclick="downloadDatePDF('${date}')">Download PDF</button>
-                        </div>
+
                         <hr>
                     </div>
                 `).join('')}
